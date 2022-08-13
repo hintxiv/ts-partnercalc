@@ -1,0 +1,8 @@
+.notFound {
+    background-color: #242526;
+    width: 100%;
+    max-width: 800px;
+    transform: translateY(12vh);
+    margin-left: auto;
+    margin-right: auto;
+}

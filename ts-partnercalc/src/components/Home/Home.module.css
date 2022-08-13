@@ -1,0 +1,13 @@
+.input {
+    width: 100%
+}
+
+.home {
+    background-color: #242526;
+    width: 100%;
+    min-width: 400px;
+    max-width: 800px;
+    transform: translateY(35vh);
+    margin-left: auto;
+    margin-right: auto;
+}

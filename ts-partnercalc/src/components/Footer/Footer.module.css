@@ -1,0 +1,9 @@
+.iconRoot {
+    text-align: center;
+}
+
+.icon {
+    display: flex;
+    height: inherit;
+    width: inherit;
+}

@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./src",
+        "noImplicitAny": true,
+        "module": "ESNext",
+        "target": "ESNext",
+        "experimentalDecorators": true,
+		"moduleResolution": "node",
+        "jsx": "react",
+        "esModuleInterop": true,
+        "allowJs": true,
+        "checkJs": true,
+    },
+
+    "include": [
+        "src/**/*",
+        "typings",
+    ]
+}

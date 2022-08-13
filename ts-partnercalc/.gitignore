@@ -1,0 +1,16 @@
+# node deps
+/node_modules
+
+# build
+/dist
+
+# yarn
+yarn.lock
+
+# local
+.env
+TODO.md
+
+# docker
+docker-compose.yml
+Dockerfile
