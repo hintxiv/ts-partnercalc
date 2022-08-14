@@ -1,6 +1,6 @@
 import { AppBar, createTheme, ThemeProvider, Toolbar, Typography } from '@material-ui/core'
-import { blue } from '@material-ui/core/colors'
-import * as React from 'react'
+import React from 'react'
+import { Helmet } from 'react-helmet'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import styles from './App.module.css'
 import { ErrorBoundary } from './ErrorBoundary/ErrorBoundary'
@@ -12,7 +12,10 @@ const theme = createTheme({
     palette: {
         type: 'dark',
         primary: {
-            main: blue[900],
+            main: '#f48fb1',
+        },
+        secondary: {
+            main: '#f50057',
         },
     },
     typography: {
@@ -24,12 +27,15 @@ const routes = [
     {
         path: '/',
         element: <Home />,
-        crumb: () => <Typography variant="subtitle1">Home</Typography>,
     },
     {
         path: '*',
         element: <NotFoundPage />,
-        crumb: () => <Typography variant="subtitle1">Home</Typography>,
+    },
+    {
+        path: 'cgdfghdfgh',
+        element: <NotFoundPage />,
+        title: 'sghdfghdfgh',
     },
 ]
 
@@ -43,12 +49,32 @@ export function App() {
         }
     }
 
+    const getTitle = () => {
+        const route = routes.find(route => route.path === location.pathname)
+        let title = 'partnercalc'
+
+        if (route) {
+            if (route.title) {
+                title += ` | ${route.title}`
+            }
+        } else {
+            title += ' | 404'
+        }
+
+        return title
+    }
+
     return <ThemeProvider theme={theme}>
+        <Helmet>
+            <title>
+                {getTitle()}
+            </title>
+        </Helmet>
         <div className={styles.content}>
             <AppBar>
                 <Toolbar>
                     <Typography variant="h5" align="center" onClick={goHome}>
-                        Reassemble
+                        partnercalc
                     </Typography>
                 </Toolbar>
             </AppBar>
