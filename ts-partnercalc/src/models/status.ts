@@ -5,11 +5,11 @@ export interface Status {
     hasStacks?: boolean
 }
 
-export interface Buff extends Status {
+export interface Buff {
     effect: Effect
 }
 
-export interface Debuff extends Status {
+export interface Debuff {
     effect: Effect
     castActions: number[]
 }

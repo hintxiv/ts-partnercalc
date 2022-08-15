@@ -1,4 +1,4 @@
-import { Status } from 'models/status'
+import { Status } from 'models'
 import { ApplyBuffEvent, ApplyDebuffEvent, RemoveBuffEvent, RemoveDebuffEvent } from 'parse/fflogs/event'
 import { Module } from '../module'
 

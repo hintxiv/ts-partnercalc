@@ -1,11 +1,15 @@
-import { ActionType } from 'models/action'
-import { Effect } from 'models/effect'
-
-export type DamageType = ActionType | 'DoT'
+import { Effect } from 'models'
 
 export interface DamageOptions {
     critType: 'normal' | 'auto' | 'none'
     dhType: 'normal' | 'auto' | 'none'
+}
+
+export interface DamageInstance {
+    timestamp: number
+    amount: number
+    isCrit: boolean
+    isDH: boolean
 }
 
 export interface CastInstance {
@@ -14,10 +18,5 @@ export interface CastInstance {
     targetKey: string
     effects: Effect[]
     options: DamageOptions
-}
-
-export interface DamageInstance {
-    cast: CastInstance
-    type: DamageType
-    amount: number
+    damage: DamageInstance[]
 }

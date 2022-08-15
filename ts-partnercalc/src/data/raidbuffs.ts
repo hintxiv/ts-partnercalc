@@ -1,95 +1,54 @@
-import { Buff, Debuff } from 'models/status'
+import { Debuff, Effect } from 'models'
+import { preserve } from 'util/typeutils'
 import { STATUSES } from './statuses/raidbuffs'
 
-export const RAID_BUFFS: Buff[] = [
-    {
-        id: STATUSES.BATTLE_LITANY.id,
-        effect: {
-            critRate: 0.1,
-        },
-    },
-    {
-        id: STATUSES.BATTLE_VOICE.id,
-        effect: {
-            directRate: 0.2,
-        },
-    },
-    {
-        id: STATUSES.BROTHERHOOD.id,
-        effect: {
-            potency: 1.05,
-        },
-    },
-    {
-        id: STATUSES.DIVINATION.id,
-        effect: {
-            potency: 1.06,
-        },
-    },
-    {
-        id: STATUSES.DEVILMENT.id,
-        effect: {
-            critRate: 0.2,
-            directRate: 0.2,
-        },
-    },
-    {
-        id: STATUSES.EMBOLDEN.id,
-        effect: {
-            potency: 1.05,
-        },
-    },
-    {
-        id: STATUSES.STANDARD_FINISH.id,
-        effect: {
-            potency: 1.05,
-        },
-    },
-    {
-        id: STATUSES.TECHNICAL_FINISH.id,
-        effect: {
-            potency: 1.05,
-        },
-    },
-    {
-        id: STATUSES.LEFT_EYE.id,
-        effect: {
-            potency: 1.05,
-        },
-    },
-    {
-        id: STATUSES.ARCANE_CIRCLE.id,
-        effect: {
-            potency: 1.03,
-        },
-    },
-    {
-        id: STATUSES.SEARING_LIGHT.id,
-        effect: {
-            potency: 1.03,
-        },
-    },
-    {
-        id: STATUSES.RADIANT_FINALE.id,
-        effect: {
-            potency: 1.06,
-        },
-    },
-]
+export { STATUSES }
 
-export const RAID_DEBUFFS: Debuff[] = [
-    {
-        id: STATUSES.CHAIN_STRATAGEM.id,
-        castActions: [7436],
+export const RAID_BUFFS = preserve<Effect>()({
+    [STATUSES.BATTLE_LITANY.id]: {
+        critRate: 0.1,
+    },
+    [STATUSES.BATTLE_VOICE.id]: {
+        dhRate: 0.2,
+    },
+    [STATUSES.BROTHERHOOD.id]: {
+        potency: 1.05,
+    },
+    [STATUSES.DIVINATION.id]: {
+        potency: 1.06,
+    },
+    [STATUSES.DEVILMENT.id]: {
+        critRate: 0.2,
+        dhRate: 0.2,
+    },
+    [STATUSES.EMBOLDEN.id]: {
+        potency: 1.05,
+    },
+    [STATUSES.STANDARD_FINISH.id]: {
+        potency: 1.05,
+    },
+    [STATUSES.TECHNICAL_FINISH.id]: {
+        potency: 1.05,
+    },
+    [STATUSES.LEFT_EYE.id]: {
+        potency: 1.05,
+    },
+    [STATUSES.ARCANE_CIRCLE.id]: {
+        potency: 1.03,
+    },
+    [STATUSES.SEARING_LIGHT.id]: {
+        potency: 1.03,
+    },
+    [STATUSES.RADIANT_FINALE.id]: {
+        potency: 1.06,
+    },
+})
+
+export const RAID_DEBUFFS = preserve<Debuff>()({
+    [STATUSES.CHAIN_STRATAGEM.id]: {
         effect: {
             critRate: 0.1,
         },
+        castActions: [7436],
     },
-    {
-        id: STATUSES.MUG.id,
-        castActions: [2248],
-        effect: {
-            potency: 1.05,
-        },
-    },
-]
+})

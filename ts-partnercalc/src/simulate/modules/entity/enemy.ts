@@ -1,6 +1,5 @@
 import { RAID_DEBUFFS } from 'data/raidbuffs'
-import { Effect } from 'models/effect'
-import { Status } from 'models/status'
+import { Effect, Status } from 'models'
 import { Entity } from './entity'
 
 /**
