@@ -47,13 +47,9 @@ export function Home() {
     return <div className={styles.home}>
         <Box p={2}>
             <Box mb={1}>
-                {hasError ?
-                    <Typography color="error">
-                        * Not a valid FFLogs report url.
-                    </Typography> : <Typography color="textPrimary">
-                        Enter your FFLogs report link to get started.
-                    </Typography>
-                }
+                <Typography variant="h6" color="textPrimary">
+                    Enter your FFLogs report link to get started.
+                </Typography>
             </Box>
             <Grid container spacing={8} alignItems="flex-end">
                 <Grid item md={true} sm={true} xs={true}>
@@ -66,6 +62,13 @@ export function Home() {
                     />
                 </Grid>
             </Grid>
+            <Box mb={1}>
+                {hasError &&
+                    <Typography color="error">
+                     * Not a valid FFLogs report url.
+                    </Typography>
+                }
+            </Box>
         </Box>
     </div>
 }

@@ -7,6 +7,7 @@ import { ErrorBoundary } from './ErrorBoundary/ErrorBoundary'
 import { Footer } from './Footer/Footer'
 import { Home } from './Home/Home'
 import { NotFoundPage } from './NotFound/NotFound'
+import { Result } from './Result/Result'
 
 const theme = createTheme({
     palette: {
@@ -33,9 +34,9 @@ const routes = [
         element: <NotFoundPage />,
     },
     {
-        path: '/:rid/:fid',
-        element: <NotFoundPage />,
-        title: 'sghdfghdfgh',
+        path: '/:reportID/:fightID',
+        element: <Result />,
+        title: 'TODO dynamic title from report',
     },
 ]
 

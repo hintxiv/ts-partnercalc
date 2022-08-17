@@ -26,6 +26,11 @@ export interface FFLogsQuery {
     filter?: string
 }
 
+interface FFLogsResponse {
+    events: FFLogsResponseEvent[]
+    nextPageTimestamp: number
+}
+
 interface FFLogsResponseEvent {
     timestamp: number
     sourceID: number
@@ -88,13 +93,25 @@ export async function fetchLastFightID(reportID: string): Promise<number> {
     return report.fights.slice(-1)[0].id
 }
 
-export async function fetchEvents(fight: Fight, query: FFLogsQuery): Promise<{events: FFLogsResponseEvent[]}> {
+export async function fetchEvents(fight: Fight, query: FFLogsQuery): Promise<FFLogsResponseEvent[]> {
     const searchParams = query as Record<keyof FFLogsQuery, string | number>
 
-    const events = await fflogs.get(
+    let response: FFLogsResponse = await fflogs.get(
         `events/summary/${fight.reportID}`,
         {searchParams: searchParams}
-    )
+    ).json()
 
-    return events.json()
+    const events: FFLogsResponseEvent[] = response.events
+
+    // Handle pagination
+    while (response.nextPageTimestamp && response.events.length > 0) {
+        searchParams.start = response.nextPageTimestamp
+        response = await fflogs.get(
+            `events/summary/${fight.reportID}`,
+            {searchParams: searchParams}
+        ).json()
+        events.push(...response.events)
+    }
+
+    return events
 }

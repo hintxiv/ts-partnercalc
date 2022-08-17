@@ -16,7 +16,9 @@ export class Dancer extends Entity {
 
     constructor(id: number, standardHook: StandardHook) {
         super(id.toString())
+        this.id = id
         this.emitStandard = standardHook
+        this.init()
     }
 
     protected init() {
@@ -34,6 +36,7 @@ export class Dancer extends Entity {
     }
 
     private onStandard(event: ApplyBuffEvent) {
+        console.log(`new standard at ${event.timestamp}`)
         const isTillana = (event.appliedBy && event.appliedBy === TILLANA_ID)
         const standard = new Standard(event.timestamp, event.targetID, isTillana)
         this.currentStandard = standard

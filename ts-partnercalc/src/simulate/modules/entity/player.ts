@@ -16,10 +16,10 @@ export class Player extends Entity {
 
     constructor(id: number, job: Job, castHook: CastHook) {
         super(id.toString())
-
         this.id = id
         this.job = job
         this.emitCast = castHook
+        this.init()
     }
 
     protected init() {
@@ -51,6 +51,7 @@ export class Player extends Entity {
         }
 
         this.casts.set(this.getCastKey(event), cast)
+
         this.emitCast(cast)
     }
 

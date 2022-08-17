@@ -43,6 +43,10 @@ export abstract class Module {
         if (this.hooks.has(key)) {
             const hook = this.hooks.get(key)
             hook(event)
+
+        } else if (this.hooks.has(event.type)) {
+            const hook = this.hooks.get(event.type)
+            hook(event)
         }
     }
 
@@ -60,7 +64,9 @@ export abstract class Module {
         id: number | 'all',
         hook: EventHook<E>
     ) {
-        const key = `${type}-${id}`
+        const key = (id === 'all')
+            ? type
+            : `${type}-${id}`
 
         this.hooks.set(key, hook.bind(this))
     }

@@ -1,4 +1,4 @@
-import { STATUSES, RAID_BUFFS } from 'data/raidbuffs'
+import { BUFFS, RAID_BUFFS } from 'data/raidbuffs'
 import { Effect, Stats } from 'models'
 import { CastInstance, DamageInstance, DamageOptions } from 'simulate/instances'
 
@@ -23,7 +23,7 @@ function getBuffedStats(
     isDevilmentUp: boolean,
     isRealPartner: boolean,
 ): Stats {
-    const devilmentEffect = RAID_BUFFS[STATUSES.DEVILMENT.id]
+    const devilmentEffect = RAID_BUFFS[BUFFS.DEVILMENT.id]
     const simulatedEffects = [...effects]
 
     // Add devilment if they would've had it by being the real partner
@@ -72,7 +72,7 @@ export function simulateStandard(
     isDevilmentUp: boolean,
     isRealPartner: boolean,
 ): number {
-    const standardEffect = RAID_BUFFS[STATUSES.STANDARD_FINISH.id]
+    const standardEffect = RAID_BUFFS[BUFFS.STANDARD_FINISH.id]
     const buffedStats = getBuffedStats(stats, effects, isDevilmentUp, isRealPartner)
     let simulatedDamage = 0
 

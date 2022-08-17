@@ -3,6 +3,8 @@ import { EventFields, FFLogsEvent } from './event'
 import { Fight } from './fight'
 import { HitType } from './report'
 
+const STATUS_OFFSET = 1000000
+
 export class FFLogsParser {
     public reportID: string
     public fightID: number
@@ -17,14 +19,14 @@ export class FFLogsParser {
         this.fight = await fetchFight(this.reportID, this.fightID)
     }
 
-    public async * getEvents(sourceID: number, debuffIDs: number[]): AsyncGenerator<FFLogsEvent, void, undefined> {
+    public async * getEvents(debuffIDs: number[], sourceID?: number): AsyncGenerator<FFLogsEvent, void, undefined> {
         const eventsQuery: FFLogsQuery = {
             start: this.fight.start,
             end: this.fight.end,
             sourceid: sourceID,
         }
 
-        // Need to send a second query to get raid debuffs (trick / chain)
+        // Need to send a second query to get raid debuffs on enemies (mug / chain)
         const debuffFilter = debuffIDs
             .map(id => `ability.id=${id}`)
             .join(' or ')
@@ -38,7 +40,7 @@ export class FFLogsParser {
         const playerEventsJSON = await fetchEvents(this.fight, eventsQuery)
         const debuffEventsJSON = await fetchEvents(this.fight, debuffsQuery)
 
-        const events = [...playerEventsJSON.events, ...debuffEventsJSON.events]
+        const events = [...playerEventsJSON, ...debuffEventsJSON]
             .sort((a, b) => a.timestamp - b.timestamp)
 
         for (const e of events) {
@@ -59,16 +61,34 @@ export class FFLogsParser {
             }
 
             if (e.type === 'applybuff') {
-                yield { type: e.type, statusID: e.ability.guid, appliedBy: appliedBy, ...fields }
+                yield {
+                    type: e.type,
+                    statusID: e.ability.guid - STATUS_OFFSET,
+                    appliedBy: appliedBy,
+                    ...fields,
+                }
 
             } else if (e.type === 'removebuff') {
-                yield { type: e.type, statusID: e.ability.guid, ...fields }
+                yield {
+                    type: e.type,
+                    statusID: e.ability.guid - STATUS_OFFSET,
+                    ...fields,
+                }
 
             } else if (e.type === 'applydebuff') {
-                yield { type: e.type, statusID: e.ability.guid, appliedBy: appliedBy, ...fields }
+                yield {
+                    type: e.type,
+                    statusID: e.ability.guid - STATUS_OFFSET,
+                    appliedBy: appliedBy,
+                    ...fields,
+                }
 
             } else if (e.type === 'removedebuff') {
-                yield { type: e.type, statusID: e.ability.guid, ...fields }
+                yield {
+                    type: e.type,
+                    statusID: e.ability.guid - STATUS_OFFSET,
+                    ...fields,
+                }
 
             } else if (e.type === 'cast') {
                 yield { type: e.type, actionID: e.ability.guid, ...fields }
@@ -77,7 +97,7 @@ export class FFLogsParser {
                 if (e.tick) {
                     yield {
                         type: 'tick',
-                        statusID: e.ability.guid,
+                        statusID: e.ability.guid - STATUS_OFFSET,
                         expectedCritRate: e.expectedCritRate,
                         actorPotencyRatio: e.actorPotencyRatio,
                         ...fields,

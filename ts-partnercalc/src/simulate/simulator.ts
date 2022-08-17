@@ -1,3 +1,4 @@
+import { DEBUFFS } from 'data/raidbuffs'
 import { FFLogsEvent } from 'parse/fflogs/event'
 import { Friend } from 'parse/fflogs/fight'
 import { FFLogsParser } from 'parse/fflogs/parser'
@@ -8,7 +9,7 @@ import { CastHook } from './hooks'
 import { CastInstance } from './instances'
 import { Dancer } from './modules/entity/dancer'
 
-export class Conductor {
+export class Simulator {
     private parser: FFLogsParser
     private dancer: Dancer
     private enemies: EnemyHandler
@@ -22,10 +23,32 @@ export class Conductor {
         this.enemies = new EnemyHandler(parser.fight.friends)
     }
 
+    public async calculatePartnerDamage(/* TODO: player stats */): Promise<void> {
+        if (this.standards.length === 0) {
+            // Build + cache standard windows from the report
+            await this.buildStandardWindows()
+        }
+
+        for (const standard of this.standards) {
+            console.log(standard.getPlayerContribution(5))
+        }
+    }
+
+    private async buildStandardWindows(): Promise<void> {
+        const debuffIDs = Object.values(DEBUFFS)
+            .map(status => status.id)
+
+        const events = this.parser.getEvents(debuffIDs)
+
+        for await (const event of events) {
+            this.processEvent(event)
+        }
+    }
+
     private processEvent(event: FFLogsEvent) {
-        this.enemies.processEvent(event)
+        this.dancer.processEvent(event)
         this.players.processEvent(event)
-        // processEvent on dancer?
+        this.enemies.processEvent(event)
     }
 
     private getStandard(time: number): Standard | undefined {
