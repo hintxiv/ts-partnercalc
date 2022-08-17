@@ -57,7 +57,7 @@ export abstract class Module {
         E extends Extract<FFLogsEvent, { type: T }>,
     > (
         type: T,
-        id: number,
+        id: number | 'all',
         hook: EventHook<E>
     ) {
         const key = `${type}-${id}`

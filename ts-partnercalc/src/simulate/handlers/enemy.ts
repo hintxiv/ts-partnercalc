@@ -1,3 +1,4 @@
+import { Effect } from 'models'
 import { FFLogsEvent } from 'parse/fflogs/event'
 import { Friend } from 'parse/fflogs/fight'
 import { Enemy } from 'simulate/modules/entity/enemy'
@@ -17,6 +18,10 @@ export class EnemyHandler {
 
         const enemy = this.getEnemy(event.targetKey)
         enemy.processEvent(event)
+    }
+
+    public getEnemyDebuffs(key: string): Effect[] {
+        return this.getEnemy(key).activeDebuffs
     }
 
     private getEnemy(key: string): Enemy {

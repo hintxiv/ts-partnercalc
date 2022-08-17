@@ -33,7 +33,7 @@ const routes = [
         element: <NotFoundPage />,
     },
     {
-        path: 'cgdfghdfgh',
+        path: '/:rid/:fid',
         element: <NotFoundPage />,
         title: 'sghdfghdfgh',
     },

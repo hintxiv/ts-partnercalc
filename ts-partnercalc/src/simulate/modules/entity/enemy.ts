@@ -1,4 +1,4 @@
-import { RAID_DEBUFFS } from 'data/raidbuffs'
+import { DEBUFFS, RAID_DEBUFFS } from 'data/raidbuffs'
 import { Effect, Status } from 'models'
 import { Entity } from './entity'
 
@@ -15,10 +15,10 @@ export class Enemy extends Entity {
 
     protected init() {
         // Add hooks for raid buffs (chain, mug)
-        RAID_DEBUFFS.forEach(debuff => {
-            this.debuffs.set(debuff.id, debuff.effect)
-            this.addHook('applydebuff', debuff.id, this.onApplyStatus)
-            this.addHook('removedebuff', debuff.id, this.onRemoveStatus)
+        Object.values(DEBUFFS).forEach(status => {
+            this.debuffs.set(status.id, RAID_DEBUFFS[status.id].effect)
+            this.addHook('applydebuff', status.id, this.onApplyStatus)
+            this.addHook('removedebuff', status.id, this.onRemoveStatus)
         })
     }
 

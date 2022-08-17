@@ -1,7 +1,7 @@
 import { Status } from 'models'
 import { preserve } from 'util/typeutils'
 
-export const STATUSES = preserve<Status>()({
+export const BUFFS = preserve<Status>()({
     BATTLE_LITANY: {
         id: 786,
     },
@@ -43,7 +43,9 @@ export const STATUSES = preserve<Status>()({
     },
     // AST cards
     // ...
+})
 
+export const DEBUFFS = preserve<Status>()({
     // Debuffs
     CHAIN_STRATAGEM: {
         id: 1221,
