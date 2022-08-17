@@ -19,20 +19,21 @@ const options: Options = {
 
 const fflogs = ky.create(options)
 
-export interface FFLogsQuery
-{
+export interface FFLogsQuery {
     start: number
     end: number
     sourceid?: number
     filter?: string
 }
 
-interface FFLogsResponseEvent
-{
+interface FFLogsResponseEvent {
     timestamp: number
     sourceID: number
     type: string
     ability?: {
+        guid: number
+    }
+    extraAbility?: {
         guid: number
     }
     amount?: number

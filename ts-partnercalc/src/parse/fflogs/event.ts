@@ -50,6 +50,7 @@ export interface ApplyBuffEvent extends EventFields
 {
     type: 'applybuff'
     statusID: number
+    appliedBy?: number
 }
 
 export interface RemoveBuffEvent extends EventFields
@@ -62,6 +63,7 @@ export interface ApplyDebuffEvent extends EventFields
 {
     type: 'applydebuff'
     statusID: number
+    appliedBy?: number
 }
 
 export interface RemoveDebuffEvent extends EventFields

@@ -1,7 +1,6 @@
 import { Job } from 'models'
 import { FFLogsEvent } from 'parse/fflogs/event'
 import { Friend } from 'parse/fflogs/fight'
-import { Standard } from 'simulate/buffwindow/standard'
 import { CastHook } from 'simulate/hooks'
 import { Player } from 'simulate/modules/entity/player'
 
@@ -17,7 +16,7 @@ export class PlayerHandler {
 
     public processEvent(event: FFLogsEvent) {
         // TODO we'll probably need a pet map for this a la partnercalc 1.0
-        const friend = this.friends.find(friend => friend.id === event.targetID)
+        const friend = this.friends.find(friend => friend.id === event.sourceID)
 
         if (!friend) { return }
 

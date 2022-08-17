@@ -9,17 +9,17 @@ import { Entity } from './entity'
 export class Player extends Entity {
     public id: number
     public job: Job
-    protected castCallback: CastHook
+    protected emitCast: CastHook
 
     private casts: Map<CastKey, CastInstance> = new Map()
     private buffs: Map<Status['id'], Effect> = new Map()
 
-    constructor(id: number, job: Job, castCallback: CastHook) {
+    constructor(id: number, job: Job, castHook: CastHook) {
         super(id.toString())
 
         this.id = id
         this.job = job
-        this.castCallback = castCallback
+        this.emitCast = castHook
     }
 
     protected init() {
@@ -51,7 +51,7 @@ export class Player extends Entity {
         }
 
         this.casts.set(this.getCastKey(event), cast)
-        this.castCallback(cast)
+        this.emitCast(cast)
     }
 
     private onDamage(event: DamageEvent) {

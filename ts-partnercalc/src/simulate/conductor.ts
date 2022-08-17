@@ -6,19 +6,20 @@ import { EnemyHandler } from './handlers/enemies'
 import { PlayerHandler } from './handlers/players'
 import { CastHook } from './hooks'
 import { CastInstance } from './instances'
+import { Dancer } from './modules/entity/dancer'
 
 export class Conductor {
     private parser: FFLogsParser
-    private dancer: Friend
+    private dancer: Dancer
     private enemies: EnemyHandler
     private players: PlayerHandler
     private standards: Standard[] = []
 
     constructor(parser: FFLogsParser, dancer: Friend) {
         this.parser = parser
-        this.dancer = dancer
-        this.enemies = new EnemyHandler(parser.fight.friends)
+        this.dancer = new Dancer(dancer.id, this.assignStandard)
         this.players = new PlayerHandler(parser.fight.friends, this.assignCast)
+        this.enemies = new EnemyHandler(parser.fight.friends)
     }
 
     private processEvent(event: FFLogsEvent) {
@@ -40,6 +41,10 @@ export class Conductor {
         }
 
         return undefined
+    }
+
+    private assignStandard = (standard: Standard) => {
+        this.standards.push(standard)
     }
 
     private assignCast: CastHook = (cast: CastInstance) => {

@@ -52,14 +52,20 @@ export class FFLogsParser {
                 targetKey: `${targetID}-${targetInstance}`,
             }
 
+            // Parse the 'extraAbility' field to find status applying actions
+            let appliedBy = undefined
+            if (e.extraAbility) {
+                appliedBy = e.extraAbility.guid
+            }
+
             if (e.type === 'applybuff') {
-                yield { type: e.type, statusID: e.ability.guid, ...fields }
+                yield { type: e.type, statusID: e.ability.guid, appliedBy: appliedBy, ...fields }
 
             } else if (e.type === 'removebuff') {
                 yield { type: e.type, statusID: e.ability.guid, ...fields }
 
             } else if (e.type === 'applydebuff') {
-                yield { type: e.type, statusID: e.ability.guid, ...fields }
+                yield { type: e.type, statusID: e.ability.guid, appliedBy: appliedBy, ...fields }
 
             } else if (e.type === 'removedebuff') {
                 yield { type: e.type, statusID: e.ability.guid, ...fields }
