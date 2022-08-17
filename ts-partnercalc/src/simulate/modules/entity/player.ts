@@ -44,7 +44,7 @@ export class Player extends Entity {
         const cast: CastInstance = {
             source: this.id,
             timestamp: event.timestamp,
-            targetKey: event.targetKey,
+            target: event.targetKey,
             effects: this.activeBuffs,
             options: options,
             damage: [],

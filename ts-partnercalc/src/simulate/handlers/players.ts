@@ -1,6 +1,7 @@
 import { Job } from 'models'
 import { FFLogsEvent } from 'parse/fflogs/event'
 import { Friend } from 'parse/fflogs/fight'
+import { Standard } from 'simulate/buffwindow/standard'
 import { CastHook } from 'simulate/hooks'
 import { Player } from 'simulate/modules/entity/player'
 

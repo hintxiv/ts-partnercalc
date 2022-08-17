@@ -15,7 +15,7 @@ export interface DamageInstance {
 export interface CastInstance {
     source: number
     timestamp: number
-    targetKey: string
+    target: string
     effects: Effect[]
     options: DamageOptions
     damage: DamageInstance[]
