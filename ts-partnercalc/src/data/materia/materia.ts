@@ -1,4 +1,4 @@
-import { Stats } from 'parse/etro/gear/stats'
+import { Stats } from 'api/etro/gear/stats'
 
 export interface Materia
 {

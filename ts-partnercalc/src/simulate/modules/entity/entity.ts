@@ -1,5 +1,5 @@
+import { ApplyBuffEvent, ApplyDebuffEvent, RemoveBuffEvent, RemoveDebuffEvent } from 'api/fflogs/event'
 import { Status } from 'models'
-import { ApplyBuffEvent, ApplyDebuffEvent, RemoveBuffEvent, RemoveDebuffEvent } from 'parse/fflogs/event'
 import { Module } from '../module'
 
 /**

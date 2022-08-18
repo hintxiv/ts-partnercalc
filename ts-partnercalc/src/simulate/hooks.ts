@@ -1,4 +1,4 @@
-import { FFLogsEvent } from 'parse/fflogs/event'
+import { FFLogsEvent } from 'api/fflogs/event'
 import { CastInstance, DamageInstance } from './instances'
 
 export type EventHook<E extends FFLogsEvent> = (event: E) => void

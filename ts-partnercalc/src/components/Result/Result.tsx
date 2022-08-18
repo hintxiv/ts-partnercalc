@@ -1,4 +1,4 @@
-import { FFLogsParser } from 'parse/fflogs/parser'
+import { FFLogsParser } from 'api/fflogs/parser'
 import React, { useEffect, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { Simulator } from 'simulate/simulator'

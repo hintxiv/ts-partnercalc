@@ -1,6 +1,6 @@
+import { FFLogsEvent } from 'api/fflogs/event'
+import { Friend } from 'api/fflogs/fight'
 import { Job } from 'models'
-import { FFLogsEvent } from 'parse/fflogs/event'
-import { Friend } from 'parse/fflogs/fight'
 import { CastHook } from 'simulate/hooks'
 import { Player } from 'simulate/modules/entity/player'
 

@@ -1,6 +1,6 @@
+import { ApplyDebuffEvent, CastEvent, DamageEvent, TickEvent } from 'api/fflogs/event'
 import { BUFFS, RAID_BUFFS } from 'data/raidbuffs'
 import { Effect, Job, Status } from 'models'
-import { ApplyDebuffEvent, CastEvent, DamageEvent, TickEvent } from 'parse/fflogs/event'
 import { CastHook } from 'simulate/hooks'
 import { CastInstance, DamageInstance, DamageOptions } from 'simulate/instances'
 import { CastKey, StatusKey } from '../module'

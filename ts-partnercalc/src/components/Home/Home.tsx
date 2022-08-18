@@ -1,5 +1,5 @@
 import { Grid, TextField, Box, Typography } from '@material-ui/core'
-import { fetchLastFightID } from 'parse/fflogs/api'
+import { fetchLastFightID } from 'api/fflogs/api'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './Home.module.css'

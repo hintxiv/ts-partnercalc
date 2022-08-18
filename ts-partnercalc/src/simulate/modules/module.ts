@@ -4,7 +4,7 @@ import {
     EventType,
     FFLogsEvent,
     TickEvent,
-} from 'parse/fflogs/event'
+} from 'api/fflogs/event'
 import { EventHook } from 'simulate/hooks'
 
 // Type - ID

@@ -1,5 +1,5 @@
+import { ApplyBuffEvent, FFLogsEvent, RemoveBuffEvent } from 'api/fflogs/event'
 import { BUFFS } from 'data/raidbuffs'
-import { ApplyBuffEvent, FFLogsEvent, RemoveBuffEvent } from 'parse/fflogs/event'
 import { Devilment } from 'simulate/buffwindow/devilment'
 import { Standard } from 'simulate/buffwindow/standard'
 import { Entity } from './entity'

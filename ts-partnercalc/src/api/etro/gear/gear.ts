@@ -1,4 +1,4 @@
-import { Slot } from 'parse/etro/api'
+import { Slot } from 'api/etro/api'
 import { Stats } from './stats'
 
 export type GearGroup =

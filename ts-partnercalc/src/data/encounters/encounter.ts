@@ -1,5 +1,5 @@
-import { GearGroup } from 'parse/etro/gear/gear'
-import { StatGroup } from 'parse/etro/gear/stats'
+import { GearGroup } from 'api/etro/gear/gear'
+import { StatGroup } from 'api/etro/gear/stats'
 
 type StatCaps = Record<StatGroup, number>
 
