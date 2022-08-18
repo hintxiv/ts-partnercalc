@@ -1,6 +1,6 @@
 import { BUFFS, RAID_BUFFS } from 'data/raidbuffs'
 import { Effect, Stats } from 'models'
-import { CastInstance, DamageInstance, DamageOptions } from 'simulate/instances'
+import { CastInstance, DamageInstance, DamageOptions, DirectDamageInstance } from 'simulate/instances'
 
 // TODO memoize everything here
 
@@ -34,7 +34,7 @@ function getBuffedStats(
     return applyEffects(stats, simulatedEffects)
 }
 
-function getBaseDamage(damage: DamageInstance, options: DamageOptions, stats: Stats): number {
+function getBaseDamage(damage: DirectDamageInstance, options: DamageOptions, stats: Stats): number {
     let baseDamage = damage.amount
 
     if (options.critType !== 'auto' && damage.isCrit) {
@@ -51,6 +51,9 @@ function getBaseDamage(damage: DamageInstance, options: DamageOptions, stats: St
 }
 
 function simulateDamage(damage: DamageInstance, options: DamageOptions, stats: Stats): number {
+    // TODO differentiate tick / direct
+    if (damage.type === 'tick') { return 0 }
+
     let expectedDamage = getBaseDamage(damage, options, stats)
 
     if (options.critType === 'normal') {

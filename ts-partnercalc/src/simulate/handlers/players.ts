@@ -16,7 +16,11 @@ export class PlayerHandler {
 
     public processEvent(event: FFLogsEvent) {
         // TODO we'll probably need a pet map for this a la partnercalc 1.0
-        const friend = this.friends.find(friend => friend.id === event.sourceID)
+        const playerID = ['applybuff', 'removebuff'].includes(event.type)
+            ? event.targetID
+            : event.sourceID
+
+        const friend = this.friends.find(friend => friend.id === playerID)
 
         if (!friend) { return }
 

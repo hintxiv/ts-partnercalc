@@ -3,14 +3,18 @@ import {
     DamageEvent,
     EventType,
     FFLogsEvent,
+    TickEvent,
 } from 'parse/fflogs/event'
 import { EventHook } from 'simulate/hooks'
 
 // Type - ID
 export type EventKey = `${EventType}-${number}`
 
-// TargetID - ActionID
-export type CastKey = `${number}-${number}`
+// TargetKey - ActionID
+export type CastKey = `${string}-${number}`
+
+// TargetKey - StatusID
+export type StatusKey = `${string}-${number}`
 
 export abstract class Module {
     protected hooks: Map<string, EventHook<FFLogsEvent>> = new Map()
@@ -30,8 +34,11 @@ export abstract class Module {
     }
 
     protected getCastKey(event: CastEvent | DamageEvent): CastKey {
-        const target = event.targetID ?? 0
-        return `${target}-${event.actionID}` as CastKey
+        return `${event.targetKey}-${event.actionID}`
+    }
+
+    protected getStatusKey(event: TickEvent): StatusKey {
+        return `${event.targetKey}-${event.statusID}`
     }
 
     public processEvent(event: FFLogsEvent) {

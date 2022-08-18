@@ -5,11 +5,22 @@ export interface DamageOptions {
     dhType: 'normal' | 'auto' | 'none'
 }
 
-export interface DamageInstance {
+export type DamageInstance = DirectDamageInstance | TickDamageInstance
+
+interface DamageInstanceFields {
+    type: string
     timestamp: number
     amount: number
+}
+
+export interface DirectDamageInstance extends DamageInstanceFields {
+    type: 'direct'
     isCrit: boolean
     isDH: boolean
+}
+
+export interface TickDamageInstance extends DamageInstanceFields {
+    type: 'tick'
 }
 
 export interface CastInstance {

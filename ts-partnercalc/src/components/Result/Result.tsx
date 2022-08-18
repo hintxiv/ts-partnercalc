@@ -15,7 +15,7 @@ export function Result() {
             await parser.init()
             console.log(parser.fight.friends)
             // TODO pick out the Dancer (not in frontend please)
-            const simulator = new Simulator(parser, parser.fight.friends[0])
+            const simulator = new Simulator(parser, parser.fight.friends[3])
             simulator.calculatePartnerDamage()
         }
         simulate().catch(console.error)

@@ -98,6 +98,7 @@ export class FFLogsParser {
                     yield {
                         type: 'tick',
                         statusID: e.ability.guid - STATUS_OFFSET,
+                        amount: e.amount,
                         expectedCritRate: e.expectedCritRate,
                         actorPotencyRatio: e.actorPotencyRatio,
                         ...fields,
