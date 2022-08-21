@@ -1,12 +1,11 @@
-import { simulateStandard } from 'math/rdps'
-import { SimulatedDamage } from 'models'
+import { ComputedDamage } from 'models'
 import { CastInstance } from 'simulate/instances'
 import { BuffWindow } from './buffwindow'
 import { Devilment } from './devilment'
 
-const POTENCY_PER_ESPRIT = 3.68  // per ringabel's calculations
-const ESPRIT_PER_WEAPONSKILL = 10
-const DEFAULT_ESPRIT_RATE = 0.2
+// const POTENCY_PER_ESPRIT = 3.68  // per ringabel's calculations
+// const ESPRIT_PER_WEAPONSKILL = 10
+// const DEFAULT_ESPRIT_RATE = 0.2
 
 export class Standard extends BuffWindow {
     private devilment?: Devilment
@@ -29,15 +28,15 @@ export class Standard extends BuffWindow {
         this.devilment = devilment
     }
 
-    public getPlayerContribution(friendID: number): SimulatedDamage[] {
+    public getPlayerContribution(friendID: number): ComputedDamage[] {
         const casts = this.casts.getFriendlyCasts(friendID)
 
         if (!casts) { return [] }
 
-        const simulatedDamage = []
+        const computedDamage = []
 
         for (const cast of casts) {
-            simulatedDamage.push({
+            computedDamage.push({
                 timestamp: cast.timestamp,
                 standard: this.getStandardContribution(cast),
                 esprit: this.getEspritContribution(cast),
@@ -45,25 +44,25 @@ export class Standard extends BuffWindow {
             })
         }
 
-        return simulatedDamage
+        return computedDamage
     }
 
     private getStandardContribution(cast: CastInstance): number {
         // return simulateStandard(cast, ...)
-        return 0
+        return cast.damage.reduce((total, damage) => total + damage.amount * 0.05, 0)
     }
 
-    private getEspritContribution(_: CastInstance): number {
+    private getEspritContribution(cast: CastInstance): number {
         // TODO
-        return 0
+        return cast.damage.reduce((total, damage) => total + damage.amount * 0.01, 0)
     }
 
-    private getDevilmentContribution(_: CastInstance): number {
+    private getDevilmentContribution(cast: CastInstance): number {
         // TODO
+        return cast.damage.reduce((total, damage) => total + damage.amount * 0.03, 0)
+
         if (!this.devilment) {
             return 0
         }
-
-        return 0
     }
 }

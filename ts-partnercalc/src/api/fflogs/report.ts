@@ -1,5 +1,3 @@
-import { Friend, PetFriend } from './fight'
-
 export enum HitType {
     MISS = 0,
     NORMAL = 1,
@@ -16,11 +14,22 @@ export interface ReportFight {
     name: string
 }
 
-export type ReportFriend = Friend & { fights: ReportFight[] }
-export type ReportPetFriend = PetFriend & { fights: ReportFight[] }
+export interface ReportFriend {
+    id: number
+    name: string
+    type: string
+    fights: ReportFight[]
+}
+
+export interface ReportPet {
+    id: number
+    name: string
+    petOwner: number
+    fights: ReportFight[]
+}
 
 export interface Report {
     friendlies: ReportFriend[]
-    friendlyPets: ReportPetFriend[]
+    friendlyPets: ReportPet[]
     fights: ReportFight[]
 }

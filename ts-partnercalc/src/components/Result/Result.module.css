@@ -1,0 +1,22 @@
+.loading {
+    position: fixed;
+    z-index: 999;
+    height: 2em;
+    width: 2em;
+    overflow: show;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+.result {
+    width: 100%;
+    max-width: 1600px;
+    transform: translateY(8vh);
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 100px;
+    background-color: #242526;
+}

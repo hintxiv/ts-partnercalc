@@ -1,7 +1,8 @@
-import { DEBUFFS } from 'data/raidbuffs'
 import { FFLogsEvent } from 'api/fflogs/event'
 import { Friend } from 'api/fflogs/fight'
 import { FFLogsParser } from 'api/fflogs/parser'
+import { DEBUFFS } from 'data/raidbuffs'
+import { ComputedPlayer, ComputedStandard, DamageTotals, Job } from 'models'
 import { Standard } from './buffwindow/standard'
 import { EnemyHandler } from './handlers/enemies'
 import { PlayerHandler } from './handlers/players'
@@ -23,14 +24,64 @@ export class Simulator {
         this.enemies = new EnemyHandler(parser.fight.friends)
     }
 
-    public async calculatePartnerDamage(/* TODO: player stats */): Promise<void> {
+    public async calculatePartnerDamage(/* TODO: player stats */): Promise<ComputedStandard[]> {
         if (this.standards.length === 0) {
             // Build + cache standard windows from the report
             await this.buildStandardWindows()
         }
 
+        const results: ComputedStandard[] = []
+
         for (const standard of this.standards) {
-            console.log(standard.getPlayerContribution(5))
+            results.push(this.calculateStandard(standard))
+        }
+
+        return results
+    }
+
+    private calculateStandard(standard: Standard, /* TODO: player stats */): ComputedStandard {
+        const players: ComputedPlayer[] = []
+
+        for (const friend of this.parser.fight.friends) {
+            const computedDamage = standard.getPlayerContribution(friend.id)
+
+            if (computedDamage.length === 0) { continue }
+
+            const damageTotals: DamageTotals = {
+                standard: 0,
+                esprit: 0,
+                devilment: 0,
+                total: 0,
+            }
+
+            for (const damage of computedDamage) {
+                damageTotals.standard += damage.standard
+                damageTotals.devilment += damage.devilment
+                damageTotals.esprit += damage.esprit
+                damageTotals.total += damage.standard + damage.devilment + damage.esprit
+            }
+
+            // TODO need to get Job also
+            const dummyJob: Job = {
+                name: 'Foo',
+                iconPath: '/nowhere/foo.png',
+                color: '#000000',
+            }
+
+            players.push({
+                name: friend.name,
+                job: dummyJob,
+                damage: computedDamage,
+                totals: damageTotals,
+            })
+        }
+
+        players.sort((a, b) => a.totals.total - b.totals.total)
+
+        return {
+            start: standard.start,
+            end: standard.end ?? this.parser.fight.end,
+            players: players,
         }
     }
 

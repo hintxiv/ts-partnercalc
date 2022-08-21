@@ -1,20 +1,18 @@
+import { Job } from 'models'
 
-export interface Friend
-{
+export interface Friend {
     id: number
     name: string
-    //type: Job
+    job: Job
 }
 
-export interface PetFriend
-{
+export interface Pet {
     id: number
     name: string
-    petOwner: number
+    ownerID: number
 }
 
-export interface Fight
-{
+export interface Fight {
     reportID: string
     fightID: number
     zoneID: number
@@ -22,5 +20,5 @@ export interface Fight
     start: number
     end: number
     friends: Friend[]
-    pets: PetFriend[]
+    pets: Pet[]
 }

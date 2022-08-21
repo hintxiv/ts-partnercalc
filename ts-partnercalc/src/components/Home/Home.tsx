@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import styles from './Home.module.css'
 
 export function Home() {
-    const [hasError, setError] = useState(false)
+    const [hasError, setError] = useState<boolean>(false)
     const navigate = useNavigate()
 
     const decomposeFFLogsURL = (url: URL) => {

@@ -15,10 +15,9 @@
     "dependencies": {
         "@material-ui/core": "^4.11.3",
         "@material-ui/icons": "^4.11.2",
-        "@nivo/core": "^0.67.0",
-        "@nivo/line": "^0.67.0",
         "@types/react-helmet": "^6.1.5",
         "@types/react-transition-group": "^4.4.2",
+        "@types/recharts": "^1.8.23",
         "@types/uuid": "^8.3.1",
         "ky": "^0.26.0",
         "material-ui-react": "^0.0.1",
@@ -27,7 +26,7 @@
         "react-helmet": "^6.1.0",
         "react-router-dom": "^6.3.0",
         "react-transition-group": "^4.4.2",
-        "react-virtualized-auto-sizer": "^1.0.4",
+        "recharts": "^2.1.13",
         "ts-node": "^10.9.1",
         "uuid": "^8.3.2"
     },

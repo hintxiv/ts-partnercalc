@@ -1,6 +1,7 @@
+import { JOBS } from 'data/jobs'
 import ky, { Options } from 'ky'
-import { Fight, Friend, PetFriend } from './fight'
-import { Report, ReportFight, ReportFriend, ReportPetFriend } from './report'
+import { Fight, Friend, Pet } from './fight'
+import { Report, ReportFight, ReportFriend, ReportPet } from './report'
 
 const NO_FAKE_FRIENDS = [
     'Ground Effect',
@@ -26,11 +27,6 @@ export interface FFLogsQuery {
     filter?: string
 }
 
-interface FFLogsResponse {
-    events: FFLogsResponseEvent[]
-    nextPageTimestamp: number
-}
-
 interface FFLogsResponseEvent {
     timestamp: number
     sourceID: number
@@ -50,25 +46,48 @@ interface FFLogsResponseEvent {
     buffs?: string
     targetID?: number
     targetInstance?: number
-    // ... some other stuff too, but we only care about these fields
+}
+
+interface FFLogsResponse {
+    events: FFLogsResponseEvent[]
+    nextPageTimestamp: number
+}
+
+function adaptReportFriend(friend: ReportFriend): Friend {
+    console.log(friend.type)
+    return {
+        id: friend.id,
+        name: friend.name,
+        job: friend.type in JOBS
+            ? JOBS[friend.type as keyof typeof JOBS]
+            : JOBS.Unknown,
+    }
+}
+
+function adaptReportPet(pet: ReportPet): Pet {
+    return {
+        id: pet.id,
+        name: pet.name,
+        ownerID: pet.petOwner,
+    }
 }
 
 export async function fetchFight(reportID: string, fightID: number): Promise<Fight> {
     const report: Report = await fflogs.get(`fights/${reportID}/`).json()
     const friends: Friend[] = []
-    const friendlyPets: PetFriend[] = []
+    const friendlyPets: Pet[] = []
 
     report.friendlies.forEach((friend: ReportFriend) => {
         if (!NO_FAKE_FRIENDS.includes(friend.name)) {
             if (friend.fights.some(fight => fight.id === fightID)) {
-                friends.push(friend)
+                friends.push(adaptReportFriend(friend))
             }
         }
     })
 
-    report.friendlyPets.forEach((pet: ReportPetFriend) => {
+    report.friendlyPets.forEach((pet: ReportPet) => {
         if (pet.fights.some(fight => fight.id === fightID)) {
-            friendlyPets.push(pet)
+            friendlyPets.push(adaptReportPet(pet))
         }
     })
 
