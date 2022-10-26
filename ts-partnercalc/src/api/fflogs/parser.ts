@@ -50,7 +50,7 @@ export class FFLogsParser {
             const fields: EventFields = {
                 timestamp: e.timestamp,
                 sourceID: e.sourceID,
-                targetID: e.targetID,
+                targetID: targetID,
                 targetKey: `${targetID}-${targetInstance}`,
             }
 

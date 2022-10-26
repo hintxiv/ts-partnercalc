@@ -54,7 +54,6 @@ interface FFLogsResponse {
 }
 
 function adaptReportFriend(friend: ReportFriend): Friend {
-    console.log(friend.type)
     return {
         id: friend.id,
         name: friend.name,

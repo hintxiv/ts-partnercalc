@@ -45,6 +45,7 @@ export interface TickEvent extends EventFields
     amount: number
     expectedCritRate: number
     actorPotencyRatio: number
+    directHitPercentage?: number
 }
 
 export interface ApplyBuffEvent extends EventFields
