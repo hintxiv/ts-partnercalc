@@ -48,7 +48,8 @@ export class Standard extends BuffWindow {
     }
 
     private getStandardContribution(cast: CastInstance): number {
-        // return simulateStandard(cast, ...)
+        // Need to wire player stats here
+        //return simulateStandard(cast, stats, effects, !!this.devilment, isRealPartner)
         return cast.damage.reduce((total, damage) => total + damage.amount * 0.05, 0)
     }
 
@@ -58,11 +59,11 @@ export class Standard extends BuffWindow {
     }
 
     private getDevilmentContribution(cast: CastInstance): number {
-        // TODO
-        return cast.damage.reduce((total, damage) => total + damage.amount * 0.03, 0)
-
         if (!this.devilment) {
             return 0
         }
+
+        // TODO
+        return cast.damage.reduce((total, damage) => total + damage.amount * 0.03, 0)
     }
 }
