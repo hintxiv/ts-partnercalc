@@ -5,8 +5,8 @@ import { ComputedStandard } from 'models'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Simulator } from 'simulate/simulator'
-import { DamageGraph } from './DamageGraph/DamageGraph'
 import styles from './Result.module.css'
+import { StandardWindow } from './StandardWindow/StandardWindow'
 
 export function Result() {
     const { reportID, fightID } = useParams()
@@ -39,7 +39,7 @@ export function Result() {
 
     return <div className={styles.result}>
         {standards.map(standard =>
-            <DamageGraph standard={standard} key={standard.start} />
+            <StandardWindow standard={standard} key={standard.start} />
         )}
     </div>
 }

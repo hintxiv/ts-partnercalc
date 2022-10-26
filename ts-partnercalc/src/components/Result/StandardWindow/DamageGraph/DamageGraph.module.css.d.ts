@@ -2,7 +2,7 @@
 /* eslint-disable */
 declare namespace DamageGraphModuleCssNamespace {
   export interface IDamageGraphModuleCss {
-    chartText: string;
+    jobIcon: string;
     standardGraph: string;
   }
 }

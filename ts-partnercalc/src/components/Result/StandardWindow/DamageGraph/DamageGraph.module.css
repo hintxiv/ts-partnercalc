@@ -3,3 +3,7 @@
     height: 600px;
     margin-bottom: 2em;
 }
+
+.jobIcon {
+    transform: translateX(0);
+}
