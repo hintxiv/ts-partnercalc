@@ -22,10 +22,10 @@ export class Dancer extends Entity {
     }
 
     protected init() {
-        this.addHook('applybuff', BUFFS.STANDARD_FINISH.id, this.onStandard)
-        this.addHook('removebuff', BUFFS.STANDARD_FINISH.id, this.onRemoveStandard)
-        this.addHook('applybuff', BUFFS.DEVILMENT.id, this.onDevilment)
-        this.addHook('removebuff', BUFFS.DEVILMENT.id, this.onRemoveDevilment)
+        this.addHook('applybuff', this.onStandard, { actionID: BUFFS.STANDARD_FINISH.id })
+        this.addHook('removebuff', this.onRemoveStandard, { actionID: BUFFS.STANDARD_FINISH.id })
+        this.addHook('applybuff', this.onDevilment, { actionID: BUFFS.DEVILMENT.id })
+        this.addHook('removebuff', this.onRemoveDevilment, { actionID: BUFFS.DEVILMENT.id })
     }
 
     public processEvent(event: FFLogsEvent) {

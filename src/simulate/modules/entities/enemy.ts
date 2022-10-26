@@ -17,8 +17,8 @@ export class Enemy extends Entity {
         // Add hooks for raid buffs (chain, mug)
         Object.values(DEBUFFS).forEach(status => {
             this.debuffs.set(status.id, RAID_DEBUFFS[status.id].effect)
-            this.addHook('applydebuff', status.id, this.onApplyStatus)
-            this.addHook('removedebuff', status.id, this.onRemoveStatus)
+            this.addHook('applydebuff', this.onApplyStatus, { actionID: status.id })
+            this.addHook('removedebuff', this.onRemoveStatus, { actionID: status.id })
         })
     }
 

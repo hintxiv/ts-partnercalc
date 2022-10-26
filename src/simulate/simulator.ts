@@ -20,8 +20,11 @@ export class Simulator {
     constructor(parser: FFLogsParser, dancer: Friend) {
         this.parser = parser
         this.dancer = new Dancer(dancer.id, this.assignStandard)
-        this.players = new PlayerHandler(parser.fight.friends, this.assignCast)
         this.enemies = new EnemyHandler(parser.fight.friends)
+
+        // The Dancer can't partner themselves
+        const potentialPartners = parser.fight.friends.filter(player => player.id !== dancer.id)
+        this.players = new PlayerHandler(potentialPartners, this.assignCast)
     }
 
     public async calculatePartnerDamage(/* TODO: player stats */): Promise<ComputedStandard[]> {

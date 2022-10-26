@@ -7,8 +7,8 @@ const CRIT_INCREMENT = 256
 const LEVEL_MOD = 1900
 
 export class CritEstimator extends Module {
-    private tickEvents: Map<number, TickEvent[]> = new Map()
-    private damageEvents: Map<number, DamageEvent[]> = new Map()
+    private tickEvents: TickEvent[] = []
+    private damageEvents:  DamageEvent[] = []
 
     constructor() {
         super()
@@ -16,45 +16,32 @@ export class CritEstimator extends Module {
     }
 
     protected override init() {
-        this.addHook('tick', 'all', this.onTick)
-        this.addHook('damage', 'all', this.onDamage)
+        this.addHook('tick', this.onTick)
+        this.addHook('damage', this.onDamage)
     }
 
     private onTick(event: TickEvent) {
-        if (!this.tickEvents.has(event.sourceID)) {
-            this.tickEvents.set(event.sourceID, [])
-        }
-
-        this.tickEvents.get(event.sourceID).push(event)
+        this.tickEvents.push(event)
     }
 
     private onDamage(event: DamageEvent) {
-        if (!this.damageEvents.has(event.sourceID)) {
-            this.damageEvents.set(event.sourceID, [])
-        }
-
-        this.damageEvents.get(event.sourceID).push(event)
+        this.damageEvents.push(event)
     }
 
-    private estimateCritRate(playerID: number): number | undefined {
-        if (!this.tickEvents.has(playerID) && !this.damageEvents.has(playerID)) {
-            return undefined
-        }
-
+    private estimateCritRate(): number | undefined {
         // No DoTs, give a best guess based on observed crits
-        if (!this.tickEvents.has(playerID)) {
-            const events = this.damageEvents.get(playerID)
+        if (this.tickEvents.length === 0) {
+            const events = this.damageEvents
 
             if (events.length === 0) { return undefined }
 
             const critCount = events.filter(event => event.isCrit).length
-
             return critCount / events.length
         }
 
         const critRates: number[] = []
 
-        for (const event of this.tickEvents.get(playerID)) {
+        for (const event of this.tickEvents) {
             // TODO get crit rate from buffs for each event
             const critFromBuffs = 0
 
@@ -77,8 +64,8 @@ export class CritEstimator extends Module {
         return mode
     }
 
-    public estimateCritStats(playerID: number): { rate: number, mod: number } | undefined {
-        const critRate = this.estimateCritRate(playerID)
+    public estimateCritStats(): { rate: number, mod: number } | undefined {
+        const critRate = this.estimateCritRate()
 
         if (critRate == null) { return undefined }
 

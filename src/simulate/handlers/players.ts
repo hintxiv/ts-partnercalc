@@ -1,7 +1,7 @@
 import { FFLogsEvent } from 'api/fflogs/event'
 import { Friend } from 'api/fflogs/fight'
 import { CastHook } from 'simulate/hooks'
-import { Player } from 'simulate/modules/entity/player'
+import { Player } from 'simulate/modules/entities/player'
 
 export class PlayerHandler {
     private players: Map<number, Player> = new Map()

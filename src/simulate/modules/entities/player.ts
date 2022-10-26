@@ -4,6 +4,8 @@ import { BUFFS, RAID_BUFFS } from 'data/raidbuffs'
 import { Effect, Job, Status } from 'models'
 import { CastHook } from 'simulate/hooks'
 import { CastInstance, DamageInstance, DamageOptions } from 'simulate/instances'
+import { CritEstimator } from '../estimators/crit'
+import { DHEstimator } from '../estimators/dh'
 import { CastKey, StatusKey } from '../module'
 import { Entity } from './entity'
 
@@ -15,6 +17,9 @@ export class Player extends Entity {
     private casts: Map<CastKey, CastInstance> = new Map()
     private snapshots: Map<StatusKey, CastInstance> = new Map()
     private buffs: Map<Status['id'], Effect> = new Map()
+
+    private critEstimator: CritEstimator = new CritEstimator()
+    private DHEstimator: DHEstimator = new DHEstimator()
 
     constructor(friend: Friend, castHook: CastHook) {
         super(friend.id.toString())
@@ -28,14 +33,18 @@ export class Player extends Entity {
         // Add handlers to maintain active raid buffs
         Object.values(BUFFS).forEach(status => {
             this.buffs.set(status.id, RAID_BUFFS[status.id])
-            this.addHook('applybuff', status.id, this.onApplyStatus)
-            this.addHook('removebuff', status.id, this.onRemoveStatus)
+            this.addHook('applybuff', this.onApplyStatus, { actionID: status.id })
+            this.addHook('removebuff', this.onRemoveStatus, { actionID: status.id })
         })
 
-        this.addHook('cast', 'all', this.onCast)
-        this.addHook('damage', 'all', this.onDamage)
-        this.addHook('applydebuff', 'all', this.onDebuff)
-        this.addHook('tick', 'all', this.onTick)
+        this.addHook('cast', this.onCast)
+        this.addHook('damage',  this.onDamage)
+        this.addHook('applydebuff', this.onDebuff)
+        this.addHook('tick', this.onTick)
+
+        // Add crit + DH estimators as dependents
+        this.addDependency(this.critEstimator)
+        this.addDependency(this.DHEstimator)
     }
 
     private onCast(event: CastEvent) {
