@@ -2,13 +2,13 @@ import { FFLogsEvent } from 'api/fflogs/event'
 import { Friend } from 'api/fflogs/fight'
 import { FFLogsParser } from 'api/fflogs/parser'
 import { DEBUFFS } from 'data/raidbuffs'
-import { ComputedPlayer, ComputedStandard, DamageTotals, Job } from 'models'
+import { ComputedPlayer, ComputedStandard, DamageTotals } from 'models'
 import { Standard } from './buffwindow/standard'
 import { EnemyHandler } from './handlers/enemies'
 import { PlayerHandler } from './handlers/players'
 import { CastHook } from './hooks'
 import { CastInstance } from './instances'
-import { Dancer } from './modules/entity/dancer'
+import { Dancer } from './modules/entities/dancer'
 
 export class Simulator {
     private parser: FFLogsParser
@@ -61,16 +61,9 @@ export class Simulator {
                 damageTotals.total += damage.standard + damage.devilment + damage.esprit
             }
 
-            // TODO need to get Job also
-            const dummyJob: Job = {
-                name: 'Foo',
-                iconPath: '/nowhere/foo.png',
-                color: '#000000',
-            }
-
             players.push({
                 name: friend.name,
-                job: dummyJob,
+                job: friend.job,
                 damage: computedDamage,
                 totals: damageTotals,
             })

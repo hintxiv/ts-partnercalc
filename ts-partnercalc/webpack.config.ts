@@ -32,10 +32,14 @@ module.exports = {
                     },
                 ],
             },
+            {
+                test: /\.svg$/i,
+                use: "svg-inline-loader",
+            },
         ],
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js', '.json', '.css'],
+        extensions: ['.tsx', '.ts', '.js', '.json', '.css', '.svg'],
         modules: [
             path.resolve(__dirname, 'src'),
             'node_modules',

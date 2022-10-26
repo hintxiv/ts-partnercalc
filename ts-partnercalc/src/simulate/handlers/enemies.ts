@@ -1,7 +1,7 @@
 import { FFLogsEvent } from 'api/fflogs/event'
 import { Friend } from 'api/fflogs/fight'
 import { Effect } from 'models'
-import { Enemy } from 'simulate/modules/entity/enemy'
+import { Enemy } from 'simulate/modules/entities/enemy'
 
 export class EnemyHandler {
     private enemies: Map<string, Enemy> = new Map()

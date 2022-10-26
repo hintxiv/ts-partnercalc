@@ -1,6 +1,5 @@
 import { FFLogsEvent } from 'api/fflogs/event'
 import { Friend } from 'api/fflogs/fight'
-import { Job } from 'models'
 import { CastHook } from 'simulate/hooks'
 import { Player } from 'simulate/modules/entity/player'
 
@@ -24,24 +23,17 @@ export class PlayerHandler {
 
         if (!friend) { return }
 
-        const player = this.getPlayer(friend.id)
+        const player = this.getPlayer(friend)
         player.processEvent(event)
     }
 
-    private getPlayer(id: number): Player {
-        if (this.players.has(id)) {
-            return this.players.get(id)
+    private getPlayer(friend: Friend): Player {
+        if (this.players.has(friend.id)) {
+            return this.players.get(friend.id)
         }
 
-        // TODO need to get Job also
-        const dummyJob: Job = {
-            name: 'Foo',
-            iconPath: '/nowhere/foo.png',
-            color: '#000000',
-        }
-
-        const newPlayer = new Player(id, dummyJob, this.castHook)
-        this.players.set(id, newPlayer)
+        const newPlayer = new Player(friend, this.castHook)
+        this.players.set(friend.id, newPlayer)
 
         return newPlayer
     }
