@@ -9,9 +9,9 @@ function applyEffects(stats: Stats, effects: Effect[]): Stats {
 
     for (const effect of effects) {
         newStats.critRate += effect.critRate ?? 0
-        newStats.dhRate += effect.dhRate ?? 0
-        newStats.critMultiplier *= effect.critMultiplier ?? 0
-        newStats.dhMultiplier *= effect.dhMultiplier ?? 0
+        newStats.DHRate += effect.DHRate ?? 0
+        newStats.critMultiplier *= effect.critMultiplier ?? 1
+        newStats.DHMultiplier *= effect.DHMultiplier ?? 1
     }
 
     return newStats
@@ -42,9 +42,9 @@ function getBaseDamage(damage: DirectDamageInstance, options: DamageOptions, sta
         baseDamage /= stats.critMultiplier
     }
 
-    if (options.dhType !== 'auto' && damage.isDH) {
+    if (options.DHType !== 'auto' && damage.isDH) {
         // Strip damage from a natural DH
-        baseDamage /= stats.dhMultiplier
+        baseDamage /= stats.DHMultiplier
     }
 
     return baseDamage
@@ -60,8 +60,8 @@ function simulateDamage(damage: DamageInstance, options: DamageOptions, stats: S
         expectedDamage *= (1 + (stats.critMultiplier - 1) * stats.critRate)
     }
 
-    if (options.dhType === 'normal') {
-        expectedDamage *= (1 + (stats.dhMultiplier - 1) * stats.dhRate)
+    if (options.DHType === 'normal') {
+        expectedDamage *= (1 + (stats.DHMultiplier - 1) * stats.DHRate)
 
     }
 
@@ -87,7 +87,7 @@ export function simulateStandard(
             expectedDamage /= standardEffect.potency
         }
 
-        simulatedDamage += expectedDamage * (1 - standardEffect.potency)
+        simulatedDamage += expectedDamage * (standardEffect.potency - 1)
     }
 
     return simulatedDamage

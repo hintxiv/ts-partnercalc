@@ -13,6 +13,14 @@ export class PlayerHandler {
         this.castHook = castHook
     }
 
+    public * getPlayers(): Generator<Player, void, undefined> {
+        for (const friend of this.friends) {
+            if (this.players.has(friend.id)) {
+                yield this.players.get(friend.id)
+            }
+        }
+    }
+
     public processEvent(event: FFLogsEvent) {
         // TODO we'll probably need a pet map for this a la partnercalc 1.0
         const playerID = ['applybuff', 'removebuff'].includes(event.type)

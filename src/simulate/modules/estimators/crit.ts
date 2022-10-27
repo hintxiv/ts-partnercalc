@@ -21,7 +21,9 @@ export class CritEstimator extends Module {
     }
 
     private onTick(event: TickEvent) {
-        this.tickEvents.push(event)
+        if (event.expectedCritRate != null) {
+            this.tickEvents.push(event)
+        }
     }
 
     private onDamage(event: DamageEvent) {
@@ -64,20 +66,25 @@ export class CritEstimator extends Module {
         return mode
     }
 
-    public estimateCritStats(): { rate: number, mod: number } | undefined {
+    public estimateCritStats(): { critRate: number, critMultiplier: number } {
         const critRate = this.estimateCritRate()
 
-        if (critRate == null) { return undefined }
+        if (critRate == null) {
+            return {
+                critRate: 0,
+                critMultiplier: 1,
+            }
+        }
 
         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         const critStat = (((critRate * 1000) - 50) * LEVEL_MOD / 200) + BASE_CRIT_STAT
 
         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-        const critMod = Math.floor((200 * (critStat - BASE_CRIT_STAT) / LEVEL_MOD) + 1400) / 1000
+        const critMultiplier = Math.floor((200 * (critStat - BASE_CRIT_STAT) / LEVEL_MOD) + 1400) / 1000
 
         return {
-            rate: critRate,
-            mod: critMod,
+            critRate: critRate,
+            critMultiplier: critMultiplier,
         }
     }
 }

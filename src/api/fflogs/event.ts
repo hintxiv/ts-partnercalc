@@ -43,8 +43,8 @@ export interface TickEvent extends EventFields
     type: 'tick'
     statusID: number
     amount: number
-    expectedCritRate: number
-    actorPotencyRatio: number
+    expectedCritRate?: number
+    actorPotencyRatio?: number
     directHitPercentage?: number
 }
 

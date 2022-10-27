@@ -16,28 +16,26 @@ export class DHEstimator extends Module {
     }
 
     private onTick(event: TickEvent) {
-        this.tickEvents.push(event)
+        if (event.directHitPercentage != null) {
+            this.tickEvents.push(event)
+        }
     }
 
     private onDamage(event: DamageEvent) {
         this.damageEvents.push(event)
     }
 
-    public estimateDHRate(): number | undefined {
+    public estimateDHRate(): number {
         // No DoTs, give a best guess based on observed DHs
         if (this.tickEvents.length === 0) {
             const events = this.damageEvents
 
-            if (events.length === 0) { return undefined }
+            if (events.length === 0) { return 0 }
 
             const DHCount = events.filter(event => event.isDH).length
             return DHCount / events.length
         }
 
-        for (const event of this.tickEvents) {
-            if (event.directHitPercentage != null) {
-                return event.directHitPercentage
-            }
-        }
+        return this.tickEvents[0].directHitPercentage
     }
 }

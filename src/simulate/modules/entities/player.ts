@@ -2,6 +2,7 @@ import { ApplyDebuffEvent, CastEvent, DamageEvent, TickEvent } from 'api/fflogs/
 import { Friend } from 'api/fflogs/fight'
 import { BUFFS, RAID_BUFFS } from 'data/raidbuffs'
 import { Effect, Job, Status } from 'models'
+import { EstimatedStats, Stats } from 'models/stats'
 import { CastHook } from 'simulate/hooks'
 import { CastInstance, DamageInstance, DamageOptions } from 'simulate/instances'
 import { CritEstimator } from '../estimators/crit'
@@ -11,6 +12,7 @@ import { Entity } from './entity'
 
 export class Player extends Entity {
     public id: number
+    public name: string
     public job: Job
     protected emitCast: CastHook
 
@@ -24,6 +26,7 @@ export class Player extends Entity {
     constructor(friend: Friend, castHook: CastHook) {
         super(friend.id.toString())
         this.id = friend.id
+        this.name = friend.name
         this.job = friend.job
         this.emitCast = castHook
         this.init()
@@ -47,11 +50,23 @@ export class Player extends Entity {
         this.addDependency(this.DHEstimator)
     }
 
+    public getEstimatedStats(): Stats {
+        const {critRate, critMultiplier} = this.critEstimator.estimateCritStats()
+        const DHRate = this.DHEstimator.estimateDHRate()
+
+        return {
+            critRate: critRate,
+            DHRate: DHRate,
+            critMultiplier: critMultiplier,
+            DHMultiplier: 1.25,
+        }
+    }
+
     private onCast(event: CastEvent) {
         // TODO auto crits
         const options: DamageOptions = {
             critType: 'normal',
-            dhType: 'normal',
+            DHType: 'normal',
         }
 
         const cast: CastInstance = {

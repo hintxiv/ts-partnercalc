@@ -1,6 +1,6 @@
 export interface Stats {
     critRate: number
-    dhRate: number
+    DHRate: number
     critMultiplier: number
-    dhMultiplier: number
+    DHMultiplier: number
 }

@@ -43,6 +43,7 @@ interface FFLogsResponseEvent {
     tick?: boolean
     expectedCritRate?: number
     actorPotencyRatio?: number
+    directHitPercentage?: number
     buffs?: string
     targetID?: number
     targetInstance?: number

@@ -45,8 +45,10 @@ export class Simulator {
     private calculateStandard(standard: Standard, /* TODO: player stats */): ComputedStandard {
         const players: ComputedPlayer[] = []
 
-        for (const friend of this.parser.fight.friends) {
-            const computedDamage = standard.getPlayerContribution(friend.id)
+        for (const player of this.players.getPlayers()) {
+            // TODO override these stats if we have better ones
+            const stats = player.getEstimatedStats()
+            const computedDamage = standard.getPlayerContribution(player.id, stats)
 
             if (computedDamage.length === 0) { continue }
 
@@ -65,13 +67,14 @@ export class Simulator {
             }
 
             players.push({
-                name: friend.name,
-                job: friend.job,
+                name: player.name,
+                job: player.job,
                 damage: computedDamage,
                 totals: damageTotals,
             })
         }
 
+        // Sort from high DPS to low DPS
         players.sort((a, b) => a.totals.total - b.totals.total)
 
         return {

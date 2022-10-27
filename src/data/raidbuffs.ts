@@ -9,7 +9,7 @@ export const RAID_BUFFS = preserve<Effect>()({
         critRate: 0.1,
     },
     [BUFFS.BATTLE_VOICE.id]: {
-        dhRate: 0.2,
+        DHRate: 0.2,
     },
     [BUFFS.BROTHERHOOD.id]: {
         potency: 1.05,
@@ -19,7 +19,7 @@ export const RAID_BUFFS = preserve<Effect>()({
     },
     [BUFFS.DEVILMENT.id]: {
         critRate: 0.2,
-        dhRate: 0.2,
+        DHRate: 0.2,
     },
     [BUFFS.EMBOLDEN.id]: {
         potency: 1.05,
