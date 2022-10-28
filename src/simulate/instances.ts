@@ -2,7 +2,7 @@ import { Effect } from 'models'
 
 export interface DamageOptions {
     critType: 'normal' | 'auto' | 'none'
-    dhType: 'normal' | 'auto' | 'none'
+    DHType: 'normal' | 'auto' | 'none'
 }
 
 export type DamageInstance = DirectDamageInstance | TickDamageInstance

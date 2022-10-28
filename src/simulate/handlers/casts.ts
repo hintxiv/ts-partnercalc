@@ -8,7 +8,7 @@ export class CastHandler {
         friendly.push(cast)
     }
 
-    public getFriendlyCasts(id: number): CastInstance[] | false {
+    public getPlayerCasts(id: number): CastInstance[] | false {
         if (this.casts.has(id)) {
             return this.casts.get(id)
         }

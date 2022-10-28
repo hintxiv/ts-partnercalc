@@ -1,4 +1,5 @@
-import { ComputedDamage } from 'models'
+import { simulateStandard } from 'math/rdps'
+import { ComputedDamage, Stats } from 'models'
 import { CastInstance } from 'simulate/instances'
 import { BuffWindow } from './buffwindow'
 import { Devilment } from './devilment'
@@ -28,8 +29,8 @@ export class Standard extends BuffWindow {
         this.devilment = devilment
     }
 
-    public getPlayerContribution(friendID: number): ComputedDamage[] {
-        const casts = this.casts.getFriendlyCasts(friendID)
+    public getPlayerContribution(playerID: number, stats: Stats): ComputedDamage[] {
+        const casts = this.casts.getPlayerCasts(playerID)
 
         if (!casts) { return [] }
 
@@ -38,7 +39,7 @@ export class Standard extends BuffWindow {
         for (const cast of casts) {
             computedDamage.push({
                 timestamp: cast.timestamp,
-                standard: this.getStandardContribution(cast),
+                standard: this.getStandardContribution(cast, stats),
                 esprit: this.getEspritContribution(cast),
                 devilment: this.getDevilmentContribution(cast),
             })
@@ -47,10 +48,9 @@ export class Standard extends BuffWindow {
         return computedDamage
     }
 
-    private getStandardContribution(cast: CastInstance): number {
+    private getStandardContribution(cast: CastInstance, stats: Stats): number {
         // Need to wire player stats here
-        //return simulateStandard(cast, stats, effects, !!this.devilment, isRealPartner)
-        return cast.damage.reduce((total, damage) => total + damage.amount * 0.05, 0)
+        return simulateStandard(cast, stats, !!this.devilment)
     }
 
     private getEspritContribution(cast: CastInstance): number {

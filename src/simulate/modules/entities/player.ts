@@ -2,13 +2,17 @@ import { ApplyDebuffEvent, CastEvent, DamageEvent, TickEvent } from 'api/fflogs/
 import { Friend } from 'api/fflogs/fight'
 import { BUFFS, RAID_BUFFS } from 'data/raidbuffs'
 import { Effect, Job, Status } from 'models'
+import { Stats } from 'models/stats'
 import { CastHook } from 'simulate/hooks'
 import { CastInstance, DamageInstance, DamageOptions } from 'simulate/instances'
+import { CritEstimator } from '../estimators/crit'
+import { DHEstimator } from '../estimators/dh'
 import { CastKey, StatusKey } from '../module'
 import { Entity } from './entity'
 
 export class Player extends Entity {
     public id: number
+    public name: string
     public job: Job
     protected emitCast: CastHook
 
@@ -16,9 +20,13 @@ export class Player extends Entity {
     private snapshots: Map<StatusKey, CastInstance> = new Map()
     private buffs: Map<Status['id'], Effect> = new Map()
 
+    private critEstimator: CritEstimator = new CritEstimator()
+    private DHEstimator: DHEstimator = new DHEstimator()
+
     constructor(friend: Friend, castHook: CastHook) {
         super(friend.id.toString())
         this.id = friend.id
+        this.name = friend.name
         this.job = friend.job
         this.emitCast = castHook
         this.init()
@@ -28,21 +36,37 @@ export class Player extends Entity {
         // Add handlers to maintain active raid buffs
         Object.values(BUFFS).forEach(status => {
             this.buffs.set(status.id, RAID_BUFFS[status.id])
-            this.addHook('applybuff', status.id, this.onApplyStatus)
-            this.addHook('removebuff', status.id, this.onRemoveStatus)
+            this.addHook('applybuff', this.onApplyStatus, { actionID: status.id })
+            this.addHook('removebuff', this.onRemoveStatus, { actionID: status.id })
         })
 
-        this.addHook('cast', 'all', this.onCast)
-        this.addHook('damage', 'all', this.onDamage)
-        this.addHook('applydebuff', 'all', this.onDebuff)
-        this.addHook('tick', 'all', this.onTick)
+        this.addHook('cast', this.onCast)
+        this.addHook('damage',  this.onDamage)
+        this.addHook('applydebuff', this.onDebuff)
+        this.addHook('tick', this.onTick)
+
+        // Add crit + DH estimators as dependents
+        this.addDependency(this.critEstimator)
+        this.addDependency(this.DHEstimator)
+    }
+
+    public getEstimatedStats(): Stats {
+        const {critRate, critMultiplier} = this.critEstimator.estimateCritStats()
+        const DHRate = this.DHEstimator.estimateDHRate()
+
+        return {
+            critRate: critRate,
+            DHRate: DHRate,
+            critMultiplier: critMultiplier,
+            DHMultiplier: 1.25,
+        }
     }
 
     private onCast(event: CastEvent) {
         // TODO auto crits
         const options: DamageOptions = {
             critType: 'normal',
-            dhType: 'normal',
+            DHType: 'normal',
         }
 
         const cast: CastInstance = {

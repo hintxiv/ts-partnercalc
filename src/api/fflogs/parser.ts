@@ -101,6 +101,7 @@ export class FFLogsParser {
                         amount: e.amount,
                         expectedCritRate: e.expectedCritRate,
                         actorPotencyRatio: e.actorPotencyRatio,
+                        directHitPercentage: e.directHitPercentage,
                         ...fields,
                     }
 

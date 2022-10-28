@@ -7,30 +7,25 @@ import {
 } from 'api/fflogs/event'
 import { EventHook } from 'simulate/hooks'
 
-// Type - ID
-export type EventKey = `${EventType}-${number}`
-
 // TargetKey - ActionID
 export type CastKey = `${string}-${number}`
 
 // TargetKey - StatusID
 export type StatusKey = `${string}-${number}`
 
+export interface Filter {
+    sourceID?: number
+    actionID?: number
+}
+
 export abstract class Module {
-    protected hooks: Map<string, EventHook<FFLogsEvent>> = new Map()
+    protected hooks: Map<string, Array< EventHook<FFLogsEvent> >> = new Map()
     public dependencies: Module[] = []
 
     protected abstract init(): void
 
     protected addDependency(dep: Module) {
         this.dependencies.push(dep)
-    }
-
-    protected getEventKey(event: FFLogsEvent): EventKey {
-        const id = (event.type === 'cast' || event.type === 'damage')
-            ? event.actionID : event.statusID
-
-        return `${event.type}-${id}` as EventKey
     }
 
     protected getCastKey(event: CastEvent | DamageEvent): CastKey {
@@ -45,36 +40,74 @@ export abstract class Module {
         // Let dependencies go first
         this.dependencies.forEach(dep => dep.processEvent(event))
 
-        const key = this.getEventKey(event)
-
-        if (this.hooks.has(key)) {
-            const hook = this.hooks.get(key)
-            hook(event)
-
-        } else if (this.hooks.has(event.type)) {
-            const hook = this.hooks.get(event.type)
-            hook(event)
-        }
+        // Run each matching hook
+        this.getHooks(event).forEach(hook => hook(event))
     }
 
-    /**
-     * Add a callback hook to this module. The generics say:
-     *  "the hook must only consume events with the given type"
-     *
-     *   -> Only one hook per action / type combination is permitted!
-     */
+    private serializeFilter(filter: Filter): string {
+        return `source=${filter.sourceID ?? -1},action=${filter.actionID ?? -1}`
+    }
+
+    protected makeKey(type: EventType, filter?: Filter): string {
+        let key: string = type
+
+        if (filter != null) {
+            key += ',' + this.serializeFilter(filter)
+        }
+
+        return key
+    }
+
+    // Add a callback hook with optional sourceID / actionID filters
     protected addHook<
         T extends EventType,
         E extends Extract<FFLogsEvent, { type: T }>,
     > (
         type: T,
-        id: number | 'all',
-        hook: EventHook<E>
+        hook: EventHook<E>,
+        filter?: Filter
     ) {
-        const key = (id === 'all')
-            ? type
-            : `${type}-${id}`
+        const key = this.makeKey(type, filter)
+        const hooks = this.hooks.get(key)
 
-        this.hooks.set(key, hook.bind(this))
+        if (hooks == null) {
+            this.hooks.set(key, [hook.bind(this)])
+        } else {
+            hooks.push(hook.bind(this))
+        }
+    }
+
+    // Get all hooks that might match the given Event
+    protected getHooks(event: FFLogsEvent): Array< EventHook<FFLogsEvent> > {
+        const hooks = []
+
+        const possibleKeys = [
+            this.makeKey(event.type),
+            this.makeKey(event.type, { sourceID: event.sourceID }),
+        ]
+
+        if ('actionID' in event) {
+            possibleKeys.push(this.makeKey(event.type, { actionID: event.actionID }))
+            possibleKeys.push(this.makeKey(event.type, {
+                sourceID: event.sourceID,
+                actionID: event.actionID,
+            }))
+        }
+
+        if ('statusID' in event) {
+            possibleKeys.push(this.makeKey(event.type, { actionID: event.statusID }))
+            possibleKeys.push(this.makeKey(event.type, {
+                sourceID: event.sourceID,
+                actionID: event.statusID,
+            }))
+        }
+
+        for (const key of possibleKeys) {
+            if (this.hooks.has(key)) {
+                hooks.push(...this.hooks.get(key))
+            }
+        }
+
+        return hooks
     }
 }
