@@ -2,7 +2,7 @@ import { ApplyDebuffEvent, CastEvent, DamageEvent, TickEvent } from 'api/fflogs/
 import { Friend } from 'api/fflogs/fight'
 import { BUFFS, RAID_BUFFS } from 'data/raidbuffs'
 import { Effect, Job, Status } from 'models'
-import { EstimatedStats, Stats } from 'models/stats'
+import { Stats } from 'models/stats'
 import { CastHook } from 'simulate/hooks'
 import { CastInstance, DamageInstance, DamageOptions } from 'simulate/instances'
 import { CritEstimator } from '../estimators/crit'

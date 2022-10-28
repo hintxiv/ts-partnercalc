@@ -32,8 +32,6 @@ export class Standard extends BuffWindow {
     public getPlayerContribution(playerID: number, stats: Stats): ComputedDamage[] {
         const casts = this.casts.getPlayerCasts(playerID)
 
-        console.log(playerID, stats)
-
         if (!casts) { return [] }
 
         const computedDamage = []
@@ -52,7 +50,7 @@ export class Standard extends BuffWindow {
 
     private getStandardContribution(cast: CastInstance, stats: Stats): number {
         // Need to wire player stats here
-        return simulateStandard(cast, stats, [] /* TODO effects */, !!this.devilment, false /* TODO isRealPartner */)
+        return simulateStandard(cast, stats, !!this.devilment)
     }
 
     private getEspritContribution(cast: CastInstance): number {

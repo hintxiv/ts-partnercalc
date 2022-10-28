@@ -6,6 +6,7 @@
  * @param mainStat - an additive main stat buff
  */
 export interface Effect {
+    id: number
     potency?: number
     critRate?: number
     DHRate?: number
