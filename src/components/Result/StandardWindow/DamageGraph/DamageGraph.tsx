@@ -1,6 +1,6 @@
 import { useTheme } from '@material-ui/core'
 import { BardIcon } from 'components/JobIcons/bard'
-import { ComputedPlayer, ComputedStandard } from 'models'
+import { ComputedPlayer, ComputedStandard } from 'types'
 import React from 'react'
 import {
     Bar,

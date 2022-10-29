@@ -1,6 +1,6 @@
 import { BUFFS, RAID_BUFFS } from 'data/raidbuffs'
-import { Effect, Stats } from 'models'
-import { CastInstance, DamageInstance, DamageOptions } from 'simulate/instances'
+import { Effect, Stats } from 'types'
+import { DamageInstance, DamageOptions, Snapshot } from 'types/snapshot'
 
 // TODO memoize everything here
 
@@ -18,24 +18,24 @@ function applyEffects(stats: Stats, effects: Effect[]): Stats {
     return newStats
 }
 
-function hasStandard(cast: CastInstance): boolean {
-    return cast.effects.some(effect => effect.id === BUFFS.STANDARD_FINISH.id)
+function hasStandard(snapshot: Snapshot): boolean {
+    return snapshot.effects.some(effect => effect.id === BUFFS.STANDARD_FINISH.id)
 }
 
-function hasDevilment(cast: CastInstance): boolean {
-    return cast.effects.some(effect => effect.id === BUFFS.DEVILMENT.id)
+function hasDevilment(snapshot: Snapshot): boolean {
+    return snapshot.effects.some(effect => effect.id === BUFFS.DEVILMENT.id)
 }
 
 function getBuffedStats(
-    cast: CastInstance,
+    snapshot: Snapshot,
     stats: Stats,
     isDevilmentUp: boolean,
 ): Stats {
     const devilmentEffect = RAID_BUFFS[BUFFS.DEVILMENT.id]
-    const simulatedEffects = [...cast.effects]
+    const simulatedEffects = [...snapshot.effects]
 
     // Add devilment if the player would've had it by being the real partner
-    if (isDevilmentUp && !hasDevilment(cast)) {
+    if (isDevilmentUp && !hasDevilment(snapshot)) {
         simulatedEffects.push(devilmentEffect)
     }
 
@@ -90,18 +90,18 @@ function normalizeDamage(damage: DamageInstance, options: DamageOptions, stats: 
 }
 
 export function simulateStandard(
-    cast: CastInstance,
+    snapshot: Snapshot,
     stats: Stats,
     isDevilmentUp: boolean,
 ): number {
     const standardEffect = RAID_BUFFS[BUFFS.STANDARD_FINISH.id]
-    const buffedStats = getBuffedStats(cast, stats, isDevilmentUp)
+    const buffedStats = getBuffedStats(snapshot, stats, isDevilmentUp)
     let simulatedDamage = 0
 
-    for (const damage of cast.damage) {
-        let expectedDamage = normalizeDamage(damage, cast.options, buffedStats)
+    for (const damage of snapshot.damage) {
+        let expectedDamage = normalizeDamage(damage, snapshot.options, buffedStats)
 
-        if (hasStandard(cast)) {
+        if (hasStandard(snapshot)) {
             // Don't double count standard's contribution
             expectedDamage /= standardEffect.potency
         }

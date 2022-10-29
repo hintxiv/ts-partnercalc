@@ -1,7 +1,7 @@
 import { CircularProgress } from '@material-ui/core'
 import { FFLogsParser } from 'api/fflogs/parser'
 import { JOBS } from 'data/jobs'
-import { ComputedStandard } from 'models'
+import { ComputedStandard } from 'types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Simulator } from 'simulate/simulator'

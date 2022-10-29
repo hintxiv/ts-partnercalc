@@ -1,4 +1,4 @@
-import { Job } from 'models'
+import { Job } from 'types'
 
 export interface Friend {
     id: number

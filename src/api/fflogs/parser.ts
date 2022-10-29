@@ -93,6 +93,16 @@ export class FFLogsParser {
             } else if (e.type === 'cast') {
                 yield { type: e.type, actionID: e.ability.guid, ...fields }
 
+            } else if (e.type === 'calculateddamage') {
+                yield {
+                    type: 'snapshot',
+                    actionID: e.ability.guid,
+                    amount: e.amount,
+                    isCrit: e.hitType === HitType.CRITICAL,
+                    isDH: !!e.directHit,
+                    ...fields,
+                }
+
             } else if (e.type === 'damage') {
                 if (e.tick) {
                     yield {

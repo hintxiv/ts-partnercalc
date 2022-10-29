@@ -36,7 +36,6 @@ export class Dancer extends Entity {
     }
 
     private onStandard(event: ApplyBuffEvent) {
-        console.log(`new standard at ${event.timestamp}`)
         const isTillana = (event.appliedBy && event.appliedBy === TILLANA_ID)
         const standard = new Standard(event.timestamp, event.targetID, isTillana)
         this.currentStandard = standard

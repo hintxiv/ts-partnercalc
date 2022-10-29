@@ -1,14 +1,9 @@
 import {
-    CastEvent,
-    DamageEvent,
     EventType,
     FFLogsEvent,
     TickEvent,
 } from 'api/fflogs/event'
 import { EventHook } from 'simulate/hooks'
-
-// TargetKey - ActionID
-export type CastKey = `${string}-${number}`
 
 // TargetKey - StatusID
 export type StatusKey = `${string}-${number}`
@@ -28,10 +23,6 @@ export abstract class Module {
         this.dependencies.push(dep)
     }
 
-    protected getCastKey(event: CastEvent | DamageEvent): CastKey {
-        return `${event.targetKey}-${event.actionID}`
-    }
-
     protected getStatusKey(event: TickEvent): StatusKey {
         return `${event.targetKey}-${event.statusID}`
     }
@@ -48,7 +39,7 @@ export abstract class Module {
         return `source=${filter.sourceID ?? -1},action=${filter.actionID ?? -1}`
     }
 
-    protected makeKey(type: EventType, filter?: Filter): string {
+    protected makeHookKey(type: EventType, filter?: Filter): string {
         let key: string = type
 
         if (filter != null) {
@@ -67,7 +58,7 @@ export abstract class Module {
         hook: EventHook<E>,
         filter?: Filter
     ) {
-        const key = this.makeKey(type, filter)
+        const key = this.makeHookKey(type, filter)
         const hooks = this.hooks.get(key)
 
         if (hooks == null) {
@@ -82,21 +73,21 @@ export abstract class Module {
         const hooks = []
 
         const possibleKeys = [
-            this.makeKey(event.type),
-            this.makeKey(event.type, { sourceID: event.sourceID }),
+            this.makeHookKey(event.type),
+            this.makeHookKey(event.type, { sourceID: event.sourceID }),
         ]
 
         if ('actionID' in event) {
-            possibleKeys.push(this.makeKey(event.type, { actionID: event.actionID }))
-            possibleKeys.push(this.makeKey(event.type, {
+            possibleKeys.push(this.makeHookKey(event.type, { actionID: event.actionID }))
+            possibleKeys.push(this.makeHookKey(event.type, {
                 sourceID: event.sourceID,
                 actionID: event.actionID,
             }))
         }
 
         if ('statusID' in event) {
-            possibleKeys.push(this.makeKey(event.type, { actionID: event.statusID }))
-            possibleKeys.push(this.makeKey(event.type, {
+            possibleKeys.push(this.makeHookKey(event.type, { actionID: event.statusID }))
+            possibleKeys.push(this.makeHookKey(event.type, {
                 sourceID: event.sourceID,
                 actionID: event.statusID,
             }))
