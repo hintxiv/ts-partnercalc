@@ -1,4 +1,4 @@
-import { Status } from 'models'
+import { Status } from 'types'
 import { preserve } from 'util/typeutils'
 
 export const BUFFS = preserve<Status>()({

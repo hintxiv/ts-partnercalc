@@ -2,12 +2,12 @@ import { FFLogsEvent } from 'api/fflogs/event'
 import { Friend } from 'api/fflogs/fight'
 import { FFLogsParser } from 'api/fflogs/parser'
 import { DEBUFFS } from 'data/raidbuffs'
-import { ComputedPlayer, ComputedStandard, DamageTotals } from 'models'
+import { ComputedPlayer, ComputedStandard, DamageTotals } from 'types'
+import { Snapshot } from '../types/snapshot'
 import { Standard } from './buffwindow/standard'
 import { EnemyHandler } from './handlers/enemies'
 import { PlayerHandler } from './handlers/players'
-import { CastHook } from './hooks'
-import { CastInstance } from './instances'
+import { SnapshotHook } from './hooks'
 import { Dancer } from './modules/entities/dancer'
 
 export class Simulator {
@@ -19,12 +19,12 @@ export class Simulator {
 
     constructor(parser: FFLogsParser, dancer: Friend) {
         this.parser = parser
-        this.dancer = new Dancer(dancer.id, this.assignStandard)
+        this.dancer = new Dancer(dancer.id, this.registerNewStandard)
         this.enemies = new EnemyHandler(parser.fight.friends)
 
         // The Dancer can't partner themselves
         const potentialPartners = parser.fight.friends.filter(player => player.id !== dancer.id)
-        this.players = new PlayerHandler(potentialPartners, this.assignCast)
+        this.players = new PlayerHandler(potentialPartners, this.registerNewSnapshot)
     }
 
     public async calculatePartnerDamage(/* TODO: player stats */): Promise<ComputedStandard[]> {
@@ -116,18 +116,18 @@ export class Simulator {
         return undefined
     }
 
-    private assignStandard = (standard: Standard) => {
+    private registerNewStandard = (standard: Standard) => {
         this.standards.push(standard)
     }
 
-    private assignCast: CastHook = (cast: CastInstance) => {
-        const standard = this.getStandard(cast.timestamp)
+    private registerNewSnapshot: SnapshotHook = (snapshot: Snapshot) => {
+        const standard = this.getStandard(snapshot.timestamp)
 
         if (!standard) { return }
 
-        const debuffs = this.enemies.getEnemyDebuffs(cast.target)
-        cast.effects.push(...debuffs)
+        const debuffs = this.enemies.getEnemyDebuffs(snapshot.target)
+        snapshot.effects.push(...debuffs)
 
-        standard.processCast(cast)
+        standard.processSnapshot(snapshot)
     }
 }

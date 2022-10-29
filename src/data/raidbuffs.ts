@@ -1,4 +1,4 @@
-import { Debuff, Effect } from 'models'
+import { Debuff, Effect } from 'types'
 import { preserve } from 'util/typeutils'
 import { BUFFS, DEBUFFS } from './statuses/raidbuffs'
 

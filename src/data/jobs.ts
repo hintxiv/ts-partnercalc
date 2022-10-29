@@ -1,4 +1,4 @@
-import { Job } from 'models'
+import { Job } from 'types'
 import { preserve } from 'util/typeutils'
 
 export const JOBS = preserve<Job>()({

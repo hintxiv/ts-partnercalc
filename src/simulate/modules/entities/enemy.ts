@@ -1,5 +1,5 @@
 import { DEBUFFS, RAID_DEBUFFS } from 'data/raidbuffs'
-import { Effect, Status } from 'models'
+import { Effect, Status } from 'types'
 import { Entity } from './entity'
 
 /**

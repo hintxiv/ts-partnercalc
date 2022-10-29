@@ -1,6 +1,6 @@
 import { FFLogsEvent } from 'api/fflogs/event'
 import { Friend } from 'api/fflogs/fight'
-import { Effect } from 'models'
+import { Effect } from 'types'
 import { Enemy } from 'simulate/modules/entities/enemy'
 
 export class EnemyHandler {

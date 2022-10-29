@@ -1,6 +1,6 @@
 export type EventType =
     | 'cast'
-    | 'prepare'
+    | 'snapshot'
     | 'damage'
     | 'tick'
     | 'applybuff'
@@ -22,11 +22,13 @@ export interface CastEvent extends EventFields
     actionID: number
 }
 
-export interface PrepareEvent extends EventFields
+export interface SnapshotEvent extends EventFields
 {
-    type: 'prepare'
+    type: 'snapshot'
     actionID: number
-    buffIDs: number[]
+    amount: number
+    isCrit: boolean
+    isDH: boolean
 }
 
 export interface DamageEvent extends EventFields
@@ -76,6 +78,7 @@ export interface RemoveDebuffEvent extends EventFields
 
 export type FFLogsEvent =
     | CastEvent
+    | SnapshotEvent
     | DamageEvent
     | TickEvent
     | ApplyBuffEvent

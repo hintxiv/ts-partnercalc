@@ -1,6 +1,6 @@
 import { simulateStandard } from 'math/rdps'
-import { ComputedDamage, Stats } from 'models'
-import { CastInstance } from 'simulate/instances'
+import { ComputedDamage, Stats } from 'types'
+import { Snapshot } from 'types/snapshot'
 import { BuffWindow } from './buffwindow'
 import { Devilment } from './devilment'
 
@@ -17,11 +17,11 @@ export class Standard extends BuffWindow {
         this.isTillana = isTillana
     }
 
-    public override processCast(cast: CastInstance) {
-        super.processCast(cast)
+    public override processSnapshot(snapshot: Snapshot) {
+        super.processSnapshot(snapshot)
 
         if (this.devilment) {
-            this.devilment.processCast(cast)
+            this.devilment.processSnapshot(snapshot)
         }
     }
 
@@ -30,40 +30,33 @@ export class Standard extends BuffWindow {
     }
 
     public getPlayerContribution(playerID: number, stats: Stats): ComputedDamage[] {
-        const casts = this.casts.getPlayerCasts(playerID)
+        const snapshots = this.snapshots.getPlayerSnapshots(playerID)
 
-        if (!casts) { return [] }
+        if (!snapshots) { return [] }
 
         const computedDamage = []
 
-        for (const cast of casts) {
+        for (const snapshot of snapshots) {
             computedDamage.push({
-                timestamp: cast.timestamp,
-                standard: this.getStandardContribution(cast, stats),
-                esprit: this.getEspritContribution(cast),
-                devilment: this.getDevilmentContribution(cast),
+                timestamp: snapshot.timestamp,
+                standard: this.getStandardContribution(snapshot, stats),
+                esprit: this.getEspritContribution(snapshot),
+                devilment: this.devilment
+                    ? this.devilment.getContribution(snapshot)
+                    : 0,
             })
         }
 
         return computedDamage
     }
 
-    private getStandardContribution(cast: CastInstance, stats: Stats): number {
+    private getStandardContribution(snapshot: Snapshot, stats: Stats): number {
         // Need to wire player stats here
-        return simulateStandard(cast, stats, !!this.devilment)
+        return simulateStandard(snapshot, stats, !!this.devilment)
     }
 
-    private getEspritContribution(cast: CastInstance): number {
+    private getEspritContribution(snapshot: Snapshot): number {
         // TODO
-        return cast.damage.reduce((total, damage) => total + damage.amount * 0.01, 0)
-    }
-
-    private getDevilmentContribution(cast: CastInstance): number {
-        if (!this.devilment) {
-            return 0
-        }
-
-        // TODO
-        return cast.damage.reduce((total, damage) => total + damage.amount * 0.03, 0)
+        return snapshot.damage.reduce((total, damage) => total + damage.amount * 0.01, 0)
     }
 }

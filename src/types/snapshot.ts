@@ -1,4 +1,4 @@
-import { Effect } from 'models'
+import { Effect } from './effect'
 
 export interface DamageOptions {
     critType: 'normal' | 'auto' | 'none'
@@ -23,7 +23,8 @@ export interface TickDamageInstance extends DamageInstanceFields {
     type: 'tick'
 }
 
-export interface CastInstance {
+// Tracks all damage instances for a given ability snapshot
+export interface Snapshot {
     source: number
     timestamp: number
     target: string

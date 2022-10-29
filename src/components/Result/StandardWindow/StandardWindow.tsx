@@ -1,5 +1,5 @@
 import { Card, Chip, Typography } from '@material-ui/core'
-import { ComputedStandard } from 'models'
+import { ComputedStandard } from 'types'
 import React from 'react'
 import { DamageGraph } from './DamageGraph/DamageGraph'
 import styles from './StandardWindow.module.css'
