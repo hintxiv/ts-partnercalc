@@ -42,7 +42,7 @@ export class Standard extends BuffWindow {
                 standard: this.getStandardContribution(snapshot, stats),
                 esprit: this.getEspritContribution(snapshot),
                 devilment: this.devilment
-                    ? this.devilment.getContribution(snapshot)
+                    ? this.devilment.getContribution(snapshot, stats)
                     : 0,
             })
         }

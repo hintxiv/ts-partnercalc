@@ -1,18 +1,22 @@
-import { Card, Chip, Typography } from '@material-ui/core'
-import { ComputedStandard } from 'types'
+import { Card, Chip } from '@material-ui/core'
 import React from 'react'
+import { ComputedStandard } from 'types'
 import { DamageGraph } from './DamageGraph/DamageGraph'
 import styles from './StandardWindow.module.css'
 
 interface StandardWindowProps {
     standard: ComputedStandard
+    formatTimestamp: (time: number) => string
 }
 
 export function StandardWindow(props: StandardWindowProps) {
+    const start = props.formatTimestamp(props.standard.start)
+    const end = props.formatTimestamp(props.standard.end)
+
     return <Card className={styles.standardWindow}>
-        <Chip label="0:00" />
+        <Chip label={start} />
         <span> - </span>
-        <Chip label="1:15" />
+        <Chip label={end} />
         <DamageGraph standard={props.standard} />
     </Card>
 }

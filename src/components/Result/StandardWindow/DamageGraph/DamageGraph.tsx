@@ -1,6 +1,5 @@
 import { useTheme } from '@material-ui/core'
 import { BardIcon } from 'components/JobIcons/bard'
-import { ComputedPlayer, ComputedStandard } from 'types'
 import React from 'react'
 import {
     Bar,
@@ -11,6 +10,7 @@ import {
     XAxis,
     YAxis,
 } from 'recharts'
+import { ComputedPlayer, ComputedStandard } from 'types'
 import styles from './DamageGraph.module.css'
 
 interface DamageGraphProps {
