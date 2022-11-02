@@ -2,7 +2,10 @@
 /* eslint-disable */
 declare namespace StandardWindowModuleCssNamespace {
   export interface IStandardWindowModuleCss {
+    partnered: string;
+    rowContainer: string;
     standardWindow: string;
+    timestamp: string;
   }
 }
 

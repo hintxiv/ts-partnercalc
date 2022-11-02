@@ -10,10 +10,12 @@ import { Devilment } from './devilment'
 
 export class Standard extends BuffWindow {
     public isTillana: boolean
+    public targetID: number
     private devilment?: Devilment
 
     constructor(start: number, target: number, isTillana: boolean) {
         super(start, target)
+        this.targetID = target
         this.isTillana = isTillana
     }
 

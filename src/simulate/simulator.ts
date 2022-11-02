@@ -67,6 +67,7 @@ export class Simulator {
             }
 
             players.push({
+                id: player.id,
                 name: player.name,
                 job: player.job,
                 damage: computedDamage,
@@ -75,13 +76,15 @@ export class Simulator {
         }
 
         // Sort from high DPS to low DPS
-        players.sort((a, b) => a.totals.total - b.totals.total)
+        players.sort((a, b) => b.totals.total - a.totals.total)
 
         return {
             start: standard.start,
             end: standard.end ?? this.parser.fight.end,
             appliedBy: standard.isTillana ? 'Tillana' : 'Standard Finish',
             players: players,
+            actualPartner: players.find(player => player.id === standard.targetID),
+            bestPartner: players[0],
         }
     }
 

@@ -32,12 +32,12 @@ export function DamageGraph(props: DamageGraphProps) {
             <BarChart
                 width={500}
                 height={300}
-                data={data.reverse()}
+                data={data}
                 margin={{
                     top: 20,
                     right: 30,
-                    left: 200,
-                    bottom: 5,
+                    left: 30,
+                    bottom: 0,
                 }}
                 layout="vertical"
             >

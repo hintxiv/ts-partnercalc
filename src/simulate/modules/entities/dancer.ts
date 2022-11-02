@@ -59,8 +59,6 @@ export class Dancer extends Entity {
             this.currentStandard.close(event.timestamp)
         }
 
-        console.log(`new standard at ${event.timestamp / 1000} on ${event.targetID}`)
-
         const isTillana = (this.lastApplierID != null) && (this.lastApplierID === TILLANA_ID)
         const standard = new Standard(event.timestamp, event.targetID, isTillana)
 
