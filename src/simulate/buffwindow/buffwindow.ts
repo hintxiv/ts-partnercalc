@@ -17,6 +17,10 @@ export abstract class BuffWindow {
         this.snapshots.handleSnapshot(snapshot)
     }
 
+    public get isOpen() {
+        return this.end == null
+    }
+
     public close(end: number) {
         this.end = end
     }

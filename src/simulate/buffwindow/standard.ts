@@ -9,8 +9,8 @@ import { Devilment } from './devilment'
 // const DEFAULT_ESPRIT_RATE = 0.2
 
 export class Standard extends BuffWindow {
+    public isTillana: boolean
     private devilment?: Devilment
-    private isTillana: boolean
 
     constructor(start: number, target: number, isTillana: boolean) {
         super(start, target)

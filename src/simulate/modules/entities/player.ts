@@ -89,8 +89,8 @@ export class Player extends Entity {
 
     private onDebuff(event: ApplyDebuffEvent) {
         if (!event.appliedBy) {
-            console.warn('Debuff event found without an applying action!')
-            console.warn(event)
+            // console.warn('Debuff event found without an applying action!')
+            // console.warn(event)
             return
         }
 
@@ -116,8 +116,8 @@ export class Player extends Entity {
         const key = this.getStatusKey(event)
 
         if (!this.snapshots.has(key)) {
-            console.warn('Tick event found without a matching snapshot!')
-            console.warn(event)
+            // console.warn('Tick event found without a matching snapshot!')
+            // console.warn(event)
             return
         }
 

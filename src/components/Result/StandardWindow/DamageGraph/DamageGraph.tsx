@@ -74,6 +74,9 @@ const playerNameTick = (players: ComputedPlayer[]) => (props: AxisTickProps) => 
     const { x, y, payload } = props
 
     const player = players.find(player => player.name === payload.value)
+
+    if (player == null) { return }
+
     const initials = player.name
         .split(' ')
         .map(name => name.charAt(0).toUpperCase() + '.')

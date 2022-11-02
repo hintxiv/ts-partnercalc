@@ -17,6 +17,8 @@ export function StandardWindow(props: StandardWindowProps) {
         <Chip label={start} />
         <span> - </span>
         <Chip label={end} />
+        <span> Applier </span>
+        <Chip label={props.standard.appliedBy} />
         <DamageGraph standard={props.standard} />
     </Card>
 }

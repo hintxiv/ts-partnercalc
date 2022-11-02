@@ -8,7 +8,6 @@ import { ComputedStandard } from 'types'
 import styles from './Result.module.css'
 import { StandardWindow } from './StandardWindow/StandardWindow'
 
-const MS_PER_MINUTE = 60000
 
 export function Result() {
     const { reportID, fightID } = useParams()
@@ -35,14 +34,6 @@ export function Result() {
         simulate().catch(console.error)
     }, [parser, setReady, setStandards])
 
-    const formatTimestamp = (time: number) => {
-        const elapsed = time - parser.fight.start
-        const mm = Math.floor(elapsed / MS_PER_MINUTE)
-        const ss = Math.floor((elapsed % MS_PER_MINUTE) / 1000)
-
-        return `${mm < 10 ? '0' + mm : mm}:${ss < 10 ? '0' + ss : ss}`
-    }
-
     if (!ready) {
         return <CircularProgress size={80} className={styles.loading} />
     }
@@ -51,7 +42,7 @@ export function Result() {
         {standards.map(standard =>
             <StandardWindow
                 standard={standard}
-                formatTimestamp={formatTimestamp}
+                formatTimestamp={parser.formatTimestamp}
                 key={standard.start}
             />
         )}
