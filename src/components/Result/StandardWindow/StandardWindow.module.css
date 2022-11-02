@@ -2,3 +2,19 @@
     padding: 1rem;
     margin-bottom: 2rem;
 }
+
+.partnered {
+    float: left;
+    font-family: Nunito;
+    font-size: large;
+}
+
+.timestamp {
+    float: right;
+}
+
+.rowContainer {
+    display: flow-root;
+    height: fit-content;
+    margin-bottom: 1rem;
+}

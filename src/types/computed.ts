@@ -15,6 +15,7 @@ export interface DamageTotals extends ComputedDamageTypes {
 }
 
 export interface ComputedPlayer {
+    id: number
     name: string
     job: Job
     damage: ComputedDamage[]
@@ -26,4 +27,6 @@ export interface ComputedStandard {
     end: number
     appliedBy: 'Standard Finish' | 'Tillana'
     players: ComputedPlayer[]
+    actualPartner: ComputedPlayer
+    bestPartner: ComputedPlayer
 }

@@ -21,7 +21,6 @@ export function Result() {
     useEffect(() => {
         const simulate = async () => {
             await parser.init()
-            console.log(parser.fight.friends)
 
             // Need a better place for this shit lol
             // (also pretty error handling)
