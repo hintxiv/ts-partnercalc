@@ -1,9 +1,10 @@
+import { simulateDevilment } from 'math/rdps'
+import { Stats } from 'types'
 import { Snapshot } from 'types/snapshot'
 import { BuffWindow } from './buffwindow'
 
 export class Devilment extends BuffWindow {
-    public getContribution(snapshot: Snapshot): number {
-        // TODO
-        return snapshot.damage.reduce((total, damage) => total + damage.amount * 0.03, 0)
+    public getContribution(snapshot: Snapshot, stats: Stats): number {
+        return simulateDevilment(snapshot, stats)
     }
 }

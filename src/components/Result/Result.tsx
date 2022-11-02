@@ -1,12 +1,13 @@
 import { CircularProgress } from '@material-ui/core'
 import { FFLogsParser } from 'api/fflogs/parser'
 import { JOBS } from 'data/jobs'
-import { ComputedStandard } from 'types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Simulator } from 'simulate/simulator'
+import { ComputedStandard } from 'types'
 import styles from './Result.module.css'
 import { StandardWindow } from './StandardWindow/StandardWindow'
+
 
 export function Result() {
     const { reportID, fightID } = useParams()
@@ -39,7 +40,11 @@ export function Result() {
 
     return <div className={styles.result}>
         {standards.map(standard =>
-            <StandardWindow standard={standard} key={standard.start} />
+            <StandardWindow
+                standard={standard}
+                formatTimestamp={parser.formatTimestamp}
+                key={standard.start}
+            />
         )}
     </div>
 }

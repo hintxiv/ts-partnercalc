@@ -1,6 +1,5 @@
 import { useTheme } from '@material-ui/core'
 import { BardIcon } from 'components/JobIcons/bard'
-import { ComputedPlayer, ComputedStandard } from 'types'
 import React from 'react'
 import {
     Bar,
@@ -11,6 +10,7 @@ import {
     XAxis,
     YAxis,
 } from 'recharts'
+import { ComputedPlayer, ComputedStandard } from 'types'
 import styles from './DamageGraph.module.css'
 
 interface DamageGraphProps {
@@ -74,6 +74,9 @@ const playerNameTick = (players: ComputedPlayer[]) => (props: AxisTickProps) => 
     const { x, y, payload } = props
 
     const player = players.find(player => player.name === payload.value)
+
+    if (player == null) { return }
+
     const initials = player.name
         .split(' ')
         .map(name => name.charAt(0).toUpperCase() + '.')

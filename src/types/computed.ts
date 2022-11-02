@@ -24,5 +24,6 @@ export interface ComputedPlayer {
 export interface ComputedStandard {
     start: number
     end: number
+    appliedBy: 'Standard Finish' | 'Tillana'
     players: ComputedPlayer[]
 }

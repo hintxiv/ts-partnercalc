@@ -80,6 +80,7 @@ export class Simulator {
         return {
             start: standard.start,
             end: standard.end ?? this.parser.fight.end,
+            appliedBy: standard.isTillana ? 'Tillana' : 'Standard Finish',
             players: players,
         }
     }

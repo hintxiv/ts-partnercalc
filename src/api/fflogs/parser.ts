@@ -4,6 +4,7 @@ import { Fight } from './fight'
 import { HitType } from './report'
 
 const STATUS_OFFSET = 1000000
+const MS_PER_MINUTE = 60000
 
 export class FFLogsParser {
     public reportID: string
@@ -17,6 +18,14 @@ export class FFLogsParser {
 
     public async init() {
         this.fight = await fetchFight(this.reportID, this.fightID)
+    }
+
+    public formatTimestamp = (time: number) => {
+        const elapsed = time - this.fight.start
+        const mm = Math.floor(elapsed / MS_PER_MINUTE)
+        const ss = Math.floor((elapsed % MS_PER_MINUTE) / 1000)
+
+        return `${mm < 10 ? '0' + mm : mm}:${ss < 10 ? '0' + ss : ss}`
     }
 
     public async * getEvents(debuffIDs: number[], sourceID?: number): AsyncGenerator<FFLogsEvent, void, undefined> {
@@ -44,12 +53,22 @@ export class FFLogsParser {
             .sort((a, b) => a.timestamp - b.timestamp)
 
         for (const e of events) {
-            const targetID = e.targetID ?? e.sourceID
+            const sourcePet = this.fight.pets.find(pet => pet.id === e.sourceID)
+            const sourceID = sourcePet != null ? sourcePet.ownerID : e.sourceID
+
+            const targetPet = this.fight.pets.find(pet => pet.id === e.targetID)
+            const targetID = targetPet != null ? targetPet.ownerID : (e.targetID ?? e.sourceID)
+
+            // Ignore duplicated buff events on pets
+            if (['applybuff', 'refreshbuff', 'removebuff'].includes(e.type) && targetPet != null) {
+                continue
+            }
+
             const targetInstance = e.targetInstance ?? 0
 
             const fields: EventFields = {
                 timestamp: e.timestamp,
-                sourceID: e.sourceID,
+                sourceID: sourceID,
                 targetID: targetID,
                 targetKey: `${targetID}-${targetInstance}`,
             }
@@ -60,9 +79,9 @@ export class FFLogsParser {
                 appliedBy = e.extraAbility.guid
             }
 
-            if (e.type === 'applybuff') {
+            if (e.type === 'applybuff' || e.type === 'refreshbuff') {
                 yield {
-                    type: e.type,
+                    type: 'applybuff',
                     statusID: e.ability.guid - STATUS_OFFSET,
                     appliedBy: appliedBy,
                     ...fields,
