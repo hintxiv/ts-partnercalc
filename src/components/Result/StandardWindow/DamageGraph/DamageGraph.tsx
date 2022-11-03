@@ -1,8 +1,8 @@
-import { useTheme } from '@material-ui/core'
 import React from 'react'
 import {
     Bar,
     BarChart,
+    CartesianGrid,
     Legend,
     ResponsiveContainer,
     Tooltip,
@@ -11,14 +11,13 @@ import {
 } from 'recharts'
 import { ComputedPlayer, ComputedStandard } from 'types'
 import styles from './DamageGraph.module.css'
+import { GraphTooltip } from './Tooltip'
 
 interface DamageGraphProps {
     standard: ComputedStandard
 }
 
 export function DamageGraph(props: DamageGraphProps) {
-    const theme = useTheme()
-
     const data = props.standard.players.map(player => ({
         name: player.name,
         Standard: Math.floor(player.totals.standard),
@@ -40,18 +39,25 @@ export function DamageGraph(props: DamageGraphProps) {
                 }}
                 layout="vertical"
             >
-                <XAxis type="number" stroke="white" />
+                <XAxis type="number" stroke="white" tickCount={8} />
                 <YAxis
                     dataKey="name"
                     type="category"
                     stroke="white"
                     tick={playerNameTick(props.standard.players)}
+                    tickLine={false}
                 />
-                <Tooltip cursor={{ fillOpacity: 0.1 }} />
+                <Tooltip
+                    cursor={{ fillOpacity: 0.1 }}
+                    wrapperStyle={{ outline: 'none' }}
+                    content={<GraphTooltip />}
+                />
                 <Legend />
-                <Bar dataKey="Standard" stackId="a" fill={theme.palette.primary.main} />
-                <Bar dataKey="Devilment" stackId="a" fill="#39a805" />
-                <Bar dataKey="Esprit" stackId="a" fill="#53dee6" />
+                <CartesianGrid horizontal={false} vertical={true} opacity={0.5} />
+                <Bar dataKey="Standard" barSize={30} stackId="a" fill="#e0e158" />
+                <Bar dataKey="Devilment" barSize={30} stackId="a" fill="#0fe863" />
+                <Bar dataKey="Esprit" barSize={30} stackId="a" fill="#3febde" />
+
             </BarChart>
         </ResponsiveContainer>
     </div>
@@ -81,7 +87,7 @@ const playerNameTick = (players: ComputedPlayer[]) => (props: AxisTickProps) => 
         .map(name => name.charAt(0).toUpperCase() + '.')
         .join(' ')
 
-    return <g transform={`translate(${x},${y})`} fill={player.job.color}>
+    return <g transform={`translate(${x},${y})`} fill="white">
         <text
             x={-30}
             y={6}

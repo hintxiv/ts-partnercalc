@@ -12,7 +12,7 @@ export function Footer() {
     }
 
     return <footer>
-        <Grid container justify="center">
+        <Grid container justifyContent="center">
             <Box>
                 <Tooltip title="GitHub" placement="top">
                     <IconButton size="medium" href="https://github.com/hintxiv" target="_blank">

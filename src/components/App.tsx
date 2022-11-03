@@ -22,6 +22,18 @@ const theme = createTheme({
     typography: {
         fontFamily: 'Nunito',
     },
+    overrides: {
+        MuiPaper: {
+            root: {
+                backgroundColor: '#28282c',
+            },
+        },
+        MuiChip: {
+            root: {
+                backgroundColor: '#424242',
+            },
+        },
+    },
 })
 
 const routes = [

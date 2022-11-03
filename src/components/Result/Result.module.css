@@ -1,3 +1,7 @@
+body, html {
+    scroll-snap-type: y mandatory;
+}
+
 .loading {
     position: fixed;
     z-index: 999;
@@ -13,10 +17,11 @@
 
 .result {
     width: 100%;
-    max-width: 1300px;
+    max-width: 1500px;
     transform: translateY(8vh);
+    padding-top: 10rem;
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 100px;
+    margin-bottom: 30rem;
     background-color: #242526;
 }
