@@ -1,5 +1,6 @@
 import { FFLogsEvent } from 'api/fflogs/event'
 import { Friend } from 'api/fflogs/fight'
+import { DataProvider } from 'data/provider'
 import { SnapshotHook } from 'simulate/hooks'
 import { Player } from 'simulate/modules/entities/player'
 
@@ -7,10 +8,12 @@ export class PlayerHandler {
     private players: Map<number, Player> = new Map()
     private friends: Friend[]
     private snapshotHook: SnapshotHook
+    private data: DataProvider
 
-    constructor(friends: Friend[], snapshotHook: SnapshotHook) {
+    constructor(friends: Friend[], snapshotHook: SnapshotHook, data: DataProvider) {
         this.friends = friends
         this.snapshotHook = snapshotHook
+        this.data = data
     }
 
     public * getPlayers(): Generator<Player, void, undefined> {
@@ -40,7 +43,7 @@ export class PlayerHandler {
             return this.players.get(friend.id)
         }
 
-        const newPlayer = new Player(friend, this.snapshotHook)
+        const newPlayer = new Player(friend, this.snapshotHook, this.data)
         this.players.set(friend.id, newPlayer)
 
         return newPlayer

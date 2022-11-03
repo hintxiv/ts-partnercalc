@@ -1,4 +1,4 @@
-import { BUFFS, RAID_BUFFS } from 'data/raidbuffs'
+import { EFFECTS } from 'data/effects'
 import { Effect, Stats } from 'types'
 import { DamageInstance, DamageOptions, Snapshot } from 'types/snapshot'
 
@@ -19,11 +19,11 @@ function applyEffects(stats: Stats, effects: Effect[]): Stats {
 }
 
 function hasStandard(snapshot: Snapshot): boolean {
-    return snapshot.effects.some(effect => effect.id === BUFFS.STANDARD_FINISH.id)
+    return snapshot.effects.some(effect => effect.id === EFFECTS.STANDARD_FINISH.id)
 }
 
 function hasDevilment(snapshot: Snapshot): boolean {
-    return snapshot.effects.some(effect => effect.id === BUFFS.DEVILMENT.id)
+    return snapshot.effects.some(effect => effect.id === EFFECTS.DEVILMENT.id)
 }
 
 function getBuffedStats(
@@ -31,12 +31,11 @@ function getBuffedStats(
     stats: Stats,
     isDevilmentUp: boolean,
 ): Stats {
-    const devilmentEffect = RAID_BUFFS[BUFFS.DEVILMENT.id]
     const simulatedEffects = [...snapshot.effects]
 
     // Add devilment if the player would've had it by being the real partner
     if (isDevilmentUp && !hasDevilment(snapshot)) {
-        simulatedEffects.push(devilmentEffect)
+        simulatedEffects.push(EFFECTS.DEVILMENT)
     }
 
     return applyEffects(stats, simulatedEffects)
@@ -94,7 +93,7 @@ export function simulateStandard(
     stats: Stats,
     isDevilmentUp: boolean,
 ): number {
-    const standardEffect = RAID_BUFFS[BUFFS.STANDARD_FINISH.id]
+    const multiplier = EFFECTS.STANDARD_FINISH.potency
     const buffedStats = getBuffedStats(snapshot, stats, isDevilmentUp)
     let simulatedDamage = 0
 
@@ -103,17 +102,17 @@ export function simulateStandard(
 
         if (hasStandard(snapshot)) {
             // Don't double count standard's contribution
-            expectedDamage /= standardEffect.potency
+            expectedDamage /= multiplier
         }
 
-        simulatedDamage += expectedDamage * (standardEffect.potency - 1)
+        simulatedDamage += expectedDamage * (multiplier - 1)
     }
 
     return simulatedDamage
 }
 
 function devilmentRdps(amount: number, options: DamageOptions, stats: Stats, unbuffed: Stats): number {
-    const devilmentEffect = RAID_BUFFS[BUFFS.DEVILMENT.id]
+    const devilment = EFFECTS.DEVILMENT
 
     // Shorthand consts because these formulas are way too fucking long
     const Dm = stats.DHMultiplier
@@ -129,12 +128,12 @@ function devilmentRdps(amount: number, options: DamageOptions, stats: Stats, unb
 
     if (options.DHType === 'normal' && options.critType === 'normal') {
         // The normal case, assign crit/DH damage to devilment according to % rates
-        const CDHRdps = amount * (1 - (1 / (Dm * Cm))) * (devilmentEffect.DHRate / Dr) * (devilmentEffect.critRate / Cr)
-        + amount * (1 - (1 / Cm)) * ((Dr - devilmentEffect.DHRate) / Dr) * (devilmentEffect.critRate / Cr)
-        + amount * (1 - (1 / Dm)) * (devilmentEffect.DHRate / Dr) * ((Cr - devilmentEffect.critRate) / Cr)
+        const CDHRdps = amount * (1 - (1 / (Dm * Cm))) * (devilment.DHRate / Dr) * (devilment.critRate / Cr)
+        + amount * (1 - (1 / Cm)) * ((Dr - devilment.DHRate) / Dr) * (devilment.critRate / Cr)
+        + amount * (1 - (1 / Dm)) * (devilment.DHRate / Dr) * ((Cr - devilment.critRate) / Cr)
 
-        const DHRdps = amount * (1 - (1 / Dm)) * (devilmentEffect.DHRate / Dr)
-        const critRdps = amount * (1 - (1 / Cm)) * (devilmentEffect.critRate / Cr)
+        const DHRdps = amount * (1 - (1 / Dm)) * (devilment.DHRate / Dr)
+        const critRdps = amount * (1 - (1 / Cm)) * (devilment.critRate / Cr)
 
         return (CDHProbability * CDHRdps) + (DHProbability * DHRdps) + (critProbability * critRdps)
     }
@@ -143,9 +142,9 @@ function devilmentRdps(amount: number, options: DamageOptions, stats: Stats, unb
         // The auto-crit case, treat Devilment as a flat crit multipler + assign DH damage according to DH rate
         const autoCritMultiplier = (1 + (Cr - Cu) * (Cm - 1))
         const base = amount / autoCritMultiplier
-        const amountWithoutDevilment = base * (1 + (Cr - Cu - devilmentEffect.critRate) * (Cm - 1))
+        const amountWithoutDevilment = base * (1 + (Cr - Cu - devilment.critRate) * (Cm - 1))
 
-        const CDHRdps = amount * (1 - (1 / Dm)) * (devilmentEffect.DHRate / Dr)
+        const CDHRdps = amount * (1 - (1 / Dm)) * (devilment.DHRate / Dr)
         const critRdps = amount - amountWithoutDevilment
 
         return (Dr * CDHRdps) + critRdps
@@ -158,8 +157,8 @@ function devilmentRdps(amount: number, options: DamageOptions, stats: Stats, unb
         const base = amount / (autoDHMultiplier * autoCritMultiplier)
 
         const amountWithoutDevilment = base
-            * (1 + (Dr - Du - devilmentEffect.DHRate) * (Dm - 1))
-            * (1 + (Cr - Cu - devilmentEffect.critRate) * (Cm - 1))
+            * (1 + (Dr - Du - devilment.DHRate) * (Dm - 1))
+            * (1 + (Cr - Cu - devilment.critRate) * (Cm - 1))
 
         return amount - amountWithoutDevilment
     }

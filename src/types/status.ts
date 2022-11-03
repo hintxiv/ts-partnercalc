@@ -8,8 +8,3 @@ export interface Status {
 export interface Buff {
     effect: Effect
 }
-
-export interface Debuff {
-    effect: Effect
-    castActions: number[]
-}

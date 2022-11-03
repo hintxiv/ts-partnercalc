@@ -1,7 +1,7 @@
 import { FFLogsEvent } from 'api/fflogs/event'
 import { Friend } from 'api/fflogs/fight'
 import { FFLogsParser } from 'api/fflogs/parser'
-import { DEBUFFS } from 'data/raidbuffs'
+import { DataProvider } from 'data/provider'
 import { ComputedPlayer, ComputedStandard, DamageTotals } from 'types'
 import { Snapshot } from '../types/snapshot'
 import { Standard } from './buffwindow/standard'
@@ -12,6 +12,7 @@ import { Dancer } from './modules/entities/dancer'
 
 export class Simulator {
     private parser: FFLogsParser
+    private data: DataProvider
     private dancer: Dancer
     private enemies: EnemyHandler
     private players: PlayerHandler
@@ -19,12 +20,13 @@ export class Simulator {
 
     constructor(parser: FFLogsParser, dancer: Friend) {
         this.parser = parser
-        this.dancer = new Dancer(dancer.id, this.registerNewStandard)
-        this.enemies = new EnemyHandler(parser.fight.friends)
+        this.data = new DataProvider()
+        this.dancer = new Dancer(dancer.id, this.registerNewStandard, this.data)
+        this.enemies = new EnemyHandler(parser.fight.friends, this.data)
 
         // The Dancer can't partner themselves
         const potentialPartners = parser.fight.friends.filter(player => player.id !== dancer.id)
-        this.players = new PlayerHandler(potentialPartners, this.registerNewSnapshot)
+        this.players = new PlayerHandler(potentialPartners, this.registerNewSnapshot, this.data)
     }
 
     public async calculatePartnerDamage(/* TODO: player stats */): Promise<ComputedStandard[]> {
@@ -48,7 +50,7 @@ export class Simulator {
         for (const player of this.players.getPlayers()) {
             // TODO override these stats if we have better ones
             const stats = player.getEstimatedStats()
-            const computedDamage = standard.getPlayerContribution(player.id, stats)
+            const computedDamage = standard.getPlayerContribution(player, stats, this.dancer.potencyRatio)
 
             if (computedDamage.length === 0) { continue }
 
@@ -89,8 +91,8 @@ export class Simulator {
     }
 
     private async buildStandardWindows(): Promise<void> {
-        const debuffIDs = Object.values(DEBUFFS)
-            .map(status => status.id)
+        const debuffIDs = Object.values(this.data.debuffs)
+            .map(effect => effect.id)
 
         const events = this.parser.getEvents(debuffIDs)
 
