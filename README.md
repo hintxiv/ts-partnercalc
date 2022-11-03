@@ -2,7 +2,7 @@
 
  A tool for analyzing Dance Partner damage contribution in FFXIV, now with 100% more TypeScript.
 
-**This repository is a work in progress!** If you're looking for the original Partnercalc, [click here](partnercalc.herokuapp.com/).
+**This repository is a work in progress!** If you're looking for the original Partnercalc, [click here](https://partnercalc.herokuapp.com/).
 
 ## Getting Started
 
