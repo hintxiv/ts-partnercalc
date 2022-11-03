@@ -1,5 +1,4 @@
 import { useTheme } from '@material-ui/core'
-import { BardIcon } from 'components/JobIcons/bard'
 import React from 'react'
 import {
     Bar,
@@ -84,17 +83,17 @@ const playerNameTick = (players: ComputedPlayer[]) => (props: AxisTickProps) => 
 
     return <g transform={`translate(${x},${y})`} fill={player.job.color}>
         <text
-            x={-24}
+            x={-30}
             y={6}
             textAnchor="end"
         >
             {initials}
         </text>
-        <BardIcon
-            height={24}
-            width={24}
-            x={-24}
-            y={-12}
+        <player.job.Icon
+            height={30}
+            width={30}
+            x={-30}
+            y={-15}
         />
     </g>
 }
