@@ -1,6 +1,6 @@
 import { ApplyDebuffEvent, SnapshotEvent, TickEvent } from 'api/fflogs/event'
 import { Friend } from 'api/fflogs/fight'
-import { BUFFS, RAID_BUFFS } from 'data/raidbuffs'
+import { DataProvider } from 'data/provider'
 import { Effect, Job, Status } from 'types'
 import { DamageInstance, DamageOptions, Snapshot } from 'types/snapshot'
 import { Stats } from 'types/stats'
@@ -15,28 +15,26 @@ export class Player extends Entity {
     public name: string
     public job: Job
     protected registerSnapshot: SnapshotHook
-
+    private data: DataProvider
     private snapshots: Map<StatusKey, Snapshot> = new Map()
-    private buffs: Map<Status['id'], Effect> = new Map()
-
     private critEstimator: CritEstimator = new CritEstimator()
     private DHEstimator: DHEstimator = new DHEstimator()
 
-    constructor(friend: Friend, snapshotHook: SnapshotHook) {
+    constructor(friend: Friend, snapshotHook: SnapshotHook, data: DataProvider) {
         super(friend.id.toString())
         this.id = friend.id
         this.name = friend.name
         this.job = friend.job
         this.registerSnapshot = snapshotHook
+        this.data = data
         this.init()
     }
 
     protected init() {
-        // Add handlers to maintain active raid buffs
-        Object.values(BUFFS).forEach(status => {
-            this.buffs.set(status.id, RAID_BUFFS[status.id])
-            this.addHook('applybuff', this.onApplyStatus, { actionID: status.id })
-            this.addHook('removebuff', this.onRemoveStatus, { actionID: status.id })
+        // Add handlers to maintain raid buff statuses
+        Object.values(this.data.buffs).forEach(buff => {
+            this.addHook('applybuff', this.onApplyStatus, { actionID: buff.id })
+            this.addHook('removebuff', this.onRemoveStatus, { actionID: buff.id })
         })
 
         this.addHook('snapshot', this.onSnapshot)
@@ -133,14 +131,15 @@ export class Player extends Entity {
     }
 
     private get activeBuffs(): Effect[] {
-        const buffs = []
+        const effects: Effect[] = []
 
-        for (const [statusID, buff] of this.buffs) {
-            if (this.hasStatus(statusID)) {
-                buffs.push(buff)
+        this.activeStatuses.forEach(statusID => {
+            const effect = this.data.getEffect(statusID)
+            if (effect != null) {
+                effects.push(effect)
             }
-        }
+        })
 
-        return buffs
+        return effects
     }
 }

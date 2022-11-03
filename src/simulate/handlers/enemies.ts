@@ -1,14 +1,17 @@
 import { FFLogsEvent } from 'api/fflogs/event'
 import { Friend } from 'api/fflogs/fight'
-import { Effect } from 'types'
+import { DataProvider } from 'data/provider'
 import { Enemy } from 'simulate/modules/entities/enemy'
+import { Effect } from 'types'
 
 export class EnemyHandler {
     private enemies: Map<string, Enemy> = new Map()
     private friends: Friend[]
+    private data: DataProvider
 
-    constructor(friends: Friend[]) {
+    constructor(friends: Friend[], data: DataProvider) {
         this.friends = friends
+        this.data = data
     }
 
     public processEvent(event: FFLogsEvent) {
@@ -29,7 +32,7 @@ export class EnemyHandler {
             return this.enemies.get(key)
         }
 
-        const newEnemy = new Enemy(key)
+        const newEnemy = new Enemy(key, this.data)
         this.enemies.set(key, newEnemy)
 
         return newEnemy

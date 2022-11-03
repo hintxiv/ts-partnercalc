@@ -1,36 +1,39 @@
 import { ApplyBuffEvent, CastEvent, FFLogsEvent, RemoveBuffEvent } from 'api/fflogs/event'
-import { BUFFS } from 'data/raidbuffs'
+import { DataProvider } from 'data/provider'
 import { Devilment } from 'simulate/buffwindow/devilment'
 import { Standard } from 'simulate/buffwindow/standard'
 import { Entity } from './entity'
 
-type StandardHook = (standard: Standard) => void
-
-const TILLANA_ID = 25790
-const STANDARD_ID = 16192
 const MIN_WINDOW_LENGTH = 10000 // ~4 GCDs
+
+type StandardHook = (standard: Standard) => void
 
 export class Dancer extends Entity {
     public id: number
+    private data: DataProvider
     private emitStandard: StandardHook
     private currentStandard: Standard | undefined
     private currentDevilment: Devilment | undefined
     private lastApplierID: number | undefined
 
-    constructor(id: number, standardHook: StandardHook) {
+    constructor(id: number, standardHook: StandardHook, data: DataProvider) {
         super(id.toString())
         this.id = id
         this.emitStandard = standardHook
+        this.data = data
         this.init()
     }
 
     protected init() {
-        this.addHook('applybuff', this.onStandard, { actionID: BUFFS.STANDARD_FINISH.id })
-        this.addHook('removebuff', this.onRemoveStandard, { actionID: BUFFS.STANDARD_FINISH.id })
-        this.addHook('applybuff', this.onDevilment, { actionID: BUFFS.DEVILMENT.id })
-        this.addHook('removebuff', this.onRemoveDevilment, { actionID: BUFFS.DEVILMENT.id })
-        this.addHook('cast', this.onCast, { actionID: TILLANA_ID })
-        this.addHook('cast', this.onCast, { actionID: STANDARD_ID })
+        const standardFilter = { actionID: this.data.statuses.STANDARD_FINISH.id }
+        const devilmentFilter = { actionID: this.data.statuses.DEVILMENT.id }
+
+        this.addHook('applybuff', this.onStandard, standardFilter)
+        this.addHook('removebuff', this.onRemoveStandard, standardFilter)
+        this.addHook('applybuff', this.onDevilment, devilmentFilter)
+        this.addHook('removebuff', this.onRemoveDevilment, devilmentFilter)
+        this.addHook('cast', this.onCast, { actionID: this.data.actions.TILLANA.id })
+        this.addHook('cast', this.onCast, { actionID: this.data.actions.DOUBLE_STANDARD_FINISH.id })
     }
 
     public processEvent(event: FFLogsEvent) {
@@ -59,7 +62,8 @@ export class Dancer extends Entity {
             this.currentStandard.close(event.timestamp)
         }
 
-        const isTillana = (this.lastApplierID != null) && (this.lastApplierID === TILLANA_ID)
+        const isTillana = (this.lastApplierID != null)
+            && (this.lastApplierID === this.data.actions.TILLANA.id)
         const standard = new Standard(event.timestamp, event.targetID, isTillana)
 
         this.currentStandard = standard

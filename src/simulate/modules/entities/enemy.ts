@@ -1,36 +1,37 @@
-import { DEBUFFS, RAID_DEBUFFS } from 'data/raidbuffs'
-import { Effect, Status } from 'types'
+import { DataProvider } from 'data/provider'
+import { Effect } from 'types'
 import { Entity } from './entity'
 
 /**
  * Represents an Enemy entity in the report
  */
 export class Enemy extends Entity {
-    private debuffs: Map<Status['id'], Effect> = new Map()
+    private data: DataProvider
 
-    constructor(targetKey: string) {
+    constructor(targetKey: string, data: DataProvider) {
         super(targetKey)
+        this.data = data
         this.init()
     }
 
     protected init() {
         // Add hooks for raid buffs (chain, mug)
-        Object.values(DEBUFFS).forEach(status => {
-            this.debuffs.set(status.id, RAID_DEBUFFS[status.id].effect)
-            this.addHook('applydebuff', this.onApplyStatus, { actionID: status.id })
-            this.addHook('removedebuff', this.onRemoveStatus, { actionID: status.id })
+        Object.values(this.data.debuffs).forEach(debuff => {
+            this.addHook('applydebuff', this.onApplyStatus, { actionID: debuff.id })
+            this.addHook('removedebuff', this.onRemoveStatus, { actionID: debuff.id })
         })
     }
 
     public get activeDebuffs(): Effect[] {
-        const debuffs = []
+        const effects: Effect[] = []
 
-        for (const [statusID, effect] of this.debuffs) {
-            if (this.hasStatus(statusID)) {
-                debuffs.push(effect)
+        this.activeStatuses.forEach(statusID => {
+            const effect = this.data.getEffect(statusID)
+            if (effect != null) {
+                effects.push(effect)
             }
-        }
+        })
 
-        return debuffs
+        return effects
     }
 }
