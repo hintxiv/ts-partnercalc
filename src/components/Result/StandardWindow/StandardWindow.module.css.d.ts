@@ -2,6 +2,8 @@
 /* eslint-disable */
 declare namespace StandardWindowModuleCssNamespace {
   export interface IStandardWindowModuleCss {
+    accordion: string;
+    card: string;
     partnered: string;
     rowContainer: string;
     standardWindow: string;

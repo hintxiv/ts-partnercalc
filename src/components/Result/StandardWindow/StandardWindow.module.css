@@ -1,20 +1,35 @@
 .standardWindow {
+    margin-bottom: 15rem;
+    scroll-snap-align: center;
+    font-family: Nunito;
+}
+
+.card {
+    box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px !important;
     padding: 1rem;
     margin-bottom: 2rem;
 }
 
+.accordion {
+    box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px !important;
+    font-size: large;
+}
+
+.accordion::before {
+    display: none !important;
+}
+
 .partnered {
     float: left;
-    font-family: Nunito;
     font-size: large;
 }
 
 .timestamp {
     float: right;
+    font-size: large;
 }
 
 .rowContainer {
     display: flow-root;
     height: fit-content;
-    margin-bottom: 1rem;
 }

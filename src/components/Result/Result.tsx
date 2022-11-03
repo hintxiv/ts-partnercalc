@@ -1,4 +1,5 @@
 import { CircularProgress } from '@material-ui/core'
+import { Friend } from 'api/fflogs/fight'
 import { FFLogsParser } from 'api/fflogs/parser'
 import { JOBS } from 'data/jobs'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -8,11 +9,11 @@ import { ComputedStandard } from 'types'
 import styles from './Result.module.css'
 import { StandardWindow } from './StandardWindow/StandardWindow'
 
-
 export function Result() {
     const { reportID, fightID } = useParams()
     const [ready, setReady] = useState<boolean>(false)
     const [standards, setStandards] = useState<ComputedStandard[]>([])
+    const [dancer, setDancer] = useState<Friend>()
 
     const parser = useMemo(() => {
         return new FFLogsParser(reportID, parseInt(fightID))
@@ -22,9 +23,9 @@ export function Result() {
         const simulate = async () => {
             await parser.init()
 
-            // Need a better place for this shit lol
-            // (also pretty error handling)
+            // TODO error handling
             const dancer = parser.fight.friends.find(friend => friend.job === JOBS.Dancer)
+            setDancer(dancer)
 
             const simulator = new Simulator(parser, dancer)
             setStandards(await simulator.calculatePartnerDamage())
@@ -41,6 +42,7 @@ export function Result() {
         {standards.map(standard =>
             <StandardWindow
                 standard={standard}
+                dancer={dancer}
                 formatTimestamp={parser.formatTimestamp}
                 key={standard.start}
             />
