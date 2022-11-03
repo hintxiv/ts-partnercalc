@@ -50,7 +50,7 @@ export class Simulator {
         for (const player of this.players.getPlayers()) {
             // TODO override these stats if we have better ones
             const stats = player.getEstimatedStats()
-            const computedDamage = standard.getPlayerContribution(player.id, stats)
+            const computedDamage = standard.getPlayerContribution(player, stats, this.dancer.potencyRatio)
 
             if (computedDamage.length === 0) { continue }
 

@@ -1,22 +1,23 @@
+import { DataProvider } from 'data/provider'
+import { simulateEsprit } from 'math/esprit'
 import { simulateStandard } from 'math/rdps'
-import { ComputedDamage, Stats } from 'types'
+import { Player } from 'simulate/modules/entities/player'
+import { ComputedDamage, Job, Stats } from 'types'
 import { Snapshot } from 'types/snapshot'
 import { BuffWindow } from './buffwindow'
 import { Devilment } from './devilment'
-
-// const POTENCY_PER_ESPRIT = 3.68  // per ringabel's calculations
-// const ESPRIT_PER_WEAPONSKILL = 10
-// const DEFAULT_ESPRIT_RATE = 0.2
 
 export class Standard extends BuffWindow {
     public isTillana: boolean
     public targetID: number
     private devilment?: Devilment
+    private data: DataProvider
 
-    constructor(start: number, target: number, isTillana: boolean) {
+    constructor(start: number, target: number, isTillana: boolean, data: DataProvider) {
         super(start, target)
         this.targetID = target
         this.isTillana = isTillana
+        this.data = data
     }
 
     public override processSnapshot(snapshot: Snapshot) {
@@ -31,8 +32,8 @@ export class Standard extends BuffWindow {
         this.devilment = devilment
     }
 
-    public getPlayerContribution(playerID: number, stats: Stats): ComputedDamage[] {
-        const snapshots = this.snapshots.getPlayerSnapshots(playerID)
+    public getPlayerContribution(player: Player, stats: Stats, potencyRatio: number): ComputedDamage[] {
+        const snapshots = this.snapshots.getPlayerSnapshots(player.id)
 
         if (!snapshots) { return [] }
 
@@ -42,7 +43,7 @@ export class Standard extends BuffWindow {
             computedDamage.push({
                 timestamp: snapshot.timestamp,
                 standard: this.getStandardContribution(snapshot, stats),
-                esprit: this.getEspritContribution(snapshot),
+                esprit: this.getEspritContribution(snapshot, player.job, potencyRatio),
                 devilment: this.devilment
                     ? this.devilment.getContribution(snapshot, stats)
                     : 0,
@@ -57,8 +58,8 @@ export class Standard extends BuffWindow {
         return simulateStandard(snapshot, stats, !!this.devilment)
     }
 
-    private getEspritContribution(snapshot: Snapshot): number {
+    private getEspritContribution(snapshot: Snapshot, job: Job, potencyRatio: number): number {
         // TODO
-        return snapshot.damage.reduce((total, damage) => total + damage.amount * 0.01, 0)
+        return simulateEsprit(snapshot, job, potencyRatio, this.data)
     }
 }

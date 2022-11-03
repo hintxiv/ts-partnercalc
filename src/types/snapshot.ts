@@ -25,6 +25,7 @@ export interface TickDamageInstance extends DamageInstanceFields {
 
 // Tracks all damage instances for a given ability snapshot
 export interface Snapshot {
+    id: number
     source: number
     timestamp: number
     target: string

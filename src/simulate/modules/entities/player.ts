@@ -1,7 +1,7 @@
 import { ApplyDebuffEvent, SnapshotEvent, TickEvent } from 'api/fflogs/event'
 import { Friend } from 'api/fflogs/fight'
 import { DataProvider } from 'data/provider'
-import { Effect, Job, Status } from 'types'
+import { Effect, Job } from 'types'
 import { DamageInstance, DamageOptions, Snapshot } from 'types/snapshot'
 import { Stats } from 'types/stats'
 import { SnapshotHook } from '../../hooks'
@@ -74,6 +74,7 @@ export class Player extends Entity {
         }
 
         const snapshot: Snapshot = {
+            id: event.actionID,
             source: this.id,
             timestamp: event.timestamp,
             target: event.targetKey,
@@ -98,6 +99,7 @@ export class Player extends Entity {
         }
 
         const snapshot: Snapshot = {
+            id: event.statusID,
             source: this.id,
             timestamp: event.timestamp,
             target: event.targetKey,
