@@ -5,7 +5,7 @@ const POTENCY_PER_ESPRIT = 3.68  // from ringabel's calculations
 const ESPRIT_PER_WEAPONSKILL = 10
 const DEFAULT_ESPRIT_RATE = 0.2
 
-const PARTNER_LOSS_MS = 5300  // from io's calculations
+// const PARTNER_LOSS_MS = 5300  // from io's calculations
 
 export function simulateEsprit(
     snapshot: Snapshot,

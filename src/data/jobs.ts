@@ -1,135 +1,136 @@
+import * as ICONS from 'components/JobIcons'
 import { Job } from 'types'
 import { preserve } from 'util/typeutils'
 
 export const JOBS = preserve<Job>()({
     Unknown: {
         name: 'Unknown',
-        iconPath: '/jobicons/dnc.svg',
         color: '#000000',
         espritRate: 'unknown',
+        Icon: ICONS.DancerIcon,
     },
 
     // Tanks
     DarkKnight: {
         name: 'Dark Knight',
-        iconPath: '/jobicons/brd.svg',
         color: '#d126cc',
         espritRate: 'unknown',
+        Icon: ICONS.DarkKnightIcon,
     },
     Gunbreaker: {
         name: 'Gunbreaker',
-        iconPath: '/jobicons/brd.svg',
         color: '#796d30',
         espritRate: 'unknown',
+        Icon: ICONS.GunbreakerIcon,
     },
     Paladin: {
         name: 'Paladin',
-        iconPath: '/jobicons/brd.svg',
         color: '#a8d2e6',
         espritRate: 'unknown',
+        Icon: ICONS.PaladinIcon,
     },
     Warrior: {
         name: 'Warrior',
-        iconPath: '/jobicons/brd.svg',
         color: '#cf2621',
         espritRate: 'unknown',
+        Icon: ICONS.WarriorIcon,
     },
 
     // Healers
     Astrologian: {
         name: 'Astrologian',
-        iconPath: '/jobicons/brd.svg',
         color: '#ffe74a',
         espritRate: 'unknown',
+        Icon: ICONS.AstrologianIcon,
     },
     Sage: {
         name: 'Sage',
-        iconPath: '/jobicons/brd.svg',
         color: '#80a0f0',
         espritRate: 'unknown',
+        Icon: ICONS.SageIcon,
     },
     Scholar: {
         name: 'Scholar',
-        iconPath: '/jobicons/brd.svg',
         color: '#8657ff',
         espritRate: 'unknown',
+        Icon: ICONS.ScholarIcon,
     },
     WhiteMage: {
         name: 'White Mage',
-        iconPath: '/jobicons/brd.svg',
         color: '#fff0dc',
         espritRate: 'unknown',
+        Icon: ICONS.WhiteMageIcon,
     },
 
     // Melee
     Dragoon: {
         name: 'Dragoon',
-        iconPath: '/jobicons/brd.svg',
         color: '#4164cd',
         espritRate: 0.2,
+        Icon: ICONS.DragoonIcon,
     },
     Monk: {
         name: 'Monk',
-        iconPath: '/jobicons/brd.svg',
         color: '#d69c00',
         espritRate: 0.1685,
+        Icon: ICONS.MonkIcon,
     },
     Ninja: {
         name: 'Ninja',
-        iconPath: '/jobicons/nin.svg',
         color: '#af1964',
         espritRate: 0.2,
+        Icon: ICONS.NinjaIcon,
     },
     Reaper: {
         name: 'Reaper',
-        iconPath: '/jobicons/rpr.svg',
         color: '#965a90',
         espritRate: 0.2,
+        Icon: ICONS.ReaperIcon,
     },
     Samurai: {
         name: 'Samurai',
-        iconPath: '/jobicons/brd.svg',
         color: '#e46d04',
         espritRate: 0.2,
+        Icon: ICONS.SamuraiIcon,
     },
 
     // Physical Ranged
     Bard: {
         name: 'Bard',
-        iconPath: '/jobicons/brd.svg',
         color: '#91ba5e',
         espritRate: 'unknown',
+        Icon: ICONS.BardIcon,
     },
     Dancer: {
         name: 'Dancer',
-        iconPath: '/jobicons/dnc.svg',
         color: '#e2b0af',
         espritRate: 0.2,
+        Icon: ICONS.DancerIcon,
     },
     Machinist: {
         name: 'Machinist',
-        iconPath: '/jobicons/mch.svg',
         color: '#6ee1d6',
         espritRate: 'unknown',
+        Icon: ICONS.MachinistIcon,
     },
 
     // Casters
     BlackMage: {
         name: 'Black Mage',
-        iconPath: '/jobicons/brd.svg',
         color: '#a579d6',
         espritRate: 0.2481,
+        Icon: ICONS.BlackMageIcon,
     },
     RedMage: {
         name: 'Red Mage',
-        iconPath: '/jobicons/brd.svg',
         color: '#e87b7b',
         espritRate: 'unknown',
+        Icon: ICONS.RedMageIcon,
     },
     Summoner: {
         name: 'Summoner',
-        iconPath: '/jobicons/brd.svg',
         color: '#2d9b78',
         espritRate: 'unknown',
+        Icon: ICONS.SummonerIcon,
     },
 })
