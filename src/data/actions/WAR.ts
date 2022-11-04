@@ -61,16 +61,22 @@ export const WAR_ACTIONS = preserve<Action>()({
         name: 'Inner Chaos',
         id: 16465,
         generatesEsprit: true,
+        autoCrit: true,
+        autoDH: true,
     },
     CHAOTIC_CYCLONE: {
         name: 'Chaotic Cyclone',
         id: 16463,
         generatesEsprit: true,
+        autoCrit: true,
+        autoDH: true,
     },
     PRIMAL_REND: {
         name: 'Primal Rend',
         id: 25753,
         generatesEsprit: true,
+        autoCrit: true,
+        autoDH: true,
     },
     ONSLAUGHT: {
         name: 'Onslaught',

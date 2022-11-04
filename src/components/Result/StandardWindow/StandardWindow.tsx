@@ -4,7 +4,6 @@ import {
     AccordionSummary,
     Card,
     Chip,
-    Typography,
     withStyles,
 } from '@material-ui/core'
 import { ExpandMore } from '@material-ui/icons'

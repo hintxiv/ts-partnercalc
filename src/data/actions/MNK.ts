@@ -6,6 +6,7 @@ export const MNK_ACTIONS = preserve<Action>()({
         name: 'Bootshine',
         id: 53,
         generatesEsprit: true,
+        autoCrit: true,
     },
     TRUE_STRIKE: {
         name: 'True Strike',
@@ -71,6 +72,7 @@ export const MNK_ACTIONS = preserve<Action>()({
         name: 'Shadow of the Destroyer',
         id: 25767,
         generatesEsprit: true,
+        autoCrit: true,
     },
     TORNADO_KICK: {
         name: 'Tornado Kick',
