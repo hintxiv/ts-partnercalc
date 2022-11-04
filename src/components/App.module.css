@@ -12,16 +12,15 @@ body {
 
 .content {
     position: relative;
+    min-height: 93vh;
     flex: 1 0 auto;
     z-index: 1;
 }
 
 .footer {
     position: relative;
-    bottom: 0;
     margin-left: 0;
     margin-right: 0;
-    height: 90px;
     width: 100%;
     z-index: 999;
 }
