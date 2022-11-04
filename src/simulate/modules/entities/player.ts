@@ -48,12 +48,39 @@ export class Player extends Entity {
         this.autoCritStatuses = AUTO_CRIT_STATUSES.map(key => this.data.statuses[key])
         this.autoDHStatuses = AUTO_DH_STATUSES.map(key => this.data.statuses[key])
 
-        // Add handlers to maintain raid buff statuses
+        // Add hooks to maintain raid buff statuses
         Object.values(this.data.buffs).forEach(buff => {
             this.addHook('applybuff', this.onApplyStatus, { actionID: buff.id })
             this.addHook('removebuff', this.onRemoveStatus, { actionID: buff.id })
         })
 
+        // Add job-specific status hooks
+        if (this.job.name === 'Dragoon') {
+            this.addHook('applybuff', this.onApplyStatus, {
+                actionID: this.data.statuses.LIFE_SURGE.id,
+            })
+            this.addHook('removebuff', this.onRemoveStatus, {
+                actionID: this.data.statuses.LIFE_SURGE.id,
+            })
+
+        } else if (this.job.name === 'Machinist') {
+            this.addHook('applybuff', this.onApplyStatus, {
+                actionID: this.data.statuses.REASSEMBLED.id,
+            })
+            this.addHook('removebuff', this.onRemoveStatus, {
+                actionID: this.data.statuses.REASSEMBLED.id,
+            })
+
+        } else if (this.job.name === 'Warrior') {
+            this.addHook('applybuff', this.onApplyStatus, {
+                actionID: this.data.statuses.INNER_RELEASE.id,
+            })
+            this.addHook('removebuff', this.onRemoveStatus, {
+                actionID: this.data.statuses.INNER_RELEASE.id,
+            })
+        }
+
+        // Generic hooks
         this.addHook('snapshot', this.onSnapshot)
         this.addHook('applydebuff', this.onDebuff)
         this.addHook('tick', this.onTick)
@@ -61,6 +88,7 @@ export class Player extends Entity {
         // Add crit + DH estimators as dependents
         this.addDependency(this.critEstimator)
         this.addDependency(this.DHEstimator)
+
     }
 
     public getEstimatedStats(): Stats {
@@ -90,7 +118,7 @@ export class Player extends Entity {
                 .some(status => this.activeStatuses.has(status.id))
 
             if (autoCritStatusUp) {
-                console.log('auto crit status')
+                console.log('nice auto crit status')
                 console.log(event)
             }
 
