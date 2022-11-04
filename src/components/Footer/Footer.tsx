@@ -4,13 +4,6 @@ import * as React from 'react'
 import styles from './Footer.module.css'
 
 export function Footer() {
-    const discordIcon = () => {
-        const iconPath = '/Discord-Logo-White.svg'
-        return <Icon className={styles.iconRoot}>
-            <img className={styles.icon} src={iconPath}/>
-        </Icon>
-    }
-
     return <footer>
         <Grid container justifyContent="center">
             <Box>
@@ -21,7 +14,9 @@ export function Footer() {
                 </Tooltip>
                 <Tooltip title="Discord" placement="top">
                     <IconButton size="medium" href="https://discord.com/users/492781599126061066" target="_blank">
-                        {discordIcon()}
+                        <Icon className={styles.iconRoot}>
+                            <img className={styles.icon} src="/Discord-Logo-White.svg" />
+                        </Icon>
                     </IconButton>
                 </Tooltip>
             </Box>
