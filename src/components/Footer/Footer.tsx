@@ -15,7 +15,7 @@ export function Footer() {
         <Grid container justifyContent="center">
             <Box>
                 <Tooltip title="GitHub" placement="top">
-                    <IconButton size="medium" href="https://github.com/hintxiv" target="_blank">
+                    <IconButton size="medium" href="https://github.com/hintxiv/ts-partnercalc" target="_blank">
                         <GithubIcon />
                     </IconButton>
                 </Tooltip>

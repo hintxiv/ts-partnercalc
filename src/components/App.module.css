@@ -17,11 +17,11 @@ body {
 }
 
 .footer {
-    position: fixed;
+    position: relative;
     bottom: 0;
     margin-left: 0;
     margin-right: 0;
     height: 90px;
     width: 100%;
-    z-index: 0;
+    z-index: 999;
 }

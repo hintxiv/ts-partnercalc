@@ -2,6 +2,8 @@
 /* eslint-disable */
 declare namespace ResultModuleCssNamespace {
   export interface IResultModuleCss {
+    fadeBottom: string;
+    fadeTop: string;
     loading: string;
     result: string;
   }

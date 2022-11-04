@@ -6,7 +6,7 @@ import {
     Chip,
     withStyles,
 } from '@material-ui/core'
-import { ExpandMore } from '@material-ui/icons'
+import { AccessTime, ExpandMore } from '@material-ui/icons'
 import { Friend } from 'api/fflogs/fight'
 import { DancerIcon } from 'components/JobIcons'
 import React from 'react'
@@ -18,6 +18,7 @@ interface StandardWindowProps {
     standard: ComputedStandard
     dancer: Friend
     formatTimestamp: (time: number) => string
+    generateTimestampLink: (start: number, end: number) => string
 }
 
 const NameChip = withStyles({
@@ -38,6 +39,11 @@ export function StandardWindow(props: StandardWindowProps) {
 
     const partner = props.standard.actualPartner
 
+    const openTimestampLink = () => {
+        const timestampURL = props.generateTimestampLink(props.standard.start, props.standard.end)
+        window.open(timestampURL, '_blank', 'noopener,noreferrer')
+    }
+
     return <div className={styles.standardWindow}>
         <Card className={styles.card}>
             <div className={styles.rowContainer}>
@@ -56,7 +62,11 @@ export function StandardWindow(props: StandardWindowProps) {
                 </div>
 
                 <div className={styles.timestamp}>
-                    <TimestampChip label={start + ' - ' + end} />
+                    <TimestampChip
+                        label={start + ' - ' + end}
+                        onClick={openTimestampLink}
+                        icon={<AccessTime />}
+                    />
                 </div>
             </div>
         </Card>

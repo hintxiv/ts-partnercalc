@@ -103,7 +103,7 @@ export class Player extends Entity {
             source: this.id,
             timestamp: event.timestamp,
             target: event.targetKey,
-            effects: this.activeBuffs, // TODO might need to copy array?
+            effects: this.activeBuffs,
             options: options,
             damage: [],
         }
@@ -116,8 +116,8 @@ export class Player extends Entity {
         const key = this.getStatusKey(event)
 
         if (!this.snapshots.has(key)) {
-            // console.warn('Tick event found without a matching snapshot!')
-            // console.warn(event)
+            console.warn('Tick event found without a matching snapshot!')
+            console.warn(event)
             return
         }
 
