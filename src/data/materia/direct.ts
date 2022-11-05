@@ -14,7 +14,6 @@ const HEAVENS_EYE_MATERIA_IX: Materia = {
     amount: 12,
 }
 
-
 const HEAVENS_EYE_VIII: Materia = {
     id: 26728,
     name: "Heavens' Eye Materia VIII",
