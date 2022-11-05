@@ -143,10 +143,6 @@ function devilmentRdps(
         const critRdps = base * (Cm - 1) * (devilment.critRate / Cr)
         const DHRdps = base * (Dm - 1) * (devilment.DHRate / Dr)
 
-        console.log('base:', base)
-        console.log(CDHRdps, critRdps, DHRdps)
-        console.log(CDHProbability, critProbability, DHProbability)
-
         return (CDHProbability * CDHRdps) + (critProbability * critRdps) + (DHProbability * DHRdps)
     }
 
