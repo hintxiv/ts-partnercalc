@@ -14,7 +14,9 @@ export abstract class BuffWindow {
     }
 
     public processSnapshot(snapshot: Snapshot) {
-        this.snapshots.handleSnapshot(snapshot)
+        if (this.isOpen) {
+            this.snapshots.handleSnapshot(snapshot)
+        }
     }
 
     public get isOpen() {

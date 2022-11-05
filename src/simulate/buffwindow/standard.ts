@@ -37,29 +37,29 @@ export class Standard extends BuffWindow {
 
         if (!snapshots) { return [] }
 
-        const computedDamage = []
+        const computedDamage: ComputedDamage[] = []
 
         for (const snapshot of snapshots) {
             computedDamage.push({
                 timestamp: snapshot.timestamp,
                 standard: this.getStandardContribution(snapshot, stats),
                 esprit: this.getEspritContribution(snapshot, player.job, potencyRatio),
-                devilment: this.devilment
-                    ? this.devilment.getContribution(snapshot, stats)
-                    : 0,
+                devilment: 0,
             })
+        }
+
+        if (this.devilment != null) {
+            computedDamage.push(...this.devilment.getPlayerContribution(player, stats))
         }
 
         return computedDamage
     }
 
     private getStandardContribution(snapshot: Snapshot, stats: Stats): number {
-        // Need to wire player stats here
         return simulateStandard(snapshot, stats, !!this.devilment)
     }
 
     private getEspritContribution(snapshot: Snapshot, job: Job, potencyRatio: number): number {
-        // TODO
         return simulateEsprit(snapshot, job, potencyRatio, this.data)
     }
 }

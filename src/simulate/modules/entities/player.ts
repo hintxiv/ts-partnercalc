@@ -173,14 +173,15 @@ export class Player extends Entity {
 
         const key = `${event.targetKey}-${event.statusID}` as SnapshotKey
         this.snapshots.set(key, snapshot)
+        this.registerSnapshot(snapshot)
     }
 
     private onTick(event: TickEvent) {
         const key = this.getSnapshotKey(event)
 
         if (!this.snapshots.has(key)) {
-            console.warn('Tick event found without a matching snapshot!')
-            console.warn(event)
+            //console.warn('Tick event found without a matching snapshot!')
+            //console.warn(event)
             return
         }
 

@@ -111,7 +111,7 @@ export function simulateStandard(
     return simulatedDamage
 }
 
-function devilmentRdps(amount: number, options: DamageOptions, stats: Stats, unbuffed: Stats): number {
+function devilmentRdps(base: number, options: DamageOptions, stats: Stats, unbuffed: Stats): number {
     const devilment = EFFECTS.DEVILMENT
 
     // Shorthand consts because these formulas are way too fucking long
@@ -123,45 +123,45 @@ function devilmentRdps(amount: number, options: DamageOptions, stats: Stats, unb
     const Cu = unbuffed.critRate
 
     const CDHProbability = Dr * Cr
-    const DHProbability = Dr - CDHProbability
     const critProbability = Cr - CDHProbability
+    const DHProbability = Dr - CDHProbability
 
     if (options.DHType === 'normal' && options.critType === 'normal') {
         // The normal case, assign crit/DH damage to devilment according to % rates
-        const CDHRdps = amount * (1 - (1 / (Dm * Cm))) * (devilment.DHRate / Dr) * (devilment.critRate / Cr)
-        + amount * (1 - (1 / Cm)) * ((Dr - devilment.DHRate) / Dr) * (devilment.critRate / Cr)
-        + amount * (1 - (1 / Dm)) * (devilment.DHRate / Dr) * ((Cr - devilment.critRate) / Cr)
+        const CDHRdps = base * (Cm * Dm - 1) * (devilment.DHRate / Dr) * (devilment.critRate / Cr)
+            + base * (Cm - 1) * Dm * (devilment.critRate / Cr) * ((Dr - devilment.DHRate) / Dr)
+            + base * Cm * (Dm - 1) * ((Cr - devilment.critRate) / Cr) * (devilment.DHRate / Dr)
 
-        const DHRdps = amount * (1 - (1 / Dm)) * (devilment.DHRate / Dr)
-        const critRdps = amount * (1 - (1 / Cm)) * (devilment.critRate / Cr)
+        const critRdps = base * (Cm - 1) * (devilment.critRate / Cr)
+        const DHRdps = base * (Dm - 1) * (devilment.DHRate / Dr)
 
         return (CDHProbability * CDHRdps) + (DHProbability * DHRdps) + (critProbability * critRdps)
     }
 
+    // TODO unfuck auto crit / auto DH formulas
+
     if (options.DHType === 'normal' && options.critType === 'auto') {
         // The auto-crit case, treat Devilment as a flat crit multipler + assign DH damage according to DH rate
         const autoCritMultiplier = (1 + (Cr - Cu) * (Cm - 1))
-        const base = amount / autoCritMultiplier
-        const amountWithoutDevilment = base * (1 + (Cr - Cu - devilment.critRate) * (Cm - 1))
+        const noAutoCrit = base / autoCritMultiplier
+        const amountWithoutDevilment = noAutoCrit * (1 + (Cr - Cu - devilment.critRate) * (Cm - 1))
 
-        const CDHRdps = amount * (1 - (1 / Dm)) * (devilment.DHRate / Dr)
-        const critRdps = amount - amountWithoutDevilment
+        const CDHRdps = base * (Cm - 1) * (Dm - 1) * (devilment.DHRate / Dr)
+        const critRdps = (Cm - 1) * (base - amountWithoutDevilment)
 
         return (Dr * CDHRdps) + critRdps
     }
 
-    if (options.DHType === 'auto' && options.critType === 'auto') {
-        // The auto-CDH case, treat devilment as a flat multiplier
-        const autoDHMultiplier = (1 + (Dr - Du) * (Dm - 1))
-        const autoCritMultiplier = (1 + (Cr - Cu) * (Cm - 1))
-        const base = amount / (autoDHMultiplier * autoCritMultiplier)
+    // The auto-CDH case, treat devilment as a flat multiplier
+    const autoDHMultiplier = (1 + (Dr - Du) * (Dm - 1))
+    const autoCritMultiplier = (1 + (Cr - Cu) * (Cm - 1))
+    const noAutoCDH = base / (autoDHMultiplier * autoCritMultiplier)
 
-        const amountWithoutDevilment = base
-            * (1 + (Dr - Du - devilment.DHRate) * (Dm - 1))
-            * (1 + (Cr - Cu - devilment.critRate) * (Cm - 1))
+    const amountWithoutDevilment = noAutoCDH
+        * (1 + (Cr - Cu - devilment.critRate) * (Cm - 1))
+        * (1 + (Dr - Du - devilment.DHRate) * (Dm - 1))
 
-        return amount - amountWithoutDevilment
-    }
+    return (base - amountWithoutDevilment) * (Cm - 1) * (Dm - 1)
 }
 
 export function simulateDevilment(
@@ -172,8 +172,8 @@ export function simulateDevilment(
     let simulatedDamage = 0
 
     for (const damage of snapshot.damage) {
-        const expectedDamage = normalizeDamage(damage, snapshot.options, buffedStats)
-        simulatedDamage += devilmentRdps(expectedDamage, snapshot.options, buffedStats, stats)
+        const baseDamage = getBaseDamage(damage, snapshot.options, buffedStats)
+        simulatedDamage += devilmentRdps(baseDamage, snapshot.options, buffedStats, stats)
     }
 
     return simulatedDamage
