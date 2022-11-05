@@ -45,8 +45,10 @@ export class Player extends Entity {
     }
 
     protected init() {
-        this.autoCritStatuses = AUTO_CRIT_STATUSES.map(key => this.data.statuses[key])
-        this.autoDHStatuses = AUTO_DH_STATUSES.map(key => this.data.statuses[key])
+        this.autoCritStatuses = AUTO_CRIT_STATUSES
+            .map(key => this.data.statuses[key])
+        this.autoDHStatuses = AUTO_DH_STATUSES
+            .map(key => this.data.statuses[key])
 
         // Add hooks to maintain raid buff statuses
         Object.values(this.data.buffs).forEach(buff => {
@@ -116,11 +118,6 @@ export class Player extends Entity {
                 .some(status => this.activeStatuses.has(status.id))
             const autoDHStatusUp = action?.onGCD && this.autoDHStatuses
                 .some(status => this.activeStatuses.has(status.id))
-
-            if (autoCritStatusUp) {
-                console.log('nice auto crit status')
-                console.log(event)
-            }
 
             if (event.isCrit && (action.autoCrit || autoCritStatusUp)) {
                 options.critType = 'auto'

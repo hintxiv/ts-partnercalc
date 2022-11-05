@@ -31,10 +31,9 @@ export function Home() {
             const url = new URL(event.target.value)
             const { reportID, fightID } = decomposeFFLogsURL(url)
 
-            let parsedFightID = parseInt(fightID)
-            if (fightID === 'last') {
-                parsedFightID = await fetchLastFightID(reportID)
-            }
+            const parsedFightID = (fightID === 'last')
+                ? await fetchLastFightID(reportID)
+                : parseInt(fightID)
 
             navigate(`/${reportID}/${parsedFightID}`)
 
