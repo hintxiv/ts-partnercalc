@@ -56,7 +56,8 @@ export class Standard extends BuffWindow {
     }
 
     private getStandardContribution(snapshot: Snapshot, stats: Stats): number {
-        return simulateStandard(snapshot, stats, !!this.devilment)
+        const devilmentUp = this.devilment != null && this.devilment.isOpen
+        return simulateStandard(snapshot, stats, devilmentUp)
     }
 
     private getEspritContribution(snapshot: Snapshot, job: Job, potencyRatio: number): number {

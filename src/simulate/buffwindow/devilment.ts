@@ -11,11 +11,6 @@ export class Devilment extends BuffWindow {
 
         const computedDamage = []
 
-        // Test
-        stats.critRate = 0.26
-        stats.DHRate = 0.332
-        stats.critMultiplier = 1.61
-
         for (const snapshot of snapshots) {
             computedDamage.push({
                 timestamp: snapshot.timestamp,

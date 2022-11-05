@@ -10,7 +10,6 @@ type StandardHook = (standard: Standard) => void
 
 export class Dancer extends Entity {
     public id: number
-    private data: DataProvider
     private emitStandard: StandardHook
     private currentStandard: Standard | undefined
     private currentDevilment: Devilment | undefined
@@ -19,10 +18,9 @@ export class Dancer extends Entity {
     private potencyRatios: number[] = []
 
     constructor(id: number, standardHook: StandardHook, data: DataProvider) {
-        super(id.toString())
+        super(id.toString(), data)
         this.id = id
         this.emitStandard = standardHook
-        this.data = data
         this.init()
     }
 

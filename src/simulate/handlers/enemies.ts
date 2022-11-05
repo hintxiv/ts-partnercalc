@@ -24,7 +24,7 @@ export class EnemyHandler {
     }
 
     public getEnemyDebuffs(key: string): Effect[] {
-        return this.getEnemy(key).activeDebuffs
+        return this.getEnemy(key).activeEffects
     }
 
     private getEnemy(key: string): Enemy {

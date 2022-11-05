@@ -4,7 +4,8 @@ import {
     RemoveBuffEvent,
     RemoveDebuffEvent,
 } from 'api/fflogs/event'
-import { Status } from 'types'
+import { DataProvider } from 'data/provider'
+import { Effect, Status } from 'types'
 import { Module } from '../module'
 
 /**
@@ -13,10 +14,25 @@ import { Module } from '../module'
 export abstract class Entity extends Module {
     public key: string
     protected activeStatuses: Set<Status['id']> = new Set()
+    protected data: DataProvider
 
-    constructor(key: string) {
+    constructor(key: string, data: DataProvider) {
         super()
         this.key = key
+        this.data = data
+    }
+
+    public get activeEffects(): Effect[] {
+        const effects: Effect[] = []
+
+        this.activeStatuses.forEach(statusID => {
+            const effect = this.data.getEffect(statusID)
+            if (effect != null) {
+                effects.push(effect)
+            }
+        })
+
+        return effects
     }
 
     protected hasStatus(statusID: number) {

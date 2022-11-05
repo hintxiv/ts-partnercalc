@@ -26,14 +26,13 @@ function hasDevilment(snapshot: Snapshot): boolean {
     return snapshot.effects.some(effect => effect.id === EFFECTS.DEVILMENT.id)
 }
 
-function getBuffedStats(
+function getPartneredStats(
     snapshot: Snapshot,
     stats: Stats,
     isDevilmentUp: boolean,
 ): Stats {
     const simulatedEffects = [...snapshot.effects]
 
-    // Add devilment if the player would've had it by being the real partner
     if (isDevilmentUp && !hasDevilment(snapshot)) {
         simulatedEffects.push(EFFECTS.DEVILMENT)
     }
@@ -43,12 +42,10 @@ function getBuffedStats(
 
 // Returns the expected crit/DH multiplier for a set of Stats
 function expectedMultiplier(stats: Stats): number {
-    const CDH = (stats.critRate * stats.DHRate) * (stats.critMultiplier * stats.DHMultiplier)
-    const crit = (stats.critRate * (1 - stats.DHRate)) * stats.critMultiplier
-    const DH = ((1 - stats.critRate) * stats.DHRate) * stats.DHMultiplier
-    const none = ((1 - stats.critRate) * (1 - stats.DHRate))
+    const expectedCritMultiplier = 1 + ((stats.critMultiplier - 1) * stats.critRate)
+    const expectedDHMultiplier = 1 + ((stats.DHMultiplier - 1) * stats.DHRate)
 
-    return CDH + crit + DH + none
+    return expectedCritMultiplier * expectedDHMultiplier
 }
 
 // Strips crit/DH from an instance of damage, based on the given Stats
@@ -73,15 +70,21 @@ function getBaseDamage(damage: DamageInstance, options: DamageOptions, stats: St
     return strippedDamage
 }
 
-function normalizeDamage(damage: DamageInstance, options: DamageOptions, stats: Stats): number {
-    let expectedDamage = getBaseDamage(damage, options, stats)
+function normalizeDamage(
+    snapshot: Snapshot,
+    damage: DamageInstance,
+    unbuffedStats: Stats,
+    partneredStats: Stats,
+): number {
+    const buffedStats = applyEffects(unbuffedStats, snapshot.effects)
+    let expectedDamage = getBaseDamage(damage, snapshot.options, buffedStats)
 
-    if (options.critType === 'normal') {
-        expectedDamage *= (1 + (stats.critMultiplier - 1) * stats.critRate)
+    if (snapshot.options.critType === 'normal') {
+        expectedDamage *= (1 + (partneredStats.critMultiplier - 1) * partneredStats.critRate)
     }
 
-    if (options.DHType === 'normal') {
-        expectedDamage *= (1 + (stats.DHMultiplier - 1) * stats.DHRate)
+    if (snapshot.options.DHType === 'normal') {
+        expectedDamage *= (1 + (partneredStats.DHMultiplier - 1) * partneredStats.DHRate)
 
     }
 
@@ -94,11 +97,11 @@ export function simulateStandard(
     isDevilmentUp: boolean,
 ): number {
     const multiplier = EFFECTS.STANDARD_FINISH.potency
-    const buffedStats = getBuffedStats(snapshot, stats, isDevilmentUp)
+    const partneredStats = getPartneredStats(snapshot, stats, isDevilmentUp)
     let simulatedDamage = 0
 
     for (const damage of snapshot.damage) {
-        let expectedDamage = normalizeDamage(damage, snapshot.options, buffedStats)
+        let expectedDamage = normalizeDamage(snapshot, damage, stats, partneredStats)
 
         if (hasStandard(snapshot)) {
             // Don't double count standard's contribution
@@ -111,16 +114,21 @@ export function simulateStandard(
     return simulatedDamage
 }
 
-function devilmentRdps(base: number, options: DamageOptions, stats: Stats, unbuffed: Stats): number {
+function devilmentRdps(
+    base: number,
+    options: DamageOptions,
+    unbuffedStats: Stats,
+    partneredStats: Stats,
+): number {
     const devilment = EFFECTS.DEVILMENT
 
     // Shorthand consts because these formulas are way too fucking long
-    const Dm = stats.DHMultiplier
-    const Cm = stats.critMultiplier
-    const Dr = stats.DHRate
-    const Cr = stats.critRate
-    const Du = unbuffed.DHRate
-    const Cu = unbuffed.critRate
+    const Dm = partneredStats.DHMultiplier
+    const Cm = partneredStats.critMultiplier
+    const Dr = partneredStats.DHRate
+    const Cr = partneredStats.critRate
+    const Du = unbuffedStats.DHRate
+    const Cu = unbuffedStats.critRate
 
     const CDHProbability = Dr * Cr
     const critProbability = Cr - CDHProbability
@@ -135,7 +143,11 @@ function devilmentRdps(base: number, options: DamageOptions, stats: Stats, unbuf
         const critRdps = base * (Cm - 1) * (devilment.critRate / Cr)
         const DHRdps = base * (Dm - 1) * (devilment.DHRate / Dr)
 
-        return (CDHProbability * CDHRdps) + (DHProbability * DHRdps) + (critProbability * critRdps)
+        console.log('base:', base)
+        console.log(CDHRdps, critRdps, DHRdps)
+        console.log(CDHProbability, critProbability, DHProbability)
+
+        return (CDHProbability * CDHRdps) + (critProbability * critRdps) + (DHProbability * DHRdps)
     }
 
     // TODO unfuck auto crit / auto DH formulas
@@ -168,12 +180,13 @@ export function simulateDevilment(
     snapshot: Snapshot,
     stats: Stats,
 ): number {
-    const buffedStats = getBuffedStats(snapshot, stats, true)
+    const buffedStats = applyEffects(stats, snapshot.effects)
+    const partneredStats = getPartneredStats(snapshot, stats, true)
     let simulatedDamage = 0
 
     for (const damage of snapshot.damage) {
         const baseDamage = getBaseDamage(damage, snapshot.options, buffedStats)
-        simulatedDamage += devilmentRdps(baseDamage, snapshot.options, buffedStats, stats)
+        simulatedDamage += devilmentRdps(baseDamage, snapshot.options, stats, partneredStats)
     }
 
     return simulatedDamage
