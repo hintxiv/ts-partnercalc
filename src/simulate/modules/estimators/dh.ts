@@ -1,34 +1,31 @@
-import { TickEvent, DamageEvent } from 'api/fflogs/event'
-import { Module } from '../module'
+import { TickEvent, SnapshotEvent } from 'api/fflogs/event'
+import { Effect } from 'types'
 
-export class DHEstimator extends Module {
-    private tickEvents: TickEvent[] = []
-    private damageEvents:  DamageEvent[] = []
+export class DHEstimator {
+    private directHitPercentages: number[] = []
+    private snapshotEvents: SnapshotEvent[] = []
 
-    constructor() {
-        super()
-        this.init()
-    }
-
-    protected override init() {
-        this.addHook('tick', this.onTick)
-        this.addHook('damage', this.onDamage)
-    }
-
-    private onTick(event: TickEvent) {
+    public onTick(event: TickEvent, effects: Effect[]) {
         if (event.directHitPercentage != null) {
-            this.tickEvents.push(event)
+            const DHFromBuffs = effects.reduce((total, effect) =>
+                total + (effect.DHRate ?? 0), 0)
+
+            this.directHitPercentages.push(event.directHitPercentage - DHFromBuffs)
         }
     }
 
-    private onDamage(event: DamageEvent) {
-        this.damageEvents.push(event)
+    public onSnapshot(event: SnapshotEvent, effects: Effect[]) {
+        const DHBuffUp = effects.some(effect => effect.DHRate != null)
+
+        if (!DHBuffUp) {
+            this.snapshotEvents.push(event)
+        }
     }
 
     public estimateDHRate(): number {
         // No DoTs, give a best guess based on observed DHs
-        if (this.tickEvents.length === 0) {
-            const events = this.damageEvents
+        if (this.directHitPercentages.length === 0) {
+            const events = this.snapshotEvents
 
             if (events.length === 0) { return 0 }
 
@@ -36,6 +33,12 @@ export class DHEstimator extends Module {
             return DHCount / events.length
         }
 
-        return this.tickEvents[0].directHitPercentage
+        const DHRates = this.directHitPercentages
+
+        const mode = DHRates.sort((a, b) =>
+            DHRates.filter(v => v === a).length - DHRates.filter(v => v === b).length
+        ).pop()
+
+        return mode
     }
 }

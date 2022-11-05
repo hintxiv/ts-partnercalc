@@ -1,51 +1,19 @@
-import { DamageEvent, TickEvent } from 'api/fflogs/event'
-import { Module } from '../module'
+import { SnapshotEvent, TickEvent } from 'api/fflogs/event'
+import { Effect } from 'types'
 
 const BASE_CRIT_RATE = 50
 const BASE_CRIT_STAT = 400
 const CRIT_INCREMENT = 256
 const LEVEL_MOD = 1900
 
-export class CritEstimator extends Module {
-    private tickEvents: TickEvent[] = []
-    private damageEvents:  DamageEvent[] = []
+export class CritEstimator {
+    private critRates: number[] = []
+    private snapshotEvents: SnapshotEvent[] = []
 
-    constructor() {
-        super()
-        this.init()
-    }
-
-    protected override init() {
-        this.addHook('tick', this.onTick)
-        this.addHook('damage', this.onDamage)
-    }
-
-    private onTick(event: TickEvent) {
+    public onTick(event: TickEvent, effects: Effect[]) {
         if (event.expectedCritRate != null) {
-            this.tickEvents.push(event)
-        }
-    }
-
-    private onDamage(event: DamageEvent) {
-        this.damageEvents.push(event)
-    }
-
-    private estimateCritRate(): number | undefined {
-        // No DoTs, give a best guess based on observed crits
-        if (this.tickEvents.length === 0) {
-            const events = this.damageEvents
-
-            if (events.length === 0) { return undefined }
-
-            const critCount = events.filter(event => event.isCrit).length
-            return critCount / events.length
-        }
-
-        const critRates: number[] = []
-
-        for (const event of this.tickEvents) {
-            // TODO get crit rate from buffs for each event
-            const critFromBuffs = 0
+            const critFromBuffs = effects.reduce((total, effect) =>
+                total + (effect.critRate ?? 0), 0)
 
             let critRate = event.expectedCritRate - critFromBuffs * 1000
 
@@ -56,11 +24,31 @@ export class CritEstimator extends Module {
             critRate += critFromBuffs * 1000
             critRate = critRate / 1000 - critFromBuffs
 
-            critRates.push(critRate)
+            this.critRates.push(critRate)
+        }
+    }
+
+    public onSnapshot(event: SnapshotEvent, effects: Effect[]) {
+        const critBuffUp = effects.some(effect => effect.critRate != null)
+
+        if (!critBuffUp) {
+            this.snapshotEvents.push(event)
+        }
+    }
+
+    private estimateCritRate(): number | undefined {
+        // No DoTs, give a best guess based on observed crits
+        if (this.critRates.length === 0) {
+            const events = this.snapshotEvents
+
+            if (events.length === 0) { return undefined }
+
+            const critCount = events.filter(event => event.isCrit).length
+            return critCount / events.length
         }
 
-        const mode = critRates.sort((a, b) =>
-            critRates.filter(v => v === a).length - critRates.filter(v => v === b).length
+        const mode = this.critRates.sort((a, b) =>
+            this.critRates.filter(v => v === a).length - this.critRates.filter(v => v === b).length
         ).pop()
 
         return mode

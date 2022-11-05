@@ -26,7 +26,6 @@ export class Player extends Entity {
     public name: string
     public job: Job
     protected registerSnapshot: SnapshotHook
-    private data: DataProvider
     private snapshots: Map<SnapshotKey, Snapshot> = new Map()
     private critEstimator: CritEstimator = new CritEstimator()
     private DHEstimator: DHEstimator = new DHEstimator()
@@ -35,12 +34,11 @@ export class Player extends Entity {
     private autoDHStatuses: Status[]
 
     constructor(friend: Friend, snapshotHook: SnapshotHook, data: DataProvider) {
-        super(friend.id.toString())
+        super(friend.id.toString(), data)
         this.id = friend.id
         this.name = friend.name
         this.job = friend.job
         this.registerSnapshot = snapshotHook
-        this.data = data
         this.init()
     }
 
@@ -86,11 +84,6 @@ export class Player extends Entity {
         this.addHook('snapshot', this.onSnapshot)
         this.addHook('applydebuff', this.onDebuff)
         this.addHook('tick', this.onTick)
-
-        // Add crit + DH estimators as dependents
-        this.addDependency(this.critEstimator)
-        this.addDependency(this.DHEstimator)
-
     }
 
     public getEstimatedStats(): Stats {
@@ -147,6 +140,9 @@ export class Player extends Entity {
         }
 
         this.registerSnapshot(snapshot)
+
+        this.critEstimator.onSnapshot(event, snapshot.effects)
+        this.DHEstimator.onSnapshot(event, snapshot.effects)
     }
 
     private onDebuff(event: ApplyDebuffEvent) {
@@ -173,14 +169,15 @@ export class Player extends Entity {
 
         const key = `${event.targetKey}-${event.statusID}` as SnapshotKey
         this.snapshots.set(key, snapshot)
+        this.registerSnapshot(snapshot)
     }
 
     private onTick(event: TickEvent) {
         const key = this.getSnapshotKey(event)
 
         if (!this.snapshots.has(key)) {
-            console.warn('Tick event found without a matching snapshot!')
-            console.warn(event)
+            //console.warn('Tick event found without a matching snapshot!')
+            //console.warn(event)
             return
         }
 
@@ -191,6 +188,9 @@ export class Player extends Entity {
             timestamp: event.timestamp,
             amount: event.amount,
         }
+
+        this.critEstimator.onTick(event, snapshot.effects)
+        this.DHEstimator.onTick(event, snapshot.effects)
 
         snapshot.damage.push(damage)
     }
