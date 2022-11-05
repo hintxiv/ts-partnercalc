@@ -43,7 +43,6 @@ jobs:
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SCP_USER }}
-        password: ${{ secrets.SCP_PASSWORD }}
         source: "dist"
         target: ${{ secrets.DEPLOY_DIR }}
         strip_components: 1
