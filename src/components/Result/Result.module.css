@@ -28,6 +28,7 @@ body, html {
 
 .fadeTop, .fadeBottom {
     position: fixed;
+    pointer-events: none;
     z-index: 1;
     height: 15rem;
     width: 100%;

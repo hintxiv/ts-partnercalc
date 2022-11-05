@@ -12,6 +12,7 @@ import { DancerIcon } from 'components/JobIcons'
 import React from 'react'
 import { ComputedStandard } from 'types'
 import { DamageGraph } from './DamageGraph/DamageGraph'
+import { DamageTable } from './DamageTable/DamageTable'
 import styles from './StandardWindow.module.css'
 
 interface StandardWindowProps {
@@ -60,7 +61,6 @@ export function StandardWindow(props: StandardWindowProps) {
                         style={{ backgroundColor: partner.job.color }}
                     />
                 </div>
-
                 <div className={styles.timestamp}>
                     <TimestampChip
                         label={start + ' - ' + end}
@@ -82,7 +82,7 @@ export function StandardWindow(props: StandardWindowProps) {
                 Damage Table
             </AccordionSummary>
             <AccordionDetails>
-                Table...
+                <DamageTable standard={props.standard} />
             </AccordionDetails>
         </Accordion>
     </div>
