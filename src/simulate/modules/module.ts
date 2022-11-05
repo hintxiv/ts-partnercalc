@@ -6,7 +6,7 @@ import {
 import { EventHook } from 'simulate/hooks'
 
 // TargetKey - StatusID
-export type StatusKey = `${string}-${number}`
+export type SnapshotKey = `${string}-${number}`
 
 export interface Filter {
     sourceID?: number
@@ -23,7 +23,7 @@ export abstract class Module {
         this.dependencies.push(dep)
     }
 
-    protected getStatusKey(event: TickEvent): StatusKey {
+    protected getSnapshotKey(event: TickEvent): SnapshotKey {
         return `${event.targetKey}-${event.statusID}`
     }
 

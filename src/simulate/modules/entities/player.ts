@@ -1,14 +1,25 @@
 import { ApplyDebuffEvent, SnapshotEvent, TickEvent } from 'api/fflogs/event'
 import { Friend } from 'api/fflogs/fight'
-import { DataProvider } from 'data/provider'
-import { Effect, Job } from 'types'
+import { DataProvider, StatusKey } from 'data/provider'
+import { Effect, Job, Status } from 'types'
 import { DamageInstance, DamageOptions, Snapshot } from 'types/snapshot'
 import { Stats } from 'types/stats'
 import { SnapshotHook } from '../../hooks'
 import { CritEstimator } from '../estimators/crit'
 import { DHEstimator } from '../estimators/dh'
-import { StatusKey } from '../module'
+import { SnapshotKey } from '../module'
 import { Entity } from './entity'
+
+const AUTO_CRIT_STATUSES: StatusKey[] = [
+    'REASSEMBLED',
+    'LIFE_SURGE',
+    'INNER_RELEASE',
+]
+
+const AUTO_DH_STATUSES: StatusKey[] = [
+    'REASSEMBLED',
+    'INNER_RELEASE',
+]
 
 export class Player extends Entity {
     public id: number
@@ -16,9 +27,12 @@ export class Player extends Entity {
     public job: Job
     protected registerSnapshot: SnapshotHook
     private data: DataProvider
-    private snapshots: Map<StatusKey, Snapshot> = new Map()
+    private snapshots: Map<SnapshotKey, Snapshot> = new Map()
     private critEstimator: CritEstimator = new CritEstimator()
     private DHEstimator: DHEstimator = new DHEstimator()
+
+    private autoCritStatuses: Status[]
+    private autoDHStatuses: Status[]
 
     constructor(friend: Friend, snapshotHook: SnapshotHook, data: DataProvider) {
         super(friend.id.toString())
@@ -31,12 +45,44 @@ export class Player extends Entity {
     }
 
     protected init() {
-        // Add handlers to maintain raid buff statuses
+        this.autoCritStatuses = AUTO_CRIT_STATUSES
+            .map(key => this.data.statuses[key])
+        this.autoDHStatuses = AUTO_DH_STATUSES
+            .map(key => this.data.statuses[key])
+
+        // Add hooks to maintain raid buff statuses
         Object.values(this.data.buffs).forEach(buff => {
             this.addHook('applybuff', this.onApplyStatus, { actionID: buff.id })
             this.addHook('removebuff', this.onRemoveStatus, { actionID: buff.id })
         })
 
+        // Add job-specific status hooks
+        if (this.job.name === 'Dragoon') {
+            this.addHook('applybuff', this.onApplyStatus, {
+                actionID: this.data.statuses.LIFE_SURGE.id,
+            })
+            this.addHook('removebuff', this.onRemoveStatus, {
+                actionID: this.data.statuses.LIFE_SURGE.id,
+            })
+
+        } else if (this.job.name === 'Machinist') {
+            this.addHook('applybuff', this.onApplyStatus, {
+                actionID: this.data.statuses.REASSEMBLED.id,
+            })
+            this.addHook('removebuff', this.onRemoveStatus, {
+                actionID: this.data.statuses.REASSEMBLED.id,
+            })
+
+        } else if (this.job.name === 'Warrior') {
+            this.addHook('applybuff', this.onApplyStatus, {
+                actionID: this.data.statuses.INNER_RELEASE.id,
+            })
+            this.addHook('removebuff', this.onRemoveStatus, {
+                actionID: this.data.statuses.INNER_RELEASE.id,
+            })
+        }
+
+        // Generic hooks
         this.addHook('snapshot', this.onSnapshot)
         this.addHook('applydebuff', this.onDebuff)
         this.addHook('tick', this.onTick)
@@ -44,6 +90,7 @@ export class Player extends Entity {
         // Add crit + DH estimators as dependents
         this.addDependency(this.critEstimator)
         this.addDependency(this.DHEstimator)
+
     }
 
     public getEstimatedStats(): Stats {
@@ -59,10 +106,26 @@ export class Player extends Entity {
     }
 
     private onSnapshot(event: SnapshotEvent) {
-        // TODO auto crits
+        const action = this.data.getAction(event.actionID)
+
         const options: DamageOptions = {
             critType: 'normal',
             DHType: 'normal',
+        }
+
+        if (action != null) {
+            const autoCritStatusUp = action?.onGCD && this.autoCritStatuses
+                .some(status => this.activeStatuses.has(status.id))
+            const autoDHStatusUp = action?.onGCD && this.autoDHStatuses
+                .some(status => this.activeStatuses.has(status.id))
+
+            if (event.isCrit && (action.autoCrit || autoCritStatusUp)) {
+                options.critType = 'auto'
+            }
+
+            if (event.isDH && (action.autoDH || autoDHStatusUp)) {
+                options.DHType = 'auto'
+            }
         }
 
         const damage: DamageInstance = {
@@ -78,7 +141,7 @@ export class Player extends Entity {
             source: this.id,
             timestamp: event.timestamp,
             target: event.targetKey,
-            effects: this.activeBuffs, // TODO might need to copy array?
+            effects: [...this.activeBuffs],
             options: options,
             damage: [damage],
         }
@@ -103,21 +166,21 @@ export class Player extends Entity {
             source: this.id,
             timestamp: event.timestamp,
             target: event.targetKey,
-            effects: this.activeBuffs, // TODO might need to copy array?
+            effects: this.activeBuffs,
             options: options,
             damage: [],
         }
 
-        const statusKey = `${event.targetKey}-${event.statusID}` as StatusKey
-        this.snapshots.set(statusKey, snapshot)
+        const key = `${event.targetKey}-${event.statusID}` as SnapshotKey
+        this.snapshots.set(key, snapshot)
     }
 
     private onTick(event: TickEvent) {
-        const key = this.getStatusKey(event)
+        const key = this.getSnapshotKey(event)
 
         if (!this.snapshots.has(key)) {
-            // console.warn('Tick event found without a matching snapshot!')
-            // console.warn(event)
+            console.warn('Tick event found without a matching snapshot!')
+            console.warn(event)
             return
         }
 

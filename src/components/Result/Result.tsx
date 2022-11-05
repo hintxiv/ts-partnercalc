@@ -34,18 +34,30 @@ export function Result() {
         simulate().catch(console.error)
     }, [parser, setReady, setStandards])
 
+    const generateTimestampLink = (start: number, end: number) => {
+        const baseReportURL = 'https://www.fflogs.com/reports/'
+        const fightURL = baseReportURL + `${parser.reportID}#fight=${parser.fightID}`
+
+        return fightURL + `&type=damage-done&start=${start}&end=${end}`
+    }
+
     if (!ready) {
         return <CircularProgress size={80} className={styles.loading} />
     }
 
-    return <div className={styles.result}>
-        {standards.map(standard =>
-            <StandardWindow
-                standard={standard}
-                dancer={dancer}
-                formatTimestamp={parser.formatTimestamp}
-                key={standard.start}
-            />
-        )}
+    return <div>
+        <div className={styles.fadeTop} />
+        <div className={styles.result}>
+            {standards.map(standard =>
+                <StandardWindow
+                    standard={standard}
+                    dancer={dancer}
+                    formatTimestamp={parser.formatTimestamp}
+                    generateTimestampLink={generateTimestampLink}
+                    key={standard.start}
+                />
+            )}
+        </div>
+        <div className={styles.fadeBottom} />
     </div>
 }

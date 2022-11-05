@@ -52,6 +52,11 @@ export const SAM_ACTIONS = preserve<Action>()({
         id: 7487,
         generatesEsprit: true,
     },
+    KAESHI_SETSUGEKKA: {
+        name: 'Kaeshi Setsugekka',
+        id: 16486,
+        autoCrit: true,
+    },
     OKA: {
         name: 'Oka',
         id: 7485,
@@ -76,6 +81,12 @@ export const SAM_ACTIONS = preserve<Action>()({
         name: 'Ogi Namikiri',
         id: 25781,
         generatesEsprit: true,
+        autoCrit: true,
+    },
+    KAESHI_NAMIKIRI: {
+        name: 'Kaeshi Namikiri',
+        id: 25782,
+        autoCrit: true,
     },
     FUKO: {
         name: 'Fuko',

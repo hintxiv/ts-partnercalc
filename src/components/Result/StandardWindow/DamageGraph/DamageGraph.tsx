@@ -39,7 +39,12 @@ export function DamageGraph(props: DamageGraphProps) {
                 }}
                 layout="vertical"
             >
-                <XAxis type="number" stroke="white" tickCount={8} />
+                <XAxis
+                    type="number"
+                    stroke="white"
+                    tickCount={8}
+                    tickLine={false}
+                />
                 <YAxis
                     dataKey="name"
                     type="category"
@@ -89,8 +94,8 @@ const playerNameTick = (players: ComputedPlayer[]) => (props: AxisTickProps) => 
 
     return <g transform={`translate(${x},${y})`} fill="white">
         <text
-            x={-30}
-            y={6}
+            x={-32}
+            y={8}
             textAnchor="end"
         >
             {initials}
@@ -98,8 +103,8 @@ const playerNameTick = (players: ComputedPlayer[]) => (props: AxisTickProps) => 
         <player.job.Icon
             height={30}
             width={30}
-            x={-30}
-            y={-15}
+            x={-28}
+            y={-13}
         />
     </g>
 }

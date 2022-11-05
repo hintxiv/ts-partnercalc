@@ -1,4 +1,9 @@
-import { ApplyBuffEvent, ApplyDebuffEvent, RemoveBuffEvent, RemoveDebuffEvent } from 'api/fflogs/event'
+import {
+    ApplyBuffEvent,
+    ApplyDebuffEvent,
+    RemoveBuffEvent,
+    RemoveDebuffEvent,
+} from 'api/fflogs/event'
 import { Status } from 'types'
 import { Module } from '../module'
 

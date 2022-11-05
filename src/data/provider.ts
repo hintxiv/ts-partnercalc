@@ -3,6 +3,9 @@ import { ACTIONS } from './actions'
 import { BUFFS, DEBUFFS, EFFECTS } from './effects'
 import { STATUSES } from './statuses'
 
+export type ActionKey = keyof typeof ACTIONS
+export type StatusKey = keyof typeof STATUSES
+
 /**
  * Makes accessing action / status / etc. data a bit more convenient
  */

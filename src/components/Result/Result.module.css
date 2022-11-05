@@ -22,6 +22,29 @@ body, html {
     padding-top: 10rem;
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 30rem;
+    margin-bottom: 20rem;
     background-color: #242526;
+}
+
+.fadeTop, .fadeBottom {
+    position: fixed;
+    z-index: 1;
+    height: 15rem;
+    width: 100%;
+}
+
+.fadeTop {
+    top: 4rem;
+    background-image: linear-gradient(
+        rgba(36, 37, 38, 1),
+        rgba(36, 37, 38, 0.1)
+    );
+}
+
+.fadeBottom {
+    bottom: 0;
+    background-image: linear-gradient(
+        rgba(36, 37, 38, 0.1),
+        rgba(36, 37, 38, 1)
+    );
 }
