@@ -145,14 +145,5 @@ module.exports = {
                 'no-undef': 'off',
             },
         },
-        // Data / job / math files
-        {
-            files: ['src/data/**/*.ts?(x)', 'src/simulator/entity/player/jobs/*.ts?(x)', 'src/math/**/*.ts?(x)'],
-            rules: {
-                // Data (and math functions) inherently contain a lot of magic numbers
-                // Be gentle with job logic too... For now
-                '@typescript-eslint/no-magic-numbers': 'off',
-            },
-        },
     ],
 }
