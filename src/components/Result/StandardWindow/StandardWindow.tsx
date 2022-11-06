@@ -3,17 +3,18 @@ import {
     AccordionDetails,
     AccordionSummary,
     Card,
-    Chip,
-    withStyles,
 } from '@material-ui/core'
-import { AccessTime, ExpandMore } from '@material-ui/icons'
+import { ExpandMore } from '@material-ui/icons'
 import { Friend } from 'api/fflogs/fight'
 import { DancerIcon } from 'components/JobIcons'
-import React from 'react'
+import React, { useState } from 'react'
 import { ComputedStandard } from 'types'
+import { NameChip, TimestampChip } from '../Chip'
 import { DamageGraph } from './DamageGraph/DamageGraph'
 import { DamageTable } from './DamageTable/DamageTable'
+import { DanceLog } from './DanceLog/DanceLog'
 import styles from './StandardWindow.module.css'
+
 
 interface StandardWindowProps {
     standard: ComputedStandard
@@ -22,19 +23,9 @@ interface StandardWindowProps {
     generateTimestampLink: (start: number, end: number) => string
 }
 
-const NameChip = withStyles({
-    root: {
-        fontSize: 'large',
-    },
-})(Chip)
-
-const TimestampChip = withStyles({
-    root: {
-        fontSize: 'medium',
-    },
-})(Chip)
-
 export function StandardWindow(props: StandardWindowProps) {
+    const [expanded, setExpanded] = useState<string | false>(false)
+
     const start = props.formatTimestamp(props.standard.start)
     const end = props.formatTimestamp(props.standard.end)
 
@@ -45,27 +36,25 @@ export function StandardWindow(props: StandardWindowProps) {
         window.open(timestampURL, '_blank', 'noopener,noreferrer')
     }
 
+    const handleChange = (panel: string) => (
+        _: React.ChangeEvent,
+        isExpanded: boolean,
+    ) => {
+        setExpanded(isExpanded ? panel : false)
+    }
+
     return <div className={styles.standardWindow}>
         <Card className={styles.card}>
             <div className={styles.rowContainer}>
                 <div className={styles.partnered}>
-                    <NameChip
-                        label={props.dancer.name}
-                        color="primary"
-                        icon={<DancerIcon height={30} width={30} />}
-                    />
-                    {' partnered '}
-                    <NameChip
-                        label={partner.name}
-                        icon={<partner.job.Icon height={30} width={30} fill="white" />}
-                        style={{ backgroundColor: partner.job.color }}
-                    />
+                    <NameChip name={props.dancer.name} job={props.dancer.job} />
+                    <span className={styles.partneredText}>partnered</span>
+                    <NameChip name={partner.name} job={partner.job} />
                 </div>
                 <div className={styles.timestamp}>
                     <TimestampChip
-                        label={start + ' - ' + end}
+                        timestamp={start + ' - ' + end}
                         onClick={openTimestampLink}
-                        icon={<AccessTime />}
                     />
                 </div>
             </div>
@@ -73,17 +62,42 @@ export function StandardWindow(props: StandardWindowProps) {
         <Card className={styles.card}>
             <DamageGraph standard={props.standard} />
         </Card>
-        <Accordion TransitionProps={{ unmountOnExit: true }} className={styles.accordion}>
-            <AccordionSummary
-                expandIcon={<ExpandMore />}
-                aria-controls="panel1a-content"
-                id="panel1a-header"
+        <div>
+            <Accordion
+                expanded={expanded === 'panel1'} onChange={handleChange('panel1')}
+                TransitionProps={{ unmountOnExit: true }}
+                className={styles.accordion}
             >
-                Damage Table
-            </AccordionSummary>
-            <AccordionDetails>
-                <DamageTable standard={props.standard} />
-            </AccordionDetails>
-        </Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMore />}
+                    aria-controls="panel2-content"
+                    id="panel2-header"
+                >
+                    Damage Table
+                </AccordionSummary>
+                <AccordionDetails className={styles.accordionContent}>
+                    <DamageTable standard={props.standard} />
+                </AccordionDetails>
+            </Accordion>
+            <Accordion
+                expanded={expanded === 'panel2'} onChange={handleChange('panel2')}
+                TransitionProps={{ unmountOnExit: true }}
+                className={styles.accordion}
+            >
+                <AccordionSummary
+                    expandIcon={<ExpandMore />}
+                    aria-controls="panel2-content"
+                    id="panel2-header"
+                >
+                    Dance Log
+                </AccordionSummary>
+                <AccordionDetails className={styles.accordionContent}>
+                    <DanceLog
+                        events={props.standard.events}
+                        formatTimestamp={props.formatTimestamp}
+                    />
+                </AccordionDetails>
+            </Accordion>
+        </div>
     </div>
 }

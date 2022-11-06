@@ -3,8 +3,10 @@
 declare namespace StandardWindowModuleCssNamespace {
   export interface IStandardWindowModuleCss {
     accordion: string;
+    accordionContent: string;
     card: string;
     partnered: string;
+    partneredText: string;
     rowContainer: string;
     standardWindow: string;
     timestamp: string;

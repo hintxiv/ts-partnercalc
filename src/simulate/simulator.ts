@@ -87,6 +87,7 @@ export class Simulator {
             players: players,
             actualPartner: players.find(player => player.id === standard.targetID),
             bestPartner: players[0],
+            events: [],
         }
     }
 
