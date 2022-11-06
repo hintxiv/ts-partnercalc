@@ -14,23 +14,15 @@ interface StandardEvent {
 }
 
 export class Standard extends BuffWindow {
-    public isTillana: boolean
     public targetID: number
     private devilment?: Devilment
     private data: DataProvider
     private events: StandardEvent[] = []
 
-    constructor(start: number, targetID: number, isTillana: boolean, data: DataProvider) {
+    constructor(start: number, targetID: number, data: DataProvider) {
         super(start, targetID)
         this.targetID = targetID
-        this.isTillana = isTillana
         this.data = data
-
-        this.addEvent({
-            action: isTillana ? data.actions.TILLANA : data.actions.DOUBLE_STANDARD_FINISH,
-            timestamp: start,
-            targetID: targetID,
-        })
     }
 
     public override processSnapshot(snapshot: Snapshot) {
@@ -39,6 +31,14 @@ export class Standard extends BuffWindow {
         if (this.devilment) {
             this.devilment.processSnapshot(snapshot)
         }
+    }
+
+    public addStandardCast(isTillana: boolean, timestamp: number, targetID: number) {
+        this.addEvent({
+            action: isTillana ? this.data.actions.TILLANA : this.data.actions.DOUBLE_STANDARD_FINISH,
+            timestamp: timestamp,
+            targetID: targetID,
+        })
     }
 
     public addDevilment(devilment: Devilment) {
