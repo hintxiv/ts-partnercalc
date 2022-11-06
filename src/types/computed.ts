@@ -25,8 +25,8 @@ export interface ComputedPlayer {
 
 export interface ComputedEvent {
     action: Action
-    target: ComputedPlayer
     timestamp: number
+    target?: ComputedPlayer
 }
 
 export interface ComputedStandard {

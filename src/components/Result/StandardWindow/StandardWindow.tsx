@@ -6,7 +6,6 @@ import {
 } from '@material-ui/core'
 import { ExpandMore } from '@material-ui/icons'
 import { Friend } from 'api/fflogs/fight'
-import { DancerIcon } from 'components/JobIcons'
 import React, { useState } from 'react'
 import { ComputedStandard } from 'types'
 import { NameChip, TimestampChip } from '../Chip'
@@ -14,7 +13,6 @@ import { DamageGraph } from './DamageGraph/DamageGraph'
 import { DamageTable } from './DamageTable/DamageTable'
 import { DanceLog } from './DanceLog/DanceLog'
 import styles from './StandardWindow.module.css'
-
 
 interface StandardWindowProps {
     standard: ComputedStandard
@@ -59,7 +57,7 @@ export function StandardWindow(props: StandardWindowProps) {
                 </div>
             </div>
         </Card>
-        <Card className={styles.card}>
+        <Card className={styles.card + ' ' + styles.graph}>
             <DamageGraph standard={props.standard} />
         </Card>
         <div>

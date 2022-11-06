@@ -1,6 +1,5 @@
 .standardWindow {
     margin-bottom: 18rem;
-    scroll-snap-align: center;
     font-family: Nunito;
 }
 
@@ -12,6 +11,10 @@
     box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px !important;
     padding: 1rem;
     margin-bottom: 2rem;
+}
+
+.graph {
+    scroll-snap-align: center;
 }
 
 .accordion {

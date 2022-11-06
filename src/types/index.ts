@@ -1,5 +1,6 @@
 export { Action } from './action'
 export {
+    ComputedEvent,
     ComputedDamage,
     ComputedPlayer,
     ComputedStandard,

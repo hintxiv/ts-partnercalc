@@ -2,7 +2,12 @@ import { FFLogsEvent } from 'api/fflogs/event'
 import { Friend } from 'api/fflogs/fight'
 import { FFLogsParser } from 'api/fflogs/parser'
 import { DataProvider } from 'data/provider'
-import { ComputedPlayer, ComputedStandard, DamageTotals } from 'types'
+import {
+    ComputedEvent,
+    ComputedPlayer,
+    ComputedStandard,
+    DamageTotals,
+} from 'types'
 import { Snapshot } from '../types/snapshot'
 import { Standard } from './buffwindow/standard'
 import { EnemyHandler } from './handlers/enemies'
@@ -80,6 +85,12 @@ export class Simulator {
         // Sort from high DPS to low DPS
         players.sort((a, b) => b.totals.total - a.totals.total)
 
+        const events: ComputedEvent[] = standard.getEvents().map(event => ({
+            action: event.action,
+            timestamp: event.timestamp,
+            target: players.find(player => player.id === event.targetID),
+        }))
+
         return {
             start: standard.start,
             end: standard.end ?? this.parser.fight.end,
@@ -87,7 +98,7 @@ export class Simulator {
             players: players,
             actualPartner: players.find(player => player.id === standard.targetID),
             bestPartner: players[0],
-            events: [],
+            events: events,
         }
     }
 

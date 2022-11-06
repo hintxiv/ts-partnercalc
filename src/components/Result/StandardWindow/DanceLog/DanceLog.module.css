@@ -6,6 +6,5 @@
 .eventText {
     position: relative;
     display: inline-block;
-    top: 0.2rem;
-    left: 0.4rem;
+    margin: auto 0.5rem;
 }
