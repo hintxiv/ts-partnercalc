@@ -1,0 +1,10 @@
+.eventRow {
+    display: flex;
+    margin-bottom: 0.5rem;
+}
+
+.eventText {
+    position: relative;
+    display: inline-block;
+    margin: auto 0.5rem;
+}

@@ -1,3 +1,4 @@
+import { Action } from './action'
 import { Job } from './job'
 
 interface ComputedDamageTypes {
@@ -22,6 +23,12 @@ export interface ComputedPlayer {
     totals: DamageTotals
 }
 
+export interface ComputedEvent {
+    action: Action
+    timestamp: number
+    target?: ComputedPlayer
+}
+
 export interface ComputedStandard {
     start: number
     end: number
@@ -29,4 +36,5 @@ export interface ComputedStandard {
     players: ComputedPlayer[]
     actualPartner: ComputedPlayer
     bestPartner: ComputedPlayer
+    events: ComputedEvent[]
 }

@@ -33,6 +33,14 @@ const theme = createTheme({
                 backgroundColor: '#424242',
             },
         },
+        MuiTableCell: {
+            root: {
+                fontSize: '1rem',
+            },
+            head: {
+                fontWeight: 'bold',
+            },
+        },
     },
 })
 

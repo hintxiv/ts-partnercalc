@@ -2,22 +2,35 @@ import { DataProvider } from 'data/provider'
 import { simulateEsprit } from 'math/esprit'
 import { simulateStandard } from 'math/rdps'
 import { Player } from 'simulate/modules/entities/player'
-import { ComputedDamage, Job, Stats } from 'types'
+import { Action, ComputedDamage, Job, Stats } from 'types'
 import { Snapshot } from 'types/snapshot'
 import { BuffWindow } from './buffwindow'
 import { Devilment } from './devilment'
+
+interface StandardEvent {
+    action: Action
+    timestamp: number
+    targetID?: number
+}
 
 export class Standard extends BuffWindow {
     public isTillana: boolean
     public targetID: number
     private devilment?: Devilment
     private data: DataProvider
+    private events: StandardEvent[] = []
 
-    constructor(start: number, target: number, isTillana: boolean, data: DataProvider) {
-        super(start, target)
-        this.targetID = target
+    constructor(start: number, targetID: number, isTillana: boolean, data: DataProvider) {
+        super(start, targetID)
+        this.targetID = targetID
         this.isTillana = isTillana
         this.data = data
+
+        this.addEvent({
+            action: isTillana ? data.actions.TILLANA : data.actions.DOUBLE_STANDARD_FINISH,
+            timestamp: start,
+            targetID: targetID,
+        })
     }
 
     public override processSnapshot(snapshot: Snapshot) {
@@ -30,8 +43,43 @@ export class Standard extends BuffWindow {
 
     public addDevilment(devilment: Devilment) {
         this.devilment = devilment
+
+        this.addEvent({
+            action: this.data.actions.DEVILMENT,
+            timestamp: devilment.start,
+            targetID: devilment.target,
+        })
     }
 
+    public addClosedPosition(timestamp: number, targetID: number) {
+        this.addEvent({
+            action: this.data.actions.CLOSED_POSITION,
+            timestamp: timestamp,
+            targetID: targetID,
+        })
+    }
+
+    public addTechnical(timestamp: number) {
+        this.addEvent({
+            action: this.data.actions.QUADRUPLE_TECHNICAL_FINISH,
+            timestamp: timestamp,
+        })
+    }
+
+    /* Merges a new Standard application into this window */
+    public mergeWindow(isTillana: boolean, timestamp: number, targetID: number) {
+        this.addEvent({
+            action: isTillana ? this.data.actions.TILLANA : this.data.actions.DOUBLE_STANDARD_FINISH,
+            timestamp: timestamp,
+            targetID: targetID,
+        })
+    }
+
+    public getEvents(): readonly StandardEvent[] {
+        return this.events
+    }
+
+    /* Returns the rDPS totals for a given player over this window */
     public getPlayerContribution(player: Player, stats: Stats, potencyRatio: number): ComputedDamage[] {
         const snapshots = this.snapshots.getPlayerSnapshots(player.id)
 
@@ -53,6 +101,10 @@ export class Standard extends BuffWindow {
         }
 
         return computedDamage
+    }
+
+    private addEvent(event: StandardEvent) {
+        this.events.push(event)
     }
 
     private getStandardContribution(snapshot: Snapshot, stats: Stats): number {

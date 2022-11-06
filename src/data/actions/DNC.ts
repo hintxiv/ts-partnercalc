@@ -104,4 +104,12 @@ export const DNC_ACTIONS = preserve<Action>()({
         autoCrit: true,
         autoDH: true,
     },
+    DEVILMENT: {
+        name: 'Devilment',
+        id: 16011,
+    },
+    CLOSED_POSITION: {
+        name: 'Closed Position',
+        id: 16006,
+    },
 })
