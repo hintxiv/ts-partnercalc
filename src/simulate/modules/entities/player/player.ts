@@ -4,11 +4,11 @@ import { DataProvider, StatusKey } from 'data/provider'
 import { Effect, Job, Status } from 'types'
 import { DamageInstance, DamageOptions, Snapshot } from 'types/snapshot'
 import { Stats } from 'types/stats'
-import { SnapshotHook } from '../../hooks'
-import { CritEstimator } from '../estimators/crit'
-import { DHEstimator } from '../estimators/dh'
-import { SnapshotKey } from '../module'
-import { Entity } from './entity'
+import { SnapshotHook } from '../../../hooks'
+import { CritEstimator } from '../../estimators/crit'
+import { DHEstimator } from '../../estimators/dh'
+import { SnapshotKey } from '../../module'
+import { Entity } from '../entity'
 
 const AUTO_CRIT_STATUSES: StatusKey[] = [
     'REASSEMBLED',
@@ -25,11 +25,13 @@ export class Player extends Entity {
     public id: number
     public name: string
     public job: Job
+
     protected registerSnapshot: SnapshotHook
     private snapshots: Map<SnapshotKey, Snapshot> = new Map()
+    private groundDoTSnapshots: Map<SnapshotKey, Snapshot> = new Map()
+
     private critEstimator: CritEstimator = new CritEstimator()
     private DHEstimator: DHEstimator = new DHEstimator()
-
     private autoCritStatuses: Status[]
     private autoDHStatuses: Status[]
 
@@ -53,32 +55,6 @@ export class Player extends Entity {
             this.addHook('applybuff', this.onApplyStatus, { actionID: buff.id })
             this.addHook('removebuff', this.onRemoveStatus, { actionID: buff.id })
         })
-
-        // Add job-specific status hooks
-        if (this.job.name === 'Dragoon') {
-            this.addHook('applybuff', this.onApplyStatus, {
-                actionID: this.data.statuses.LIFE_SURGE.id,
-            })
-            this.addHook('removebuff', this.onRemoveStatus, {
-                actionID: this.data.statuses.LIFE_SURGE.id,
-            })
-
-        } else if (this.job.name === 'Machinist') {
-            this.addHook('applybuff', this.onApplyStatus, {
-                actionID: this.data.statuses.REASSEMBLED.id,
-            })
-            this.addHook('removebuff', this.onRemoveStatus, {
-                actionID: this.data.statuses.REASSEMBLED.id,
-            })
-
-        } else if (this.job.name === 'Warrior') {
-            this.addHook('applybuff', this.onApplyStatus, {
-                actionID: this.data.statuses.INNER_RELEASE.id,
-            })
-            this.addHook('removebuff', this.onRemoveStatus, {
-                actionID: this.data.statuses.INNER_RELEASE.id,
-            })
-        }
 
         // Generic hooks
         this.addHook('snapshot', this.onSnapshot)
