@@ -1,4 +1,4 @@
-import { ApplyDebuffEvent, SnapshotEvent, TickEvent } from 'api/fflogs/event'
+import { ApplyBuffEvent, ApplyDebuffEvent, SnapshotEvent, TickEvent } from 'api/fflogs/event'
 import { Friend } from 'api/fflogs/fight'
 import { DataProvider, StatusKey } from 'data/provider'
 import { Effect, Job, Status } from 'types'
@@ -28,7 +28,7 @@ export class Player extends Entity {
 
     protected registerSnapshot: SnapshotHook
     private snapshots: Map<SnapshotKey, Snapshot> = new Map()
-    private groundDoTSnapshots: Map<SnapshotKey, Snapshot> = new Map()
+    private groundDoTSnapshots: Map<Status['id'], Snapshot> = new Map()
 
     private critEstimator: CritEstimator = new CritEstimator()
     private DHEstimator: DHEstimator = new DHEstimator()
@@ -74,7 +74,7 @@ export class Player extends Entity {
         }
     }
 
-    private onSnapshot(event: SnapshotEvent) {
+    protected onSnapshot(event: SnapshotEvent) {
         const action = this.data.getAction(event.actionID)
 
         const options: DamageOptions = {
@@ -105,15 +105,15 @@ export class Player extends Entity {
             isDH: event.isDH,
         }
 
-        const snapshot: Snapshot = {
+        const snapshot = new Snapshot({
             id: event.actionID,
             source: this.id,
             timestamp: event.timestamp,
             target: event.targetKey,
-            effects: [...this.activeBuffs],
+            buffs: [...this.activeBuffs],
             options: options,
             damage: [damage],
-        }
+        })
 
         this.registerSnapshot(snapshot)
 
@@ -121,10 +121,8 @@ export class Player extends Entity {
         this.DHEstimator.onSnapshot(event, snapshot.effects)
     }
 
-    private onDebuff(event: ApplyDebuffEvent) {
+    protected onDebuff(event: ApplyDebuffEvent) {
         if (!event.appliedBy) {
-            // console.warn('Debuff event found without an applying action!')
-            // console.warn(event)
             return
         }
 
@@ -133,27 +131,45 @@ export class Player extends Entity {
             DHType: 'normal',
         }
 
-        const snapshot: Snapshot = {
+        const snapshot = new Snapshot({
             id: event.statusID,
             source: this.id,
             timestamp: event.timestamp,
             target: event.targetKey,
-            effects: this.activeBuffs,
+            buffs: this.activeBuffs,
             options: options,
-            damage: [],
-        }
+        })
 
-        const key = `${event.targetKey}-${event.statusID}` as SnapshotKey
+        const key = this.getSnapshotKey(event)
+
         this.snapshots.set(key, snapshot)
         this.registerSnapshot(snapshot)
     }
 
-    private onTick(event: TickEvent) {
+    protected onTick(event: TickEvent) {
         const key = this.getSnapshotKey(event)
 
         if (!this.snapshots.has(key)) {
-            //console.warn('Tick event found without a matching snapshot!')
-            //console.warn(event)
+            if (this.groundDoTSnapshots.has(event.statusID)) {
+                console.log('ground DoT snapshot')
+                const snapshot = this.groundDoTSnapshots.get(event.statusID)
+
+                const damage: DamageInstance = {
+                    type: 'tick',
+                    timestamp: event.timestamp,
+                    amount: event.amount,
+                }
+
+                // Copy buffs from the original snapshot, but not debuffs
+                const newSnapshot = new Snapshot({
+                    ...snapshot,
+                    debuffs: [],
+                    damage: [damage],
+                })
+
+                this.registerSnapshot(newSnapshot)
+            }
+
             return
         }
 
@@ -171,7 +187,29 @@ export class Player extends Entity {
         snapshot.damage.push(damage)
     }
 
-    private get activeBuffs(): Effect[] {
+    protected onGroundDoTApply(event: ApplyBuffEvent) {
+        this.onApplyStatus(event)
+
+        const options: DamageOptions = {
+            critType: 'normal',
+            DHType: 'normal',
+        }
+
+        const snapshot = new Snapshot({
+            id: event.statusID,
+            source: this.id,
+            timestamp: event.timestamp,
+            target: event.targetKey,
+            buffs: this.activeBuffs,
+            options: options,
+        })
+
+        console.log('ground dot applied')
+        console.log(event)
+        this.groundDoTSnapshots.set(event.statusID, snapshot)
+    }
+
+    protected get activeBuffs(): Effect[] {
         const effects: Effect[] = []
 
         this.activeStatuses.forEach(statusID => {

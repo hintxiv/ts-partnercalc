@@ -1,5 +1,13 @@
 import * as ICONS from 'components/JobIcons'
-import { Dragoon, Machinist, Player, Warrior } from 'simulate/modules/entities/player'
+import {
+    DarkKnight,
+    Dragoon,
+    Machinist,
+    Ninja,
+    Player,
+    Summoner,
+    Warrior,
+} from 'simulate/modules/entities/player'
 import { Job } from 'types'
 import { preserve } from 'util/typeutils'
 
@@ -17,7 +25,7 @@ export const JOBS = preserve<Job>()({
         name: 'Dark Knight',
         color: '#d126cc',
         espritRate: 'unknown',
-        constructor: Player,
+        constructor: DarkKnight,
         Icon: ICONS.DarkKnightIcon,
     },
     Gunbreaker: {
@@ -91,7 +99,7 @@ export const JOBS = preserve<Job>()({
         name: 'Ninja',
         color: '#af1964',
         espritRate: 0.2,
-        constructor: Player,
+        constructor: Ninja,
         Icon: ICONS.NinjaIcon,
     },
     Reaper: {
@@ -151,7 +159,7 @@ export const JOBS = preserve<Job>()({
         name: 'Summoner',
         color: '#2d9b78',
         espritRate: 'unknown',
-        constructor: Player,
+        constructor: Summoner,
         Icon: ICONS.SummonerIcon,
     },
 })

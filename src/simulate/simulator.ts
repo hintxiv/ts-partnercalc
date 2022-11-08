@@ -143,7 +143,7 @@ export class Simulator {
         if (!standard) { return }
 
         const debuffs = this.enemies.getEnemyDebuffs(snapshot.target)
-        snapshot.effects.push(...debuffs)
+        snapshot.addDebuffs(debuffs)
 
         standard.processSnapshot(snapshot)
     }

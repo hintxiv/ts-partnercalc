@@ -1,8 +1,4 @@
-import {
-    EventType,
-    FFLogsEvent,
-    TickEvent,
-} from 'api/fflogs/event'
+import { EventType, FFLogsEvent } from 'api/fflogs/event'
 import { EventHook } from 'simulate/hooks'
 
 // TargetKey - StatusID
@@ -23,8 +19,11 @@ export abstract class Module {
         this.dependencies.push(dep)
     }
 
-    protected getSnapshotKey(event: TickEvent): SnapshotKey {
-        return `${event.targetKey}-${event.statusID}`
+    protected getSnapshotKey(eventFields: {
+        targetKey: string,
+        statusID: number,
+    }): SnapshotKey {
+        return `${eventFields.targetKey}-${eventFields.statusID}`
     }
 
     public processEvent(event: FFLogsEvent) {
@@ -49,7 +48,7 @@ export abstract class Module {
         return key
     }
 
-    // Add a callback hook with optional sourceID / actionID filters
+    /* Add a callback hook with optional sourceID / actionID filters */
     protected addHook<
         T extends EventType,
         E extends Extract<FFLogsEvent, { type: T }>,
@@ -68,7 +67,7 @@ export abstract class Module {
         }
     }
 
-    // Get all hooks that might match the given Event
+    /* Get all hooks that match the given Event */
     protected getHooks(event: FFLogsEvent): Array< EventHook<FFLogsEvent> > {
         const hooks = []
 

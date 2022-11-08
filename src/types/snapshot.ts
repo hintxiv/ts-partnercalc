@@ -23,13 +23,57 @@ export interface TickDamageInstance extends DamageInstanceFields {
     type: 'tick'
 }
 
-// Tracks all damage instances for a given ability snapshot
-export interface Snapshot {
+interface SnapshotProps {
     id: number
     source: number
     timestamp: number
     target: string
-    effects: Effect[]
     options: DamageOptions
-    damage: DamageInstance[]
+    buffs?: Effect[]
+    debuffs?: Effect[]
+    damage?: DamageInstance[]
+}
+
+export class Snapshot implements SnapshotProps {
+    public readonly id: number
+    public readonly source: number
+    public readonly timestamp: number
+    public readonly target: string
+    public readonly options: DamageOptions
+    public readonly buffs: Effect[]
+    public readonly debuffs: Effect[]
+    public readonly damage: DamageInstance[]
+
+    constructor({
+        id,
+        source,
+        timestamp,
+        target,
+        options,
+        buffs,
+        debuffs,
+        damage,
+    }: SnapshotProps
+    ) {
+        this.id = id
+        this.source = source
+        this.timestamp = timestamp
+        this.target = target
+        this.options = options
+        this.buffs = buffs != null ? buffs : []
+        this.debuffs = debuffs != null ? debuffs : []
+        this.damage = damage != null ? damage : []
+    }
+
+    public addBuffs(buffs: Effect[]) {
+        this.buffs.push(...buffs)
+    }
+
+    public addDebuffs(debuffs: Effect[]) {
+        this.debuffs.push(...debuffs)
+    }
+
+    public get effects(): Effect[] {
+        return [...this.buffs, ...this.debuffs]
+    }
 }
