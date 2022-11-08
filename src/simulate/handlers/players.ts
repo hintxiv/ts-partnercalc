@@ -2,7 +2,7 @@ import { FFLogsEvent } from 'api/fflogs/event'
 import { Friend } from 'api/fflogs/fight'
 import { DataProvider } from 'data/provider'
 import { SnapshotHook } from 'simulate/hooks'
-import { Player } from 'simulate/modules/entities/player'
+import { Player } from 'simulate/modules/entities/player/'
 
 export class PlayerHandler {
     private players: Map<number, Player> = new Map()
@@ -43,7 +43,8 @@ export class PlayerHandler {
             return this.players.get(friend.id)
         }
 
-        const newPlayer = new Player(friend, this.snapshotHook, this.data)
+        const PlayerClass = friend.job.constructor
+        const newPlayer = new PlayerClass(friend, this.snapshotHook, this.data)
         this.players.set(friend.id, newPlayer)
 
         return newPlayer

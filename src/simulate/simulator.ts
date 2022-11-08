@@ -94,7 +94,6 @@ export class Simulator {
         return {
             start: standard.start,
             end: standard.end ?? this.parser.fight.end,
-            appliedBy: standard.isTillana ? 'Tillana' : 'Standard Finish',
             players: players,
             actualPartner: players.find(player => player.id === standard.targetID),
             bestPartner: players[0],
@@ -144,7 +143,7 @@ export class Simulator {
         if (!standard) { return }
 
         const debuffs = this.enemies.getEnemyDebuffs(snapshot.target)
-        snapshot.effects.push(...debuffs)
+        snapshot.addDebuffs(debuffs)
 
         standard.processSnapshot(snapshot)
     }

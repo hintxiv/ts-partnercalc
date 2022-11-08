@@ -13,7 +13,6 @@ export class Dancer extends Entity {
     private emitStandard: StandardHook
     private currentStandard: Standard | undefined
     private currentDevilment: Devilment | undefined
-    private lastApplierID: number | undefined
 
     private potencyRatios: number[] = []
 
@@ -35,7 +34,7 @@ export class Dancer extends Entity {
         this.addHook('cast', this.onStandardCast, { actionID: this.data.actions.TILLANA.id })
         this.addHook('cast', this.onStandardCast, { actionID: this.data.actions.DOUBLE_STANDARD_FINISH.id })
         this.addHook('cast', this.onTechnicalCast, { actionID: this.data.actions.QUADRUPLE_TECHNICAL_FINISH.id })
-        this.addHook('cast', this.onPartnerSwap, { actionID: this.data.actions.CLOSED_POSITION.id })
+        this.addHook('applybuff', this.onPartnerSwap, { actionID: this.data.statuses.DANCE_PARTNER.id })
         this.addHook('snapshot', this.onSnapshot, { sourceID: this.id })
     }
 
@@ -52,7 +51,10 @@ export class Dancer extends Entity {
     }
 
     private onStandardCast(event: CastEvent) {
-        this.lastApplierID = event.actionID
+        if (this.currentStandard != null) {
+            const isTillana = event.actionID === this.data.actions.TILLANA.id
+            this.currentStandard.addStandardCast(isTillana, event.timestamp, event.targetID)
+        }
     }
 
     private onTechnicalCast(event: CastEvent) {
@@ -61,7 +63,7 @@ export class Dancer extends Entity {
         }
     }
 
-    private onPartnerSwap(event: CastEvent) {
+    private onPartnerSwap(event: ApplyBuffEvent) {
         if (this.currentStandard != null) {
             this.currentStandard.addClosedPosition(event.timestamp, event.targetID)
         }
@@ -78,9 +80,6 @@ export class Dancer extends Entity {
     }
 
     private onStandard(event: ApplyBuffEvent) {
-        const isTillana = (this.lastApplierID != null)
-            && (this.lastApplierID === this.data.actions.TILLANA.id)
-
         if (this.currentStandard) {
             if (this.currentDevilment?.isOpen
                 || event.timestamp < this.currentStandard.start + MIN_WINDOW_LENGTH) {
@@ -88,14 +87,13 @@ export class Dancer extends Entity {
                     OR the previous window was too short
                     -> merge the new standard application into the current window
                 */
-                this.currentStandard.mergeWindow(isTillana, event.timestamp, event.targetID)
                 return
             }
 
             this.currentStandard.close(event.timestamp)
         }
 
-        const standard = new Standard(event.timestamp, event.targetID, isTillana, this.data)
+        const standard = new Standard(event.timestamp, event.targetID, this.data)
 
         this.currentStandard = standard
         this.emitStandard(standard)

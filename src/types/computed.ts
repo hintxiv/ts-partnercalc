@@ -32,7 +32,6 @@ export interface ComputedEvent {
 export interface ComputedStandard {
     start: number
     end: number
-    appliedBy: 'Standard Finish' | 'Tillana'
     players: ComputedPlayer[]
     actualPartner: ComputedPlayer
     bestPartner: ComputedPlayer
