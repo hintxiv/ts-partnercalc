@@ -1,6 +1,7 @@
 import { CircularProgress } from '@material-ui/core'
 import { Friend } from 'api/fflogs/fight'
 import { FFLogsParser } from 'api/fflogs/parser'
+import { useTitle } from 'components/Title'
 import { JOBS } from 'data/jobs'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -11,6 +12,7 @@ import { StandardWindow } from './StandardWindow/StandardWindow'
 
 export function Result() {
     const { reportID, fightID } = useParams()
+    const { setTitle } = useTitle()
     const [ready, setReady] = useState<boolean>(false)
     const [standards, setStandards] = useState<ComputedStandard[]>([])
     const [dancer, setDancer] = useState<Friend>()
@@ -33,6 +35,12 @@ export function Result() {
         }
         simulate().catch(console.error)
     }, [parser, setReady, setStandards])
+
+    useEffect(() => {
+        if (parser != null && dancer != null) {
+            setTitle(`${dancer.name} - ${parser.fight.encounter}`)
+        }
+    }, [dancer, parser, setTitle])
 
     const generateTimestampLink = (start: number, end: number) => {
         const baseReportURL = 'https://www.fflogs.com/reports/'

@@ -1,8 +1,13 @@
 import { Grid, Link, Typography } from '@material-ui/core'
-import React from 'react'
+import { useTitle } from 'components/Title'
+import React, { useEffect } from 'react'
 import styles from './NotFound.module.css'
 
 export function NotFoundPage() {
+    const { setTitle } = useTitle()
+
+    useEffect(() => setTitle('Page not found'))
+
     return <div className={styles.notFound}>
         <Grid container spacing={3}>
             <Grid item xs={12}>

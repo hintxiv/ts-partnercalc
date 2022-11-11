@@ -151,7 +151,6 @@ export class Player extends Entity {
 
         if (!this.snapshots.has(key)) {
             if (this.groundDoTSnapshots.has(event.statusID)) {
-                console.log('ground DoT snapshot')
                 const snapshot = this.groundDoTSnapshots.get(event.statusID)
 
                 const damage: DamageInstance = {
@@ -204,8 +203,6 @@ export class Player extends Entity {
             options: options,
         })
 
-        console.log('ground dot applied')
-        console.log(event)
         this.groundDoTSnapshots.set(event.statusID, snapshot)
     }
 

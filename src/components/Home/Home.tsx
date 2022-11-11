@@ -1,12 +1,16 @@
 import { Grid, TextField, Box, Typography } from '@material-ui/core'
 import { fetchLastFightID } from 'api/fflogs/api'
-import React, { useState } from 'react'
+import { useTitle } from 'components/Title'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './Home.module.css'
 
 export function Home() {
     const [hasError, setError] = useState<boolean>(false)
     const navigate = useNavigate()
+    const { setTitle } = useTitle()
+
+    useEffect(() => setTitle('Home'))
 
     const decomposeFFLogsURL = (url: URL) => {
         const reportRegex = /(?<=reports\/)(?:(?!\/).)+/i
