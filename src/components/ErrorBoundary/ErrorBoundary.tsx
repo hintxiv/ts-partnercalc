@@ -1,29 +1,42 @@
 import { Grid, Link, Typography } from '@material-ui/core'
-import React, { ErrorInfo, ReactNode } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import styles from './ErrorBoundary.module.css'
+
+export function ErrorBoundary(props: { children: ReactNode }) {
+    const location = useLocation()
+    const [hasError, setHasError] = useState(false)
+
+    // Reset error state when the user navigates elsewhere
+    useEffect(() => setHasError(false), [location])
+
+    return <ErrorBoundaryClass hasError={hasError} setHasError={setHasError}>
+        {props.children}
+    </ErrorBoundaryClass>
+}
 
 interface Props {
     children: ReactNode
+    hasError: boolean
+    setHasError: React.Dispatch<boolean>
 }
 
 interface State {
-    hasError: boolean
+    error?: Error
 }
 
-export class ErrorBoundary extends React.Component<Props, State> {
-
+class ErrorBoundaryClass extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
-        this.state = { hasError: false }
     }
 
-    public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-        this.setState({ hasError: true })
-        console.error('Uncaught error:', error, errorInfo)
+    public componentDidCatch(error: Error) {
+        this.setState({ error: error })
+        this.props.setHasError(true)
     }
 
     public render() {
-        if (!this.state.hasError) {
+        if (!this.props.hasError) {
             return this.props.children
         }
 
@@ -31,7 +44,12 @@ export class ErrorBoundary extends React.Component<Props, State> {
             <Grid container spacing={3}>
                 <Grid item xs={12}>
                     <Typography variant="h3" align="center" color="textPrimary">
-                        Oops... Something went wrong.
+                        Oops, something went wrong!
+                    </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Typography variant="h4" align="center" color="textPrimary">
+                        {this.state.error.message}
                     </Typography>
                 </Grid>
                 <Grid item xs={12}>
