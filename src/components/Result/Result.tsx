@@ -1,6 +1,7 @@
 import { CircularProgress } from '@material-ui/core'
 import { Friend } from 'api/fflogs/fight'
 import { FFLogsParser } from 'api/fflogs/parser'
+import { useAsyncError } from 'components/ErrorBoundary/throwError'
 import { useTitle } from 'components/Title'
 import { JOBS } from 'data/jobs'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -16,6 +17,7 @@ export function Result() {
     const [ready, setReady] = useState<boolean>(false)
     const [standards, setStandards] = useState<ComputedStandard[]>([])
     const [dancer, setDancer] = useState<Friend>()
+    const asyncThrow = useAsyncError()
 
     const parser = useMemo(() => {
         return new FFLogsParser(reportID, parseInt(fightID))
@@ -25,8 +27,13 @@ export function Result() {
         const simulate = async () => {
             await parser.init()
 
-            // TODO error handling
-            const dancer = parser.fight.friends.find(friend => friend.job === JOBS.Dancer)
+            const dancer = parser.fight.friends
+                .find(friend => friend.job === JOBS.Dancer)
+
+            if (dancer == null) {
+                asyncThrow(new Error('Report does not have a Dancer.'))
+            }
+
             setDancer(dancer)
 
             const simulator = new Simulator(parser, dancer)
@@ -34,7 +41,7 @@ export function Result() {
             setReady(true)
         }
         simulate().catch(console.error)
-    }, [parser, setReady, setStandards])
+    }, [asyncThrow, parser, setReady, setStandards])
 
     useEffect(() => {
         if (parser != null && dancer != null) {

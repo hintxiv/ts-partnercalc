@@ -34,7 +34,7 @@ export class Dancer extends Entity {
         this.addHook('cast', this.onStandardCast, { actionID: this.data.actions.TILLANA.id })
         this.addHook('cast', this.onStandardCast, { actionID: this.data.actions.DOUBLE_STANDARD_FINISH.id })
         this.addHook('cast', this.onTechnicalCast, { actionID: this.data.actions.QUADRUPLE_TECHNICAL_FINISH.id })
-        this.addHook('applybuff', this.onPartnerSwap, { actionID: this.data.statuses.DANCE_PARTNER.id })
+        this.addHook('cast', this.onPartnerSwap, { actionID: this.data.actions.CLOSED_POSITION.id })
         this.addHook('snapshot', this.onSnapshot, { sourceID: this.id })
     }
 
@@ -63,7 +63,7 @@ export class Dancer extends Entity {
         }
     }
 
-    private onPartnerSwap(event: ApplyBuffEvent) {
+    private onPartnerSwap(event: CastEvent) {
         if (this.currentStandard != null) {
             this.currentStandard.addClosedPosition(event.timestamp, event.targetID)
         }
