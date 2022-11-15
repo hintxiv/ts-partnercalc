@@ -26,7 +26,7 @@ export class Simulator {
     constructor(parser: FFLogsParser, dancer: Friend) {
         this.parser = parser
         this.data = new DataProvider()
-        this.dancer = new Dancer(dancer.id, this.registerNewStandard, this.data)
+        this.dancer = new Dancer(dancer.id, parser.fight.start, this.registerNewStandard, this.data)
         this.enemies = new EnemyHandler(parser.fight.friends, this.data)
 
         // The Dancer can't partner themselves

@@ -1,6 +1,13 @@
-import { ApplyBuffEvent, CastEvent, FFLogsEvent, RemoveBuffEvent, SnapshotEvent } from 'api/fflogs/event'
+import {
+    ApplyBuffEvent,
+    CastEvent,
+    FFLogsEvent,
+    RemoveBuffEvent,
+    SnapshotEvent,
+} from 'api/fflogs/event'
 import { DataProvider } from 'data/provider'
 import { Devilment } from 'simulate/buffwindow/devilment'
+import { PrepullStandard } from 'simulate/buffwindow/prepullStandard'
 import { Standard } from 'simulate/buffwindow/standard'
 import { Entity } from './entity'
 
@@ -11,16 +18,24 @@ type StandardHook = (standard: Standard) => void
 export class Dancer extends Entity {
     public id: number
     private emitStandard: StandardHook
+    private prepullStandard: PrepullStandard | undefined
     private currentStandard: Standard | undefined
     private currentDevilment: Devilment | undefined
 
     private potencyRatios: number[] = []
 
-    constructor(id: number, standardHook: StandardHook, data: DataProvider) {
+    constructor(id: number, start: number, standardHook: StandardHook, data: DataProvider) {
         super(id.toString(), data)
         this.id = id
         this.emitStandard = standardHook
+        this.createPrepullStandard(start)
         this.init()
+    }
+
+    protected createPrepullStandard(start: number) {
+        this.prepullStandard = new PrepullStandard(start, this.data)
+        this.currentStandard = this.prepullStandard
+        this.emitStandard(this.prepullStandard)
     }
 
     protected init() {
@@ -48,6 +63,11 @@ export class Dancer extends Entity {
     public get potencyRatio() {
         const sum = this.potencyRatios.reduce((sum, x) => sum + x, 0)
         return sum / this.potencyRatios.length
+    }
+
+    private resolvePrepullStandard(event: ApplyBuffEvent | RemoveBuffEvent) {
+        this.prepullStandard.addTarget(event.targetID)
+        this.prepullStandard = undefined
     }
 
     private onStandardCast(event: CastEvent) {
@@ -80,6 +100,10 @@ export class Dancer extends Entity {
     }
 
     private onStandard(event: ApplyBuffEvent) {
+        if (this.prepullStandard != null) {
+            this.resolvePrepullStandard(event)
+        }
+
         if (this.currentStandard) {
             if (this.currentDevilment?.isOpen
                 || event.timestamp < this.currentStandard.start + MIN_WINDOW_LENGTH) {
@@ -100,6 +124,10 @@ export class Dancer extends Entity {
     }
 
     private onRemoveStandard(event: RemoveBuffEvent) {
+        if (this.prepullStandard != null) {
+            this.resolvePrepullStandard(event)
+        }
+
         if (this.currentStandard) {
             this.currentStandard.close(event.timestamp)
             this.currentStandard = undefined
