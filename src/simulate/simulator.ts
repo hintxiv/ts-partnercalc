@@ -22,6 +22,7 @@ export class Simulator {
     private enemies: EnemyHandler
     private players: PlayerHandler
     private standards: Standard[] = []
+    private standardsComplete = false
 
     constructor(parser: FFLogsParser, dancer: Friend) {
         this.parser = parser
@@ -35,7 +36,7 @@ export class Simulator {
     }
 
     public async calculatePartnerDamage(/* TODO: player stats */): Promise<ComputedStandard[]> {
-        if (this.standards.length === 0) {
+        if (!this.standardsComplete) {
             // Build + cache standard windows from the report
             await this.buildStandardWindows()
         }
@@ -95,7 +96,7 @@ export class Simulator {
             start: standard.start,
             end: standard.end ?? this.parser.fight.end,
             players: players,
-            actualPartner: players.find(player => player.id === standard.targetID),
+            actualPartner: players.find(player => player.id === standard.target),
             bestPartner: players[0],
             events: events,
         }
@@ -110,6 +111,8 @@ export class Simulator {
         for await (const event of events) {
             this.processEvent(event)
         }
+
+        this.standardsComplete = true
     }
 
     private processEvent(event: FFLogsEvent) {

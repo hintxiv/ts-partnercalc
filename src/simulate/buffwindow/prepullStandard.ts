@@ -6,7 +6,7 @@ export class PrepullStandard extends Standard {
         super(start, -1, data)
     }
 
-    public addTarget(targetID: number) {
-        this.targetID = targetID
+    public addTarget(target: number) {
+        this.target = target
     }
 }
