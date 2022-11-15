@@ -14,14 +14,12 @@ interface StandardEvent {
 }
 
 export class Standard extends BuffWindow {
-    public targetID: number
     private devilment?: Devilment
     private data: DataProvider
     private events: StandardEvent[] = []
 
-    constructor(start: number, targetID: number, data: DataProvider) {
-        super(start, targetID)
-        this.targetID = targetID
+    constructor(start: number, target: number, data: DataProvider) {
+        super(start, target)
         this.data = data
     }
 
