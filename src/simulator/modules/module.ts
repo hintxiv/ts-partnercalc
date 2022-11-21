@@ -1,5 +1,5 @@
 import { EventType, FFLogsEvent } from 'api/fflogs/event'
-import { EventHook } from 'simulate/hooks'
+import { EventHook } from 'simulator/hooks'
 
 // TargetKey - StatusID
 export type SnapshotKey = `${string}-${number}`

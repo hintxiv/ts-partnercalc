@@ -1,8 +1,8 @@
 import { FFLogsEvent } from 'api/fflogs/event'
 import { Friend } from 'api/fflogs/fight'
 import { DataProvider } from 'data/provider'
-import { SnapshotHook } from 'simulate/hooks'
-import { Player } from 'simulate/modules/entities/player/'
+import { SnapshotHook } from 'simulator/hooks'
+import { Player } from 'simulator/modules/entities/player'
 
 export class PlayerHandler {
     private players: Map<number, Player> = new Map()

@@ -1,4 +1,4 @@
-import { Player } from 'simulate/modules/entities/player'
+import { Player } from 'simulator/modules/entities/player'
 
 export interface Job {
     name: string

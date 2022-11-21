@@ -22,6 +22,9 @@ const theme = createTheme({
     },
     typography: {
         fontFamily: 'Nunito',
+        allVariants: {
+            color: '#ffffff',
+        },
     },
     overrides: {
         MuiPaper: {

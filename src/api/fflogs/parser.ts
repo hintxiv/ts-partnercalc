@@ -1,10 +1,10 @@
+import { formatTimestamp } from 'util/format'
 import { fetchEvents, fetchFight, FFLogsQuery } from './api'
 import { EventFields, FFLogsEvent } from './event'
 import { Fight } from './fight'
 import { HitType } from './report'
 
 const STATUS_OFFSET = 1000000
-const MS_PER_MINUTE = 60000
 
 export class FFLogsParser {
     public reportID: string
@@ -22,10 +22,7 @@ export class FFLogsParser {
 
     public formatTimestamp = (time: number) => {
         const elapsed = time - this.fight.start
-        const mm = Math.floor(elapsed / MS_PER_MINUTE)
-        const ss = Math.floor((elapsed % MS_PER_MINUTE) / 1000)
-
-        return `${mm < 10 ? '0' + mm : mm}:${ss < 10 ? '0' + ss : ss}`
+        return formatTimestamp(elapsed)
     }
 
     public async * getEvents(debuffIDs: number[], sourceID?: number): AsyncGenerator<FFLogsEvent, void, undefined> {

@@ -7,10 +7,10 @@ import {
     TableRow,
 } from '@material-ui/core'
 import React from 'react'
-import { ComputedPlayer, ComputedStandard } from 'types'
+import { ComputedPlayer } from 'types'
 
 interface DamageTableProps {
-    standard: ComputedStandard
+    players: ComputedPlayer[]
 }
 
 export function DamageTable(props: DamageTableProps) {
@@ -38,7 +38,7 @@ export function DamageTable(props: DamageTableProps) {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {props.standard.players.map(player => makeRow(player))}
+                {props.players.map(makeRow)}
             </TableBody>
         </Table>
     </TableContainer>

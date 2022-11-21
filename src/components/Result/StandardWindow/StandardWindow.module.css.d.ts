@@ -5,7 +5,10 @@ declare namespace StandardWindowModuleCssNamespace {
     accordion: string;
     accordionContent: string;
     card: string;
+    expand: string;
     graph: string;
+    overallText: string;
+    overallWindow: string;
     partnered: string;
     partneredText: string;
     rowContainer: string;

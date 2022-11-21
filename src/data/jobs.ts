@@ -7,7 +7,7 @@ import {
     Player,
     Summoner,
     Warrior,
-} from 'simulate/modules/entities/player'
+} from 'simulator/modules/entities/player'
 import { Job } from 'types'
 import { preserve } from 'util/typeutils'
 

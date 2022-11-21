@@ -7,6 +7,7 @@ import {
     ComputedPlayer,
     ComputedStandard,
     DamageTotals,
+    OverallDamage,
 } from 'types'
 import { Snapshot } from '../types/snapshot'
 import { Standard } from './buffwindow/standard'
@@ -22,7 +23,7 @@ export class Simulator {
     private enemies: EnemyHandler
     private players: PlayerHandler
     private standards: Standard[] = []
-    private standardsComplete = false
+    private results: ComputedStandard[] = []
 
     constructor(parser: FFLogsParser, dancer: Friend) {
         this.parser = parser
@@ -36,18 +37,57 @@ export class Simulator {
     }
 
     public async calculatePartnerDamage(/* TODO: player stats */): Promise<ComputedStandard[]> {
-        if (!this.standardsComplete) {
+        if (this.results.length === 0) {
             // Build + cache standard windows from the report
             await this.buildStandardWindows()
         }
 
-        const results: ComputedStandard[] = []
+        return this.results
+    }
 
-        for (const standard of this.standards) {
-            results.push(this.calculateStandard(standard))
+    public calculateOverallDamage(): OverallDamage {
+        const playerMap: Map<number, ComputedPlayer> = new Map()
+
+        for (const standard of this.results) {
+            for (const player of standard.players) {
+                if (playerMap.has(player.id)) {
+                    const totals = playerMap.get(player.id).totals
+
+                    totals.standard += player.totals.standard
+                    totals.esprit += player.totals.esprit
+                    totals.devilment += player.totals.devilment
+                    totals.total += player.totals.total
+
+                } else {
+                    playerMap.set(player.id, {
+                        ...player,
+                        damage: [],
+                        totals: { ...player.totals },
+                    })
+                }
+            }
         }
 
-        return results
+        const players = [...playerMap.values()]
+        players.sort((a, b) => b.totals.total - a.totals.total)
+
+        return {
+            players: players,
+            bestPartner: players[0],
+        }
+    }
+
+    private async buildStandardWindows(): Promise<void> {
+        const debuffIDs = Object.values(this.data.debuffs)
+            .map(effect => effect.id)
+
+        const events = this.parser.getEvents(debuffIDs)
+
+        for await (const event of events) {
+            this.processEvent(event)
+        }
+
+        this.results = this.standards.map(this.calculateStandard, this)
     }
 
     private calculateStandard(standard: Standard, /* TODO: player stats */): ComputedStandard {
@@ -100,19 +140,6 @@ export class Simulator {
             bestPartner: players[0],
             events: events,
         }
-    }
-
-    private async buildStandardWindows(): Promise<void> {
-        const debuffIDs = Object.values(this.data.debuffs)
-            .map(effect => effect.id)
-
-        const events = this.parser.getEvents(debuffIDs)
-
-        for await (const event of events) {
-            this.processEvent(event)
-        }
-
-        this.standardsComplete = true
     }
 
     private processEvent(event: FFLogsEvent) {

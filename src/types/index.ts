@@ -5,7 +5,8 @@ export {
     ComputedPlayer,
     ComputedStandard,
     DamageTotals,
-} from './computed'
+    OverallDamage,
+} from './damage'
 export { Effect } from './effect'
 export { Job } from './job'
 export { Stats } from './stats'

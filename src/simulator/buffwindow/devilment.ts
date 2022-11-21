@@ -1,5 +1,5 @@
 import { simulateDevilment } from 'math/rdps'
-import { Player } from 'simulate/modules/entities/player'
+import { Player } from 'simulator/modules/entities/player'
 import { ComputedDamage, Stats } from 'types'
 import { BuffWindow } from './buffwindow'
 

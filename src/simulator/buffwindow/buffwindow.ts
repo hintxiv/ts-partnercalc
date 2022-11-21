@@ -1,4 +1,4 @@
-import { SnapshotHandler } from 'simulate/handlers/snapshots'
+import { SnapshotHandler } from 'simulator/handlers/snapshots'
 import { Snapshot } from 'types/snapshot'
 
 export abstract class BuffWindow {

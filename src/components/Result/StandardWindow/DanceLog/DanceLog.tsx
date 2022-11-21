@@ -1,6 +1,6 @@
 import { NameChip, TimestampChip } from 'components/Result/Chip'
 import React from 'react'
-import { ComputedEvent } from 'types/computed'
+import { ComputedEvent } from 'types/damage'
 import styles from './DanceLog.module.css'
 
 interface DanceLogProps {

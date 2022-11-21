@@ -1,7 +1,7 @@
 import { DataProvider } from 'data/provider'
 import { simulateEsprit } from 'math/esprit'
 import { simulateStandard } from 'math/rdps'
-import { Player } from 'simulate/modules/entities/player'
+import { Player } from 'simulator/modules/entities/player'
 import { Action, ComputedDamage, Job, Stats } from 'types'
 import { Snapshot } from 'types/snapshot'
 import { BuffWindow } from './buffwindow'
