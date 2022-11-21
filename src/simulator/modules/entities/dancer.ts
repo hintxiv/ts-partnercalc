@@ -6,9 +6,9 @@ import {
     SnapshotEvent,
 } from 'api/fflogs/event'
 import { DataProvider } from 'data/provider'
-import { Devilment } from 'simulate/buffwindow/devilment'
-import { PrepullStandard } from 'simulate/buffwindow/prepullStandard'
-import { Standard } from 'simulate/buffwindow/standard'
+import { Devilment } from 'simulator/buffwindow/devilment'
+import { PrepullStandard } from 'simulator/buffwindow/prepullStandard'
+import { Standard } from 'simulator/buffwindow/standard'
 import { Entity } from './entity'
 
 const MIN_WINDOW_LENGTH = 10000 // ~4 GCDs

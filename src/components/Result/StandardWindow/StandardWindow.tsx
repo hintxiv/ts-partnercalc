@@ -58,7 +58,7 @@ export function StandardWindow(props: StandardWindowProps) {
             </div>
         </Card>
         <Card className={styles.card + ' ' + styles.graph}>
-            <DamageGraph standard={props.standard} />
+            <DamageGraph players={props.standard.players} />
         </Card>
         <div>
             <Accordion
@@ -68,13 +68,13 @@ export function StandardWindow(props: StandardWindowProps) {
             >
                 <AccordionSummary
                     expandIcon={<ExpandMore />}
-                    aria-controls="panel2-content"
-                    id="panel2-header"
+                    aria-controls="panel1-content"
+                    id="panel1-header"
                 >
                     Damage Table
                 </AccordionSummary>
                 <AccordionDetails className={styles.accordionContent}>
-                    <DamageTable standard={props.standard} />
+                    <DamageTable players={props.standard.players} />
                 </AccordionDetails>
             </Accordion>
             <Accordion

@@ -9,16 +9,17 @@ import {
     XAxis,
     YAxis,
 } from 'recharts'
-import { ComputedPlayer, ComputedStandard } from 'types'
+import { ComputedPlayer } from 'types'
+import { formatDamage } from 'util/format'
 import styles from './DamageGraph.module.css'
 import { GraphTooltip } from './Tooltip'
 
 interface DamageGraphProps {
-    standard: ComputedStandard
+    players: ComputedPlayer[]
 }
 
 export function DamageGraph(props: DamageGraphProps) {
-    const data = props.standard.players.map(player => ({
+    const data = props.players.map(player => ({
         name: player.name,
         Standard: Math.floor(player.totals.standard),
         Devilment: Math.floor(player.totals.devilment),
@@ -44,12 +45,13 @@ export function DamageGraph(props: DamageGraphProps) {
                     stroke="white"
                     tickCount={8}
                     tickLine={false}
+                    tickFormatter={formatDamage}
                 />
                 <YAxis
                     dataKey="name"
                     type="category"
                     stroke="white"
-                    tick={playerNameTick(props.standard.players)}
+                    tick={playerNameTick(props.players)}
                     tickLine={false}
                 />
                 <Tooltip

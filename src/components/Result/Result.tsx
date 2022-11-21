@@ -6,9 +6,11 @@ import { useTitle } from 'components/Title'
 import { JOBS } from 'data/jobs'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Simulator } from 'simulate/simulator'
-import { ComputedStandard } from 'types'
+import { Simulator } from 'simulator/simulator'
+import { ComputedStandard, OverallDamage } from 'types'
+import { formatDamage } from 'util/format'
 import styles from './Result.module.css'
+import { OverallDisplay } from './StandardWindow/OverallDisplay'
 import { StandardWindow } from './StandardWindow/StandardWindow'
 
 export function Result() {
@@ -16,6 +18,7 @@ export function Result() {
     const { setTitle } = useTitle()
     const [ready, setReady] = useState<boolean>(false)
     const [standards, setStandards] = useState<ComputedStandard[]>([])
+    const [overall, setOverall] = useState<OverallDamage>()
     const [dancer, setDancer] = useState<Friend>()
     const asyncThrow = useAsyncError()
 
@@ -38,6 +41,7 @@ export function Result() {
 
             const simulator = new Simulator(parser, dancer)
             setStandards(await simulator.calculatePartnerDamage())
+            setOverall(simulator.calculateOverallDamage())
             setReady(true)
         }
         simulate().catch(console.error)
@@ -45,7 +49,7 @@ export function Result() {
 
     useEffect(() => {
         if (parser != null && dancer != null) {
-            setTitle(`${dancer.name} - ${parser.fight.encounter}`)
+            setTitle(`${parser.fight.encounter} - ${dancer.name}`)
         }
     }, [dancer, parser, setTitle])
 
@@ -56,6 +60,12 @@ export function Result() {
         return fightURL + `&type=damage-done&start=${start}&end=${end}`
     }
 
+    const formatDPS = (damage: number) => {
+        const duration = parser.fight.end - parser.fight.start
+        const dps = damage / (duration / 1000)
+        return formatDamage(dps)
+    }
+
     if (!ready) {
         return <CircularProgress size={80} className={styles.loading} />
     }
@@ -63,6 +73,7 @@ export function Result() {
     return <div>
         <div className={styles.fadeTop} />
         <div className={styles.result}>
+            <OverallDisplay damage={overall} formatDPS={formatDPS} />
             {standards.map(standard =>
                 <StandardWindow
                     standard={standard}

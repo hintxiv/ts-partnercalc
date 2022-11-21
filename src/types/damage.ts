@@ -37,3 +37,8 @@ export interface ComputedStandard {
     bestPartner: ComputedPlayer
     events: ComputedEvent[]
 }
+
+export interface OverallDamage {
+    players: ComputedPlayer[]
+    bestPartner: ComputedPlayer
+}

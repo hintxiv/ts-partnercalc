@@ -1,6 +1,7 @@
 import { Typography } from '@material-ui/core'
 import React from 'react'
 import { TooltipProps } from 'recharts'
+import { formatDamage } from 'util/format'
 import styles from './Tooltip.module.css'
 
 export const GraphTooltip = ({
@@ -36,7 +37,7 @@ export const GraphTooltip = ({
                         <Typography>{item.name}</Typography>
                     </div>
                     <div className={styles.value}>
-                        <Typography>{item.value}</Typography>
+                        <Typography>{formatDamage(item.value)}</Typography>
                     </div>
                 </div>
             )}

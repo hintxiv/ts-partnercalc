@@ -3,8 +3,9 @@
     font-family: Nunito;
 }
 
-.standardWindow:last-child {
-    margin-bottom: 0;
+.overallWindow {
+    margin-bottom: 30rem;
+    font-family: Nunito;
 }
 
 .card {
@@ -50,4 +51,19 @@
 .rowContainer {
     display: flow-root;
     height: fit-content;
+}
+
+.overallText {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.overallText > * {
+    display: inline-flex;
+    vertical-align: middle;
+    margin-left: 1rem;
+}
+
+.expand {
+    margin: 0 auto;
 }
