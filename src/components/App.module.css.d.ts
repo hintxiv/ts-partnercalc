@@ -2,8 +2,10 @@
 /* eslint-disable */
 declare namespace AppModuleCssNamespace {
   export interface IAppModuleCss {
+    appbar: string;
     content: string;
     footer: string;
+    logo: string;
   }
 }
 
