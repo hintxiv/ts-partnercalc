@@ -1,17 +1,17 @@
 import { Action } from './action'
 import { Job } from './job'
 
-interface ComputedDamageTypes {
+interface DamageTypes {
     standard: number
     esprit: number
     devilment: number
 }
 
-export interface ComputedDamage extends ComputedDamageTypes {
+export interface ComputedDamage extends DamageTypes {
     timestamp: number
 }
 
-export interface DamageTotals extends ComputedDamageTypes {
+export interface DamageTotals extends DamageTypes {
     total: number
 }
 
