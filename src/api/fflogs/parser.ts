@@ -26,10 +26,9 @@ export class FFLogsParser {
     }
 
     public async * getEvents(debuffIDs: number[]): AsyncGenerator<FFLogsEvent, void, undefined> {
-        const sourceIDs = [...this.fight.friends, ...this.fight.pets]
-            .map(source => source.id)
+        const sourceIDs = this.fight.friends.map(source => source.id)
 
-        const playerEventsJSON: FFLogsResponseEvent[] = []
+        const eventsJSON: FFLogsResponseEvent[] = []
 
         for (const ID of sourceIDs) {
             const eventsQuery: FFLogsQuery = {
@@ -38,7 +37,7 @@ export class FFLogsParser {
                 sourceid: ID,
             }
 
-            playerEventsJSON.push(... await fetchEvents(this.fight, eventsQuery))
+            eventsJSON.push(... await fetchEvents(this.fight, eventsQuery))
         }
 
         // Need to send a second query to get raid debuffs on enemies (mug / chain)
@@ -54,10 +53,10 @@ export class FFLogsParser {
 
         const debuffEventsJSON = await fetchEvents(this.fight, debuffsQuery)
 
-        const events = [...playerEventsJSON, ...debuffEventsJSON]
-            .sort((a, b) => a.timestamp - b.timestamp)
+        eventsJSON.push(...debuffEventsJSON)
+        eventsJSON.sort((a, b) => a.timestamp - b.timestamp)
 
-        for (const e of events) {
+        for (const e of eventsJSON) {
             const sourcePet = this.fight.pets.find(pet => pet.id === e.sourceID)
             const sourceID = sourcePet != null ? sourcePet.ownerID : e.sourceID
 
