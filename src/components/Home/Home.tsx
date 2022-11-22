@@ -44,7 +44,6 @@ export function Home() {
 
         } catch (e) {
             setError(true)
-            return
         }
     }
 
