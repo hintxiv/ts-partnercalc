@@ -91,9 +91,9 @@ export class FFLogsParser {
                     ...fields,
                 }
 
-            } else if (e.type === 'applydebuff') {
+            } else if (e.type === 'applydebuff' || e.type === 'refreshdebuff') {
                 yield {
-                    type: e.type,
+                    type: 'applydebuff',
                     statusID: e.ability.guid - STATUS_OFFSET,
                     appliedBy: appliedBy,
                     ...fields,
