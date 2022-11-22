@@ -4,6 +4,7 @@ declare namespace AppModuleCssNamespace {
   export interface IAppModuleCss {
     content: string;
     footer: string;
+    logo: string;
   }
 }
 
