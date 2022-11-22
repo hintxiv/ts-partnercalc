@@ -77,11 +77,11 @@ export function App() {
         <TitleProvider>
             <Head />
             <div className={styles.content}>
-                <AppBar style={{ background: 'transparent', boxShadow: 'none' }}>
+                <AppBar className={styles.appbar}>
                     <Toolbar>
-                        <div className={styles.logo}>
+                        <div className={styles.logo} onClick={goHome}>
                             <img src="/logo.png" />
-                            <Typography variant="h5" align="center" onClick={goHome}>
+                            <Typography variant="h5" align="center">
                                 partnercalc
                             </Typography>
                         </div>

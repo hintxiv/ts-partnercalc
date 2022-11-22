@@ -10,6 +10,11 @@ body {
     min-height: 100%;
 }
 
+.appbar {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
 .logo {
     display: flow-root;
     cursor: pointer;
