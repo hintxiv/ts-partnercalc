@@ -16,12 +16,8 @@ export class PlayerHandler {
         this.data = data
     }
 
-    public * getPlayers(): Generator<Player, void, undefined> {
-        for (const friend of this.friends) {
-            if (this.players.has(friend.id)) {
-                yield this.players.get(friend.id)
-            }
-        }
+    public getPlayers(): Player[] {
+        return [...this.players.values()]
     }
 
     public processEvent(event: FFLogsEvent) {

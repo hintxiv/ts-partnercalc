@@ -29,6 +29,7 @@ export function Home() {
         if (event.target.value === '') {
             // Empty field, reset state
             setError(false)
+            return
         }
 
         try {
@@ -43,7 +44,6 @@ export function Home() {
 
         } catch (e) {
             setError(true)
-            return
         }
     }
 
