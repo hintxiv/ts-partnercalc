@@ -27,7 +27,7 @@ export interface FFLogsQuery {
     filter?: string
 }
 
-interface FFLogsResponseEvent {
+export interface FFLogsResponseEvent {
     timestamp: number
     sourceID: number
     type: string
