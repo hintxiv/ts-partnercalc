@@ -87,18 +87,29 @@ export class Simulator {
             this.processEvent(event)
         }
 
-        this.results = this.standards.map(this.calculateStandard, this)
+        this.results = this.standards
+            .map(this.calculateStandard, this)
+            .filter(standard => standard != null)
     }
 
-    private calculateStandard(standard: Standard, /* TODO: player stats */): ComputedStandard {
-        const players: ComputedPlayer[] = []
+    private calculateStandard(standard: Standard, /* TODO: player stats */): ComputedStandard | undefined {
+        const computedPlayers: ComputedPlayer[] = []
+        const players = this.players.getPlayers()
+        const actualPartner = players.find(player => player.id === standard.target)
 
-        for (const player of this.players.getPlayers()) {
+        if (actualPartner == null) {
+            // Something weird happened, skip this window
+            return
+        }
+
+        for (const player of players) {
             // TODO override these stats if we have better ones
             const stats = player.getEstimatedStats()
             const computedDamage = standard.getPlayerContribution(player, stats, this.dancer.potencyRatio)
 
-            if (computedDamage.length === 0) { continue }
+            if (computedDamage.length === 0 && player !== actualPartner) {
+                continue
+            }
 
             const damageTotals: DamageTotals = {
                 standard: 0,
@@ -114,7 +125,7 @@ export class Simulator {
                 damageTotals.total += damage.standard + damage.devilment + damage.esprit
             }
 
-            players.push({
+            computedPlayers.push({
                 id: player.id,
                 name: player.name,
                 job: player.job,
@@ -123,21 +134,26 @@ export class Simulator {
             })
         }
 
+        if (computedPlayers.length === 1 && computedPlayers[0].totals.total === 0) {
+            // Empty window, skip
+            return
+        }
+
         // Sort from high DPS to low DPS
-        players.sort((a, b) => b.totals.total - a.totals.total)
+        computedPlayers.sort((a, b) => b.totals.total - a.totals.total)
 
         const events: ComputedEvent[] = standard.getEvents().map(event => ({
             action: event.action,
             timestamp: event.timestamp,
-            target: players.find(player => player.id === event.targetID),
+            target: computedPlayers.find(player => player.id === event.targetID),
         }))
 
         return {
             start: standard.start,
             end: standard.end ?? this.parser.fight.end,
-            players: players,
-            actualPartner: players.find(player => player.id === standard.target),
-            bestPartner: players[0],
+            players: computedPlayers,
+            actualPartner: computedPlayers.find(player => player.id === standard.target),
+            bestPartner: computedPlayers[0],
             events: events,
         }
     }
