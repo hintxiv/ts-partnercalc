@@ -67,8 +67,5 @@ export function OverallDisplay(props: OverallDisplayProps) {
                 </AccordionDetails>
             </Accordion>
         </div>
-        <div>
-            <ExpandMore className={styles.expand} />
-        </div>
     </div>
 }
