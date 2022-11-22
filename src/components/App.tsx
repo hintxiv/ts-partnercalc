@@ -77,8 +77,9 @@ export function App() {
         <TitleProvider>
             <Head />
             <div className={styles.content}>
-                <AppBar>
+                <AppBar style={{ background: 'transparent', boxShadow: 'none' }}>
                     <Toolbar>
+                        <img src="/favicon.ico" height={30} width={30} style={{ paddingRight: '0.5rem' }} />
                         <Typography variant="h5" align="center" onClick={goHome}>
                             partnercalc
                         </Typography>
