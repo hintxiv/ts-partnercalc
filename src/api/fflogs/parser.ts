@@ -37,7 +37,17 @@ export class FFLogsParser {
                 sourceid: ID,
             }
 
-            eventsJSON.push(... await fetchEvents(this.fight, eventsQuery))
+            const events = (await fetchEvents(this.fight, eventsQuery)).filter(event => {
+                /* Because of how we're pulling events, we have some
+                duplicated status events that need to be filtered */
+                if (['applybuff', 'refreshbuff', 'removebuff'].includes(event.type)
+                    && event.sourceID !== ID) {
+                    return false
+                }
+                return true
+            })
+
+            eventsJSON.push(...events)
         }
 
         // Need to send a second query to get raid debuffs on enemies (mug / chain)
