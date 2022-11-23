@@ -45,7 +45,11 @@ export function StandardWindow(props: StandardWindowProps) {
         <Card className={styles.card}>
             <div className={styles.rowContainer}>
                 <div className={styles.partnered}>
-                    <NameChip name={props.dancer.name} job={props.dancer.job} />
+                    <NameChip
+                        name={props.dancer.name}
+                        job={props.dancer.job}
+                        className={styles.dancer}
+                    />
                     <span className={styles.partneredText}>partnered</span>
                     <NameChip name={partner.name} job={partner.job} />
                 </div>

@@ -33,13 +33,8 @@ export function OverallDisplay(props: OverallDisplayProps) {
                     height: 50,
                     width: 50,
                 }}
-                style={{
-                    fontSize: '2.25rem',
-                    fontWeight: 400,
-                    height: '3rem',
-                    backgroundColor: best.job.color,
-                    borderRadius: '3rem',
-                }}
+                className={styles.overallChip}
+                style={{ backgroundColor: best.job.color }}
             />
         </div>
         <div className={styles.overallText}>
