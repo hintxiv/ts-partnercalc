@@ -1,5 +1,5 @@
 body, html {
-    scroll-snap-type: y mandatory;
+    scroll-snap-type: y proximity;
     scroll-padding-top: 2rem;
 }
 
@@ -33,6 +33,7 @@ body, html {
     z-index: 1;
     height: 8rem;
     width: 100%;
+    background: transparent;
 }
 
 .fadeTop {
@@ -43,10 +44,12 @@ body, html {
     );
 }
 
-.fadeBottom {
-    bottom: 0;
-    background-image: linear-gradient(
-        rgba(36, 37, 38, 0.1),
-        rgba(36, 37, 38, 1)
-    );
+@media screen and (min-height: 1000px) {
+    .fadeBottom {
+        bottom: 0;
+        background-image: linear-gradient(
+            rgba(36, 37, 38, 0.1),
+            rgba(36, 37, 38, 1)
+        );
+    }
 }

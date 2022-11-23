@@ -1,5 +1,5 @@
 .standardWindow {
-    margin-bottom: 18rem;
+    margin-bottom: 10rem;
     font-family: Nunito;
 }
 
@@ -64,6 +64,33 @@
     margin-left: 1rem;
 }
 
-.expand {
-    margin: 0 auto;
+.overallChip {
+    font-size: 2.25rem !important;
+    font-weight: 400 !important;
+    height: 3rem !important;
+    border-radius: 3rem !important;
+}
+
+@media screen and (max-width: 900px) {
+    .partneredText, .dancer {
+        display: none !important;
+    }
+
+    .overallText > * {
+        font-size: larger !important;
+        margin-left: 0.5rem;
+    }
+
+    .overallWindow, .standardWindow {
+        margin-bottom: 5rem !important;
+    }
+
+    .overallChip {
+        height: 2rem !important;
+    }
+
+    .overallChip > svg {
+        height: 30px;
+        width: 30px;
+    }
 }
