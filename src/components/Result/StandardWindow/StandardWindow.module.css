@@ -1,10 +1,6 @@
-.standardWindow {
-    margin-bottom: 10rem;
-    font-family: Nunito;
-}
-
+.standardWindow,
 .overallWindow {
-    margin-bottom: 30rem;
+    margin-bottom: 10rem;
     font-family: Nunito;
 }
 

@@ -20,10 +20,10 @@ body, html {
     width: 100%;
     max-width: 1500px;
     transform: translateY(8vh);
-    padding-top: 10rem;
+    padding-top: 5vh;
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 20rem;
+    margin-bottom: 20vh;
     background-color: #242526;
 }
 
