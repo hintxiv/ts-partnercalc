@@ -1,8 +1,10 @@
-# Partnercalc
+<p align="center"><a href="https://partnercalc.app"><img src="https://raw.githubusercontent.com/hintxiv/ts-partnercalc/main/public/logo.png" height="150" width="130" alt="logo"></a></p>
 
- A tool for analyzing Dance Partner damage contribution in FFXIV, now with 100% more TypeScript.
+<h1 align="center">partnercalc</h1>
 
-**This repository is a work in progress!** If you're looking for the original Partnercalc, [click here](https://partnercalc.herokuapp.com/).
+![Build](https://github.com/hintxiv/ts-partnercalc/actions/workflows/deploy.yml/badge.svg)
+
+A tool for analyzing Dance Partner damage contribution in FFXIV.
 
 ## Getting Started
 
