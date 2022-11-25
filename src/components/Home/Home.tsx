@@ -13,15 +13,15 @@ export function Home() {
     useEffect(() => setTitle('Home'))
 
     const decomposeFFLogsURL = (url: URL) => {
-        const reportRegex = /(?<=reports\/)(?:(?!\/).)+/i
-        const fightRegex = /(?<=#fight=)(?:(?!&).)+/i
+        const reportRegex = /(?:reports\/)((?:(?!\/).)+)/i
+        const fightRegex = /(?:#fight=)((?:(?!&).)+)/i
 
         const reportID = url.pathname.match(reportRegex)
         const fightID = url.hash.match(fightRegex)
 
         return {
-            reportID: reportID[0],
-            fightID: fightID[0],
+            reportID: reportID[1],
+            fightID: fightID[1],
         }
     }
 
