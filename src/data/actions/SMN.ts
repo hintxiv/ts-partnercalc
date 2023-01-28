@@ -147,6 +147,21 @@ export const SMN_ACTIONS = preserve<Action>()({
         id: 25837,
         generatesEsprit: true,
     },
+    SUMMON_IFRIT: {
+        name: 'Summon Ifrit',
+        id: 25805,
+        generatesEsprit: true,
+    },
+    SUMMON_TITAN: {
+        name: 'Summon Titan',
+        id: 25806,
+        generatesEsprit: true,
+    },
+    SUMMON_GARUDA: {
+        name: 'Summon Garuda',
+        id: 25807,
+        generatesEsprit: true,
+    },
     SUMMON_IFRIT_II: {
         name: 'Summon Ifrit II',
         id: 25838,
