@@ -3,7 +3,7 @@ export {
     ComputedEvent,
     ComputedDamage,
     ComputedPlayer,
-    ComputedStandard,
+    ComputedWindow,
     DamageTotals,
     OverallDamage,
 } from './damage'
