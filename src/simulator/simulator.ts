@@ -5,12 +5,12 @@ import { DataProvider } from 'data/provider'
 import {
     ComputedEvent,
     ComputedPlayer,
-    ComputedStandard,
+    ComputedWindow,
     DamageTotals,
     OverallDamage,
 } from 'types'
 import { Snapshot } from '../types/snapshot'
-import { Standard } from './buffwindow/standard'
+import { BuffWindow } from './buffwindow/buffwindow'
 import { EnemyHandler } from './handlers/enemies'
 import { PlayerHandler } from './handlers/players'
 import { SnapshotHook } from './hooks'
@@ -22,13 +22,13 @@ export class Simulator {
     private dancer: Dancer
     private enemies: EnemyHandler
     private players: PlayerHandler
-    private standards: Standard[] = []
-    private results: ComputedStandard[] = []
+    private buffWindows: BuffWindow[] = []
+    private results: ComputedWindow[] = []
 
     constructor(parser: FFLogsParser, dancer: Friend) {
         this.parser = parser
         this.data = new DataProvider()
-        this.dancer = new Dancer(dancer.id, parser.fight.start, this.registerNewStandard, this.data)
+        this.dancer = new Dancer(dancer.id, parser.fight.start, this.registerNewBuffWindow, this.data)
         this.enemies = new EnemyHandler(parser.fight.friends, this.data)
 
         // The Dancer can't partner themselves
@@ -36,7 +36,7 @@ export class Simulator {
         this.players = new PlayerHandler(potentialPartners, this.registerNewSnapshot, this.data)
     }
 
-    public async calculatePartnerDamage(/* TODO: player stats */): Promise<ComputedStandard[]> {
+    public async calculatePartnerDamage(/* TODO: player stats */): Promise<ComputedWindow[]> {
         if (this.results.length === 0) {
             // Build + cache standard windows from the report
             await this.buildStandardWindows()
@@ -48,8 +48,8 @@ export class Simulator {
     public calculateOverallDamage(): OverallDamage {
         const playerMap: Map<number, ComputedPlayer> = new Map()
 
-        for (const standard of this.results) {
-            for (const player of standard.players) {
+        for (const window of this.results) {
+            for (const player of window.players) {
                 if (playerMap.has(player.id)) {
                     const totals = playerMap.get(player.id).totals
 
@@ -87,15 +87,15 @@ export class Simulator {
             this.processEvent(event)
         }
 
-        this.results = this.standards
-            .map(this.calculateStandard, this)
-            .filter(standard => standard != null)
+        this.results = this.buffWindows
+            .map(this.calculateBuffWindow, this)
+            .filter(window => window != null)
     }
 
-    private calculateStandard(standard: Standard, /* TODO: player stats */): ComputedStandard | undefined {
+    private calculateBuffWindow(window: BuffWindow, /* TODO: player stats */): ComputedWindow | undefined {
         const computedPlayers: ComputedPlayer[] = []
         const players = this.players.getPlayers()
-        const actualPartner = players.find(player => player.id === standard.target)
+        const actualPartner = players.find(player => player.id === window.target)
 
         if (actualPartner == null) {
             // Something weird happened, skip this window
@@ -104,8 +104,11 @@ export class Simulator {
 
         for (const player of players) {
             // TODO override these stats if we have better ones
-            const stats = player.getEstimatedStats()
-            const computedDamage = standard.getPlayerContribution(player, stats, this.dancer.potencyRatio)
+            const computedDamage = window.getPlayerContribution({
+                stats: player.getEstimatedStats(),
+                player: player,
+                potencyRatio: this.dancer.potencyRatio,
+            })
 
             if (computedDamage.length === 0 && player !== actualPartner) {
                 continue
@@ -142,17 +145,17 @@ export class Simulator {
         // Sort from high DPS to low DPS
         computedPlayers.sort((a, b) => b.totals.total - a.totals.total)
 
-        const events: ComputedEvent[] = standard.getEvents().map(event => ({
+        const events: ComputedEvent[] = window.getEvents().map(event => ({
             action: event.action,
             timestamp: event.timestamp,
             target: computedPlayers.find(player => player.id === event.targetID),
         }))
 
         return {
-            start: standard.start,
-            end: standard.end ?? this.parser.fight.end,
+            start: window.start,
+            end: window.end ?? this.parser.fight.end,
             players: computedPlayers,
-            actualPartner: computedPlayers.find(player => player.id === standard.target),
+            actualPartner: computedPlayers.find(player => player.id === window.target),
             bestPartner: computedPlayers[0],
             events: events,
         }
@@ -164,33 +167,33 @@ export class Simulator {
         this.enemies.processEvent(event)
     }
 
-    private getStandard(time: number): Standard | undefined {
-        const lastStandard = this.standards.at(-1)
+    private getWindow(time: number): BuffWindow | undefined {
+        const lastWindow = this.buffWindows.at(-1)
 
-        if (!lastStandard) { return undefined }
+        if (!lastWindow) { return undefined }
 
-        const start = lastStandard.start
-        const end = lastStandard.end
+        const start = lastWindow.start
+        const end = lastWindow.end
 
-        if (lastStandard && time > start && (!end || time > end)) {
-            return lastStandard
+        if (lastWindow && time > start && (!end || time > end)) {
+            return lastWindow
         }
 
         return undefined
     }
 
-    private registerNewStandard = (standard: Standard) => {
-        this.standards.push(standard)
+    private registerNewBuffWindow = (window: BuffWindow) => {
+        this.buffWindows.push(window)
     }
 
     private registerNewSnapshot: SnapshotHook = (snapshot: Snapshot) => {
-        const standard = this.getStandard(snapshot.timestamp)
+        const window = this.getWindow(snapshot.timestamp)
 
-        if (!standard) { return }
+        if (!window) { return }
 
         const debuffs = this.enemies.getEnemyDebuffs(snapshot.target)
         snapshot.addDebuffs(debuffs)
 
-        standard.processSnapshot(snapshot)
+        window.processSnapshot(snapshot)
     }
 }

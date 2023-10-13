@@ -7,7 +7,7 @@ import { JOBS } from 'data/jobs'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Simulator } from 'simulator/simulator'
-import { ComputedStandard, OverallDamage } from 'types'
+import { ComputedWindow, OverallDamage } from 'types'
 import { formatDamage } from 'util/format'
 import styles from './Result.module.css'
 import { OverallDisplay } from './StandardWindow/OverallDisplay'
@@ -17,7 +17,7 @@ export function Result() {
     const { reportID, fightID } = useParams()
     const { setTitle } = useTitle()
     const [ready, setReady] = useState<boolean>(false)
-    const [standards, setStandards] = useState<ComputedStandard[]>([])
+    const [windows, setWindows] = useState<ComputedWindow[]>([])
     const [overall, setOverall] = useState<OverallDamage>()
     const [dancer, setDancer] = useState<Friend>()
     const asyncThrow = useAsyncError()
@@ -40,12 +40,12 @@ export function Result() {
             setDancer(dancer)
 
             const simulator = new Simulator(parser, dancer)
-            setStandards(await simulator.calculatePartnerDamage())
+            setWindows(await simulator.calculatePartnerDamage())
             setOverall(simulator.calculateOverallDamage())
             setReady(true)
         }
         simulate().catch(console.error)
-    }, [asyncThrow, parser, setReady, setStandards])
+    }, [asyncThrow, parser, setReady, setWindows])
 
     useEffect(() => {
         if (parser != null && dancer != null) {
@@ -74,13 +74,13 @@ export function Result() {
         <div className={styles.fadeTop} />
         <div className={styles.result}>
             <OverallDisplay damage={overall} formatDPS={formatDPS} />
-            {standards.map(standard =>
+            {windows.map(window =>
                 <StandardWindow
-                    standard={standard}
+                    window={window}
                     dancer={dancer}
                     formatTimestamp={parser.formatTimestamp}
                     generateTimestampLink={generateTimestampLink}
-                    key={standard.start}
+                    key={window.start}
                 />
             )}
         </div>

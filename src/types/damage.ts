@@ -29,7 +29,7 @@ export interface ComputedEvent {
     target?: ComputedPlayer
 }
 
-export interface ComputedStandard {
+export interface ComputedWindow {
     start: number
     end: number
     players: ComputedPlayer[]

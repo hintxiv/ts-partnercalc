@@ -7,7 +7,7 @@ import {
 import { ExpandMore } from '@material-ui/icons'
 import { Friend } from 'api/fflogs/fight'
 import React, { useState } from 'react'
-import { ComputedStandard } from 'types'
+import { ComputedWindow } from 'types'
 import { NameChip, TimestampChip } from '../Chip'
 import { DamageGraph } from './DamageGraph/DamageGraph'
 import { DamageTable } from './DamageTable/DamageTable'
@@ -15,7 +15,7 @@ import { DanceLog } from './DanceLog/DanceLog'
 import styles from './StandardWindow.module.css'
 
 interface StandardWindowProps {
-    standard: ComputedStandard
+    window: ComputedWindow
     dancer: Friend
     formatTimestamp: (time: number) => string
     generateTimestampLink: (start: number, end: number) => string
@@ -24,13 +24,13 @@ interface StandardWindowProps {
 export function StandardWindow(props: StandardWindowProps) {
     const [expanded, setExpanded] = useState<string | false>(false)
 
-    const start = props.formatTimestamp(props.standard.start)
-    const end = props.formatTimestamp(props.standard.end)
+    const start = props.formatTimestamp(props.window.start)
+    const end = props.formatTimestamp(props.window.end)
 
-    const partner = props.standard.actualPartner
+    const partner = props.window.actualPartner
 
     const openTimestampLink = () => {
-        const timestampURL = props.generateTimestampLink(props.standard.start, props.standard.end)
+        const timestampURL = props.generateTimestampLink(props.window.start, props.window.end)
         window.open(timestampURL, '_blank', 'noopener,noreferrer')
     }
 
@@ -62,7 +62,7 @@ export function StandardWindow(props: StandardWindowProps) {
             </div>
         </Card>
         <Card className={styles.card + ' ' + styles.graph}>
-            <DamageGraph players={props.standard.players} />
+            <DamageGraph players={props.window.players} />
         </Card>
         <div>
             <Accordion
@@ -78,7 +78,7 @@ export function StandardWindow(props: StandardWindowProps) {
                     Damage Table
                 </AccordionSummary>
                 <AccordionDetails className={styles.accordionContent}>
-                    <DamageTable players={props.standard.players} />
+                    <DamageTable players={props.window.players} />
                 </AccordionDetails>
             </Accordion>
             <Accordion
@@ -95,7 +95,7 @@ export function StandardWindow(props: StandardWindowProps) {
                 </AccordionSummary>
                 <AccordionDetails className={styles.accordionContent}>
                     <DanceLog
-                        events={props.standard.events}
+                        events={props.window.events}
                         formatTimestamp={props.formatTimestamp}
                     />
                 </AccordionDetails>

@@ -6,6 +6,7 @@ import {
     SnapshotEvent,
 } from 'api/fflogs/event'
 import { DataProvider } from 'data/provider'
+import { BuffWindow } from 'simulator/buffwindow/buffwindow'
 import { Devilment } from 'simulator/buffwindow/devilment'
 import { PrepullStandard } from 'simulator/buffwindow/prepullStandard'
 import { Standard } from 'simulator/buffwindow/standard'
@@ -13,21 +14,22 @@ import { Entity } from './entity'
 
 const MIN_WINDOW_LENGTH = 10000 // ~4 GCDs
 
-type StandardHook = (standard: Standard) => void
+type BuffWindowHook = (window: BuffWindow) => void
 
 export class Dancer extends Entity {
     public id: number
-    private emitStandard: StandardHook
+    private emitWindow: BuffWindowHook
     private prepullStandard: PrepullStandard | undefined
     private currentStandard: Standard | undefined
     private currentDevilment: Devilment | undefined
+    private activeWindow: BuffWindow | undefined
 
     private potencyRatios: number[] = []
 
-    constructor(id: number, start: number, standardHook: StandardHook, data: DataProvider) {
+    constructor(id: number, start: number, buffWindowHook: BuffWindowHook, data: DataProvider) {
         super(id.toString(), data)
         this.id = id
-        this.emitStandard = standardHook
+        this.emitWindow = buffWindowHook
         this.createPrepullStandard(start)
         this.init()
     }
@@ -35,7 +37,7 @@ export class Dancer extends Entity {
     protected createPrepullStandard(start: number) {
         this.prepullStandard = new PrepullStandard(start, this.data)
         this.currentStandard = this.prepullStandard
-        this.emitStandard(this.prepullStandard)
+        this.handleNewWindow(this.prepullStandard)
     }
 
     protected init() {
@@ -48,6 +50,7 @@ export class Dancer extends Entity {
         this.addHook('removebuff', this.onRemoveDevilment, devilmentFilter)
         this.addHook('cast', this.onStandardCast, { actionID: this.data.actions.TILLANA.id })
         this.addHook('cast', this.onStandardCast, { actionID: this.data.actions.DOUBLE_STANDARD_FINISH.id })
+        this.addHook('cast', this.onDevilmentCast, { actionID: this.data.actions.DEVILMENT.id })
         this.addHook('cast', this.onTechnicalCast, { actionID: this.data.actions.QUADRUPLE_TECHNICAL_FINISH.id })
         this.addHook('cast', this.onPartnerSwap, { actionID: this.data.actions.CLOSED_POSITION.id })
         this.addHook('snapshot', this.onSnapshot, { sourceID: this.id })
@@ -77,6 +80,12 @@ export class Dancer extends Entity {
         }
     }
 
+    private onDevilmentCast(event: CastEvent) {
+        if (this.currentDevilment != null) {
+            this.currentDevilment.addDevilmentCast(event.timestamp, event.targetID)
+        }
+    }
+
     private onTechnicalCast(event: CastEvent) {
         if (this.currentStandard != null) {
             this.currentStandard.addTechnical(event.timestamp)
@@ -99,28 +108,49 @@ export class Dancer extends Entity {
         this.potencyRatios.push(event.amount / action.potency)
     }
 
+    private mergeWindow(window: BuffWindow) {
+        if (!this.activeWindow.hasOpenBuffOfType(window.type)) {
+            this.activeWindow.addChild(window)
+        }
+    }
+
+    private handleNewWindow(window: BuffWindow) {
+        if (this.activeWindow && this.activeWindow.isOpen) {
+            if (this.activeWindow.hasOpenBuffOfType('devilment')) {
+                // Swapping partners here would drop devilment
+                this.mergeWindow(window)
+                return
+            }
+
+            if (window.start < this.activeWindow.start + MIN_WINDOW_LENGTH) {
+                // The previous window was too short
+                this.mergeWindow(window)
+                return
+            }
+
+            if (window.type === 'devilment') {
+                // Always merge devilment uses if a window is open
+                this.mergeWindow(window)
+                return
+            }
+        }
+
+        if (this.activeWindow) {
+            this.activeWindow.close(window.start)
+        }
+
+        this.activeWindow = window
+        this.emitWindow(window)
+    }
+
     private onStandard(event: ApplyBuffEvent) {
         if (this.prepullStandard != null) {
             this.resolvePrepullStandard(event)
         }
 
-        if (this.currentStandard) {
-            if (this.currentDevilment?.isOpen
-                || event.timestamp < this.currentStandard.start + MIN_WINDOW_LENGTH) {
-                /* Switching partners here would drop Devilment
-                    OR the previous window was too short
-                    -> merge the new standard application into the current window
-                */
-                return
-            }
-
-            this.currentStandard.close(event.timestamp)
-        }
-
         const standard = new Standard(event.timestamp, event.targetID, this.data)
-
         this.currentStandard = standard
-        this.emitStandard(standard)
+        this.handleNewWindow(standard)
     }
 
     private onRemoveStandard(event: RemoveBuffEvent) {
@@ -139,14 +169,9 @@ export class Dancer extends Entity {
             return
         }
 
-        if (!this.currentStandard) {
-            console.warn('Devilment found with no standard?')
-            return
-        }
-
-        const devilment = new Devilment(event.timestamp, event.targetID)
+        const devilment = new Devilment(event.timestamp, event.targetID, this.data)
         this.currentDevilment = devilment
-        this.currentStandard.addDevilment(devilment)
+        this.handleNewWindow(devilment)
     }
 
     private onRemoveDevilment(event: RemoveBuffEvent) {
