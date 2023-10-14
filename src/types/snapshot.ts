@@ -76,4 +76,8 @@ export class Snapshot implements SnapshotProps {
     public get effects(): Effect[] {
         return [...this.buffs, ...this.debuffs]
     }
+
+    public hasEffect(statusID: number) {
+        return this.effects.some(effect => effect.id === statusID)
+    }
 }

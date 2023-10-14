@@ -10,7 +10,7 @@ import {
     OverallDamage,
 } from 'types'
 import { Snapshot } from '../types/snapshot'
-import { BuffWindow } from './buffwindow/buffwindow'
+import { BuffWindow } from './buffWindow'
 import { EnemyHandler } from './handlers/enemies'
 import { PlayerHandler } from './handlers/players'
 import { SnapshotHook } from './hooks'

@@ -6,10 +6,7 @@ import {
     SnapshotEvent,
 } from 'api/fflogs/event'
 import { DataProvider } from 'data/provider'
-import { BuffWindow } from 'simulator/buffwindow/buffwindow'
-import { Devilment } from 'simulator/buffwindow/devilment'
-import { PrepullStandard } from 'simulator/buffwindow/prepullStandard'
-import { Standard } from 'simulator/buffwindow/standard'
+import { Buff, BuffWindow, Devilment, PrepullWindow, StandardFinish } from 'simulator/buffWindow'
 import { Entity } from './entity'
 
 const MIN_WINDOW_LENGTH = 10000 // ~4 GCDs
@@ -19,9 +16,7 @@ type BuffWindowHook = (window: BuffWindow) => void
 export class Dancer extends Entity {
     public id: number
     private emitWindow: BuffWindowHook
-    private prepullStandard: PrepullStandard | undefined
-    private currentStandard: Standard | undefined
-    private currentDevilment: Devilment | undefined
+    private prepullWindow: PrepullWindow | undefined
     private activeWindow: BuffWindow | undefined
 
     private potencyRatios: number[] = []
@@ -30,14 +25,18 @@ export class Dancer extends Entity {
         super(id.toString(), data)
         this.id = id
         this.emitWindow = buffWindowHook
-        this.createPrepullStandard(start)
+        this.createPrepullWindow(start)
         this.init()
     }
 
-    protected createPrepullStandard(start: number) {
-        this.prepullStandard = new PrepullStandard(start, this.data)
-        this.currentStandard = this.prepullStandard
-        this.handleNewWindow(this.prepullStandard)
+    // Creates a buff window with an unknown target to account for a prepull Standard
+    protected createPrepullWindow(start: number) {
+        const prepullWindow = new PrepullWindow(start, this.data)
+        prepullWindow.addBuff(new StandardFinish(start, this.data))
+
+        this.prepullWindow = prepullWindow
+        this.activeWindow = prepullWindow
+        this.emitWindow(prepullWindow)
     }
 
     protected init() {
@@ -68,33 +67,33 @@ export class Dancer extends Entity {
         return sum / this.potencyRatios.length
     }
 
-    private resolvePrepullStandard(event: ApplyBuffEvent | RemoveBuffEvent) {
-        this.prepullStandard.addTarget(event.targetID)
-        this.prepullStandard = undefined
+    private resolvePrepullWindow(event: ApplyBuffEvent | RemoveBuffEvent) {
+        this.prepullWindow.addTarget(event.targetID)
+        this.prepullWindow = undefined
     }
 
     private onStandardCast(event: CastEvent) {
-        if (this.currentStandard != null) {
+        if (this.activeWindow != null) {
             const isTillana = event.actionID === this.data.actions.TILLANA.id
-            this.currentStandard.addStandardCast(isTillana, event.timestamp, event.targetID)
+            this.activeWindow.addStandardCast(isTillana, event.timestamp)
         }
     }
 
     private onDevilmentCast(event: CastEvent) {
-        if (this.currentDevilment != null) {
-            this.currentDevilment.addDevilmentCast(event.timestamp, event.targetID)
+        if (this.activeWindow != null) {
+            this.activeWindow.addDevilmentCast(event.timestamp)
         }
     }
 
     private onTechnicalCast(event: CastEvent) {
-        if (this.currentStandard != null) {
-            this.currentStandard.addTechnical(event.timestamp)
+        if (this.activeWindow != null) {
+            this.activeWindow.addTechnical(event.timestamp)
         }
     }
 
     private onPartnerSwap(event: CastEvent) {
-        if (this.currentStandard != null) {
-            this.currentStandard.addClosedPosition(event.timestamp, event.targetID)
+        if (this.activeWindow != null) {
+            this.activeWindow.addClosedPosition(event.timestamp, event.targetID)
         }
     }
 
@@ -108,59 +107,52 @@ export class Dancer extends Entity {
         this.potencyRatios.push(event.amount / action.potency)
     }
 
-    private mergeWindow(window: BuffWindow) {
-        if (!this.activeWindow.hasOpenBuffOfType(window.type)) {
-            this.activeWindow.addChild(window)
-        }
-    }
-
-    private handleNewWindow(window: BuffWindow) {
+    private handleNewBuff(buff: Buff, targetID: number) {
         if (this.activeWindow && this.activeWindow.isOpen) {
-            if (this.activeWindow.hasOpenBuffOfType('devilment')) {
+            if (this.activeWindow.hasActiveBuffOfType('devilment')) {
                 // Swapping partners here would drop devilment
-                this.mergeWindow(window)
+                this.activeWindow.addBuff(buff)
                 return
             }
 
-            if (window.start < this.activeWindow.start + MIN_WINDOW_LENGTH) {
-                // The previous window was too short
-                this.mergeWindow(window)
+            if (buff.start < this.activeWindow.start + MIN_WINDOW_LENGTH) {
+                // The previous window was too short to swap
+                this.activeWindow.addBuff(buff)
                 return
             }
 
-            if (window.type === 'devilment') {
-                // Always merge devilment uses if a window is open
-                this.mergeWindow(window)
+            if (buff.type === 'devilment') {
+                // Always merge devilment into the active window
+                this.activeWindow.addBuff(buff)
                 return
             }
         }
 
-        if (this.activeWindow) {
-            this.activeWindow.close(window.start)
-        }
+        this.activeWindow.close(buff.start)
 
-        this.activeWindow = window
-        this.emitWindow(window)
+        const newWindow = new BuffWindow(buff.start, targetID, this.data)
+        newWindow.addBuff(buff)
+
+        this.emitWindow(newWindow)
+        this.activeWindow = newWindow
     }
 
     private onStandard(event: ApplyBuffEvent) {
-        if (this.prepullStandard != null) {
-            this.resolvePrepullStandard(event)
+        if (this.prepullWindow != null) {
+            this.resolvePrepullWindow(event)
         }
 
-        const standard = new Standard(event.timestamp, event.targetID, this.data)
-        this.currentStandard = standard
-        this.handleNewWindow(standard)
+        const standard = new StandardFinish(event.timestamp, this.data)
+        this.handleNewBuff(standard, event.targetID)
     }
 
     private onRemoveStandard(event: RemoveBuffEvent) {
-        if (this.prepullStandard != null) {
-            this.resolvePrepullStandard(event)
+        if (this.prepullWindow != null) {
+            this.resolvePrepullWindow(event)
         }
 
-        if (this.currentStandard) {
-            this.currentStandard.close(event.timestamp)
-            this.currentStandard = undefined
+        if (this.activeWindow) {
+            this.activeWindow.closeStandard(event.timestamp)
         }
     }
 
@@ -169,15 +161,13 @@ export class Dancer extends Entity {
             return
         }
 
-        const devilment = new Devilment(event.timestamp, event.targetID, this.data)
-        this.currentDevilment = devilment
-        this.handleNewWindow(devilment)
+        const devilment = new Devilment(event.timestamp, this.data)
+        this.handleNewBuff(devilment, event.targetID)
     }
 
     private onRemoveDevilment(event: RemoveBuffEvent) {
-        if (this.currentDevilment) {
-            this.currentDevilment.close(event.timestamp)
-            this.currentDevilment = undefined
+        if (this.activeWindow) {
+            this.activeWindow.closeDevilment(event.timestamp)
         }
     }
 }
