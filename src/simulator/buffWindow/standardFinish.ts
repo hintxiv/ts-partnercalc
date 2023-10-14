@@ -1,14 +1,14 @@
+import { WindowInfo } from './'
+import { EFFECTS } from 'data/effects'
 import { simulateEsprit } from 'math/esprit'
 import { simulateStandard } from 'math/rdps'
-import { ComputedDamage, Job, Stats } from 'types'
-import { Snapshot } from 'types/snapshot'
-import { BuffWindow, WindowInfo } from './buffwindow'
+import { Snapshot, ComputedDamage, Job, Stats } from 'types'
+import { Buff } from './buff'
 
-export class Standard extends BuffWindow {
-    override type = 'standard'
+export class StandardFinish extends Buff {
+    public readonly type = 'standard' as const
 
-    /* Returns the rDPS totals for a given player over this window */
-    protected override calculateDamageFromSnapshot(snapshot: Snapshot, windowInfo: WindowInfo): ComputedDamage {
+    public override calculateDamageFromSnapshot(snapshot: Snapshot, windowInfo: WindowInfo): ComputedDamage {
         return {
             timestamp: snapshot.timestamp,
             standard: this.getStandardContribution(snapshot, windowInfo.stats),
@@ -18,7 +18,7 @@ export class Standard extends BuffWindow {
     }
 
     private getStandardContribution(snapshot: Snapshot, stats: Stats): number {
-        const devilmentUp = this.hasOpenBuffOfType('devilment')
+        const devilmentUp = snapshot.hasEffect(EFFECTS.DEVILMENT.id)
         return simulateStandard(snapshot, stats, devilmentUp)
     }
 
