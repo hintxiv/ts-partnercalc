@@ -13,15 +13,20 @@ export function Home() {
     useEffect(() => setTitle('Home'))
 
     const decomposeFFLogsURL = (url: URL) => {
-        const reportRegex = /(?:reports\/)((?:(?!\/).)+)/i
-        const fightRegex = /(?:#fight=)((?:(?!&).)+)/i
+        const report = url.pathname.replace('/reports/', '')
+        const hashParam = url.hash.replace('#', '')
 
-        const reportID = url.pathname.match(reportRegex)
-        const fightID = url.hash.match(fightRegex)
+        const fight = hashParam.split('&')
+            .map((param) => param.split('='))
+            .find(([key, _]) => key === 'fight')[1]
+
+        if (!report || !fight) {
+            throw new Error('Invalid FFLogs URL')
+        }
 
         return {
-            reportID: reportID[1],
-            fightID: fightID[1],
+            reportID: report,
+            fightID: fight,
         }
     }
 
