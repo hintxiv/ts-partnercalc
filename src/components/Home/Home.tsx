@@ -52,6 +52,20 @@ export function Home() {
         }
     }
 
+    // Placeholder until partnercalc is updated for 7.x
+    return <div className={styles.home}>
+        <Box p={2}>
+            <Box mb={1}>
+                <Typography variant="h3" color="textPrimary" style={{ textAlign: 'center' }}>
+                    Thanks for using partnercalc!
+                </Typography>
+                <Typography variant="h6" color="textPrimary" style={{ textAlign: 'center' }}>
+                    I'm working on updating the site for Dawntrail, so please check back later.
+                </Typography>
+            </Box>
+        </Box>
+    </div>
+
     return <div className={styles.home}>
         <Box p={2}>
             <Box mb={1}>
