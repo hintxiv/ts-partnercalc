@@ -1,5 +1,5 @@
 import { TickEvent, SnapshotEvent } from 'api/fflogs/event'
-import { Effect } from 'types'
+import { Effect, Snapshot } from 'types'
 
 export class DHEstimator {
     private directHitPercentages: number[] = []
@@ -14,7 +14,8 @@ export class DHEstimator {
         }
     }
 
-    public onSnapshot(event: SnapshotEvent, effects: Effect[]) {
+    public onSnapshot(event: SnapshotEvent, snapshot: Snapshot) {
+        const effects = snapshot.effects
         const DHBuffUp = effects.some(effect => effect.DHRate != null)
 
         if (!DHBuffUp) {

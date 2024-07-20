@@ -1,5 +1,5 @@
 import { SnapshotEvent, TickEvent } from 'api/fflogs/event'
-import { Effect } from 'types'
+import { Effect, Snapshot } from 'types'
 
 const BASE_CRIT_RATE = 50
 const BASE_CRIT_STAT = 420
@@ -28,10 +28,10 @@ export class CritEstimator {
         }
     }
 
-    public onSnapshot(event: SnapshotEvent, effects: Effect[]) {
-        const critBuffUp = effects.some(effect => effect.critRate != null)
+    public onSnapshot(event: SnapshotEvent, snapshot: Snapshot) {
+        const critBuffUp = snapshot.effects.some(effect => effect.critRate != null)
 
-        if (!critBuffUp) {
+        if (!critBuffUp && snapshot.options.critType !== 'auto') {
             this.snapshotEvents.push(event)
         }
     }
@@ -44,6 +44,7 @@ export class CritEstimator {
             if (events.length === 0) { return undefined }
 
             const critCount = events.filter(event => event.isCrit).length
+
             return critCount / events.length
         }
 
