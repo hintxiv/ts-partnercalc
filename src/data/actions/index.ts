@@ -10,6 +10,7 @@ import { GNB_ACTIONS } from './GNB'
 import { MCH_ACTIONS } from './MCH'
 import { MNK_ACTIONS } from './MNK'
 import { NIN_ACTIONS } from './NIN'
+import { PCT_ACTIONS } from './PCT'
 import { PLD_ACTIONS } from './PLD'
 import { RDM_ACTIONS } from './RDM'
 import { RPR_ACTIONS } from './RPR'
@@ -31,6 +32,7 @@ export const ACTIONS = preserve<Action>()({
     ...MCH_ACTIONS,
     ...MNK_ACTIONS,
     ...NIN_ACTIONS,
+    ...PCT_ACTIONS,
     ...PLD_ACTIONS,
     ...RDM_ACTIONS,
     ...RPR_ACTIONS,

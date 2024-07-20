@@ -148,6 +148,13 @@ export const JOBS = preserve<Job>()({
         constructor: Player,
         Icon: ICONS.BlackMageIcon,
     },
+    Pictomancer: {
+        name: 'Pictomancer',
+        color: '#ff8bee',
+        espritRate: 'unknown',
+        constructor: Player,
+        Icon: ICONS.PictomancerIcon,
+    },
     RedMage: {
         name: 'Red Mage',
         color: '#e87b7b',
