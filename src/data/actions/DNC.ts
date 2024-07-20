@@ -5,13 +5,13 @@ export const DNC_ACTIONS = preserve<Action>()({
     DOUBLE_STANDARD_FINISH: {
         name: 'Double Standard Finish',
         id: 16192,
-        potency: 720,
+        potency: 850,
         falloff: true,
     },
     QUADRUPLE_TECHNICAL_FINISH: {
         name: 'Quadruple Technical Finish',
         id: 16196,
-        potency: 1200,
+        potency: 1300,
         falloff: true,
     },
     CASCADE: {
@@ -65,7 +65,7 @@ export const DNC_ACTIONS = preserve<Action>()({
     SABER_DANCE: {
         name: 'Saber Dance',
         id: 16005,
-        potency: 480,
+        potency: 520,
         falloff: true,
     },
     FAN_DANCE: {
@@ -93,7 +93,7 @@ export const DNC_ACTIONS = preserve<Action>()({
     TILLANA: {
         name: 'Tillana',
         id: 25790,
-        potency: 360,
+        potency: 600,
         falloff: true,
     },
     STARFALL_DANCE: {
@@ -112,10 +112,22 @@ export const DNC_ACTIONS = preserve<Action>()({
         name: 'Closed Position',
         id: 16006,
     },
+    LAST_DANCE: {
+        name: 'Last Dance',
+        id: 36983,
+        potency: 520,
+        falloff: true,
+    },
     FINISHING_MOVE: {
         name: 'Finishing Move',
         id: 36984,
         potency: 850,
+        falloff: true,
+    },
+    DANCE_OF_THE_DAWN: {
+        name: 'Dance of the Dawn',
+        id: 36985,
+        potency: 1000,
         falloff: true,
     },
 })
