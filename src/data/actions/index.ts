@@ -18,6 +18,7 @@ import { SAM_ACTIONS } from './SAM'
 import { SCH_ACTIONS } from './SCH'
 import { SGE_ACTIONS } from './SGE'
 import { SMN_ACTIONS } from './SMN'
+import { VPR_ACTIONS } from './VPR'
 import { WAR_ACTIONS } from './WAR'
 import { WHM_ACTIONS } from './WHM'
 
@@ -40,6 +41,7 @@ export const ACTIONS = preserve<Action>()({
     ...SCH_ACTIONS,
     ...SGE_ACTIONS,
     ...SMN_ACTIONS,
+    ...VPR_ACTIONS,
     ...WAR_ACTIONS,
     ...WHM_ACTIONS,
 })

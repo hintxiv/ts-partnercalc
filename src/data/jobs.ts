@@ -116,6 +116,13 @@ export const JOBS = preserve<Job>()({
         constructor: Player,
         Icon: ICONS.SamuraiIcon,
     },
+    Viper: {
+        name: 'Viper',
+        color: '#66d266',
+        espritRate: 0.17,
+        constructor: Player,
+        Icon: ICONS.ViperIcon,
+    },
 
     // Physical Ranged
     Bard: {
