@@ -67,4 +67,19 @@ export const GNB_ACTIONS = preserve<Action>()({
         id: 25760,
         generatesEsprit: true,
     },
+    REIGN_OF_BEASTS: {
+        name: 'Reign of Beasts',
+        id: 36937,
+        generatesEsprit: true,
+    },
+    NOBLE_BLOOD: {
+        name: 'Noble Blood',
+        id: 36938,
+        generatesEsprit: true,
+    },
+    LION_HEART: {
+        name: 'Lion Heart',
+        id: 36939,
+        generatesEsprit: true,
+    },
 })

@@ -87,4 +87,19 @@ export const BRD_ACTIONS = preserve<Action>()({
         id: 16494,
         generatesEsprit: true,
     },
+    WIDE_VOLLEY: {
+        name: 'Wide Volley',
+        id: 36974,
+        generatesEsprit: true,
+    },
+    RESONANT_ARROW: {
+        name: 'Resonant Arrow',
+        id: 36976,
+        generatesEsprit: true,
+    },
+    RADIANT_ENCORE: {
+        name: 'Radiant Encore',
+        id: 36977,
+        generatesEsprit: true,
+    },
 })

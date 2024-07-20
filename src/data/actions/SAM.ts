@@ -51,6 +51,7 @@ export const SAM_ACTIONS = preserve<Action>()({
         name: 'Midare Setsugekka',
         id: 7487,
         generatesEsprit: true,
+        autoCrit: true,
     },
     KAESHI_SETSUGEKKA: {
         name: 'Kaeshi Setsugekka',
@@ -92,5 +93,32 @@ export const SAM_ACTIONS = preserve<Action>()({
         name: 'Fuko',
         id: 25780,
         generatesEsprit: true,
+    },
+    GYOFU: {
+        name: 'Gyofu',
+        id: 36963,
+        generatesEsprit: true,
+    },
+    TENDO_GOKEN: {
+        name: 'Tendo Goken',
+        id: 36965,
+        generatesEsprit: true,
+    },
+    TENDO_SETSUGEKKA: {
+        name: 'Tendo Setsugekka',
+        id: 36966,
+        generatesEsprit: true,
+        autoCrit: true,
+    },
+    TENDO_KAESHI_GOKEN: {
+        name: 'Tendo Kaeshi Goken',
+        id: 36967,
+        generatesEsprit: true,
+    },
+    TENDO_KAESHI_SETSUGEKKA: {
+        name: 'Tendo Kaeshi Setsugekka',
+        id: 36968,
+        generatesEsprit: true,
+        autoCrit: true,
     },
 })

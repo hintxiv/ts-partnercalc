@@ -72,4 +72,9 @@ export const SGE_ACTIONS = preserve<Action>()({
         id: 24316,
         generatesEsprit: true,
     },
+    EUKRASIAN_DYSKRASIA: {
+        name: 'Eukrasian Dyskrasia',
+        id: 37032,
+        generatesEsprit: true,
+    },
 })

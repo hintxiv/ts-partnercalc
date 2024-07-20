@@ -132,4 +132,24 @@ export const RDM_ACTIONS = preserve<Action>()({
         id: 25858,
         generatesEsprit: true,
     },
+    JOLT_III: {
+        name: 'Jolt III',
+        id: 37004,
+        generatesEsprit: true,
+    },
+    GRAND_IMPACT: {
+        name: 'Grand Impact',
+        id: 37006,
+        generatesEsprit: true,
+    },
+    ENCHANTED_MOULINET_DEUX: {
+        name: 'Enchanted Moulinet Deux',
+        id: 37002,
+        generatesEsprit: true,
+    },
+    ENCHANTED_MOULINET_TROIS: {
+        name: 'Enchanted Moulinet Trois',
+        id: 37003,
+        generatesEsprit: true,
+    },
 })

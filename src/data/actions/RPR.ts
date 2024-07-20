@@ -97,4 +97,24 @@ export const RPR_ACTIONS = preserve<Action>()({
         id: 24379,
         generatesEsprit: true,
     },
+    EXECUTIONERS_GIBBET: {
+        name: 'Executioner\'s Gibbet',
+        id: 36970,
+        generatesEsprit: true,
+    },
+    EXECUTIONERS_GALLOWS: {
+        name: 'Executioner\'s Gallows',
+        id: 36971,
+        generatesEsprit: true,
+    },
+    EXECUTIONERS_GUILLOTINE: {
+        name: 'Executioner\'s Guillotine',
+        id: 36972,
+        generatesEsprit: true,
+    },
+    PERFECTIO: {
+        name: 'Perfectio',
+        id: 36973,
+        generatesEsprit: true,
+    },
 })

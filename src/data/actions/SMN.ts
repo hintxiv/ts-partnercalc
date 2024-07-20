@@ -177,4 +177,14 @@ export const SMN_ACTIONS = preserve<Action>()({
         id: 25840,
         generatesEsprit: true,
     },
+    UMBRAL_IMPULSE: {
+        name: 'Umbral Impulse',
+        id: 36994,
+        generatesEsprit: true,
+    },
+    UMBRAL_HEX: {
+        name: 'Slipstream',
+        id: 25837,
+        generatesEsprit: true,
+    },
 })

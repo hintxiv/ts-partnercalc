@@ -62,4 +62,9 @@ export const WHM_ACTIONS = preserve<Action>()({
         id: 25860,
         generatesEsprit: true,
     },
+    GLARE_IV: {
+        name: 'Glare IV',
+        id: 37009,
+        generatesEsprit: true,
+    },
 })
