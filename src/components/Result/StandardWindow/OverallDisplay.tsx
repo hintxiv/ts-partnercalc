@@ -8,10 +8,10 @@ import {
 import { ExpandMore } from '@material-ui/icons'
 import React from 'react'
 import { OverallDamage } from 'types'
-import { NameChip } from '../Chip'
 import { DamageGraph } from './DamageGraph/DamageGraph'
 import { DamageTable } from './DamageTable/DamageTable'
 import styles from './StandardWindow.module.css'
+import { NameChip } from '../Chip'
 
 interface OverallDisplayProps {
     damage: OverallDamage

@@ -4,12 +4,12 @@ import { DataProvider, StatusKey } from 'data/provider'
 import { Effect, Job, Status } from 'types'
 import { DamageInstance, DamageOptions, Snapshot } from 'types/snapshot'
 import { Stats } from 'types/stats'
+import {MCH_STATUSES} from '../../../../data/statuses/MCH'
 import { SnapshotHook } from '../../../hooks'
 import { CritEstimator } from '../../estimators/crit'
 import { DHEstimator } from '../../estimators/dh'
 import { SnapshotKey } from '../../module'
 import { Entity } from '../entity'
-import {MCH_STATUSES} from "../../../../data/statuses/MCH";
 
 const AUTO_CRIT_STATUSES: StatusKey[] = [
     'REASSEMBLED',
