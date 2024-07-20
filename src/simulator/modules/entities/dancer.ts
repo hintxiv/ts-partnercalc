@@ -47,7 +47,7 @@ export class Dancer extends Entity {
         this.addHook('removebuff', this.onRemoveStandard, standardFilter)
         this.addHook('applybuff', this.onDevilment, devilmentFilter)
         this.addHook('removebuff', this.onRemoveDevilment, devilmentFilter)
-        this.addHook('cast', this.onStandardCast, { actionID: this.data.actions.TILLANA.id })
+        this.addHook('cast', this.onStandardCast, { actionID: this.data.actions.FINISHING_MOVE.id })
         this.addHook('cast', this.onStandardCast, { actionID: this.data.actions.DOUBLE_STANDARD_FINISH.id })
         this.addHook('cast', this.onDevilmentCast, { actionID: this.data.actions.DEVILMENT.id })
         this.addHook('cast', this.onTechnicalCast, { actionID: this.data.actions.QUADRUPLE_TECHNICAL_FINISH.id })
@@ -74,8 +74,8 @@ export class Dancer extends Entity {
 
     private onStandardCast(event: CastEvent) {
         if (this.activeWindow != null) {
-            const isTillana = event.actionID === this.data.actions.TILLANA.id
-            this.activeWindow.addStandardCast(isTillana, event.timestamp)
+            const isFinishingMove = event.actionID === this.data.actions.FINISHING_MOVE.id
+            this.activeWindow.addStandardCast(isFinishingMove, event.timestamp)
         }
     }
 

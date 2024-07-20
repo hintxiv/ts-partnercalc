@@ -112,4 +112,10 @@ export const DNC_ACTIONS = preserve<Action>()({
         name: 'Closed Position',
         id: 16006,
     },
+    FINISHING_MOVE: {
+        name: 'Finishing Move',
+        id: 36984,
+        potency: 850,
+        falloff: true,
+    },
 })

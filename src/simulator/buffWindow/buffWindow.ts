@@ -128,9 +128,9 @@ export class BuffWindow {
         return this.events
     }
 
-    public addStandardCast(isTillana: boolean, timestamp: number) {
+    public addStandardCast(isFinishingMove: boolean, timestamp: number) {
         this.addEvent({
-            action: isTillana ? this.data.actions.TILLANA : this.data.actions.DOUBLE_STANDARD_FINISH,
+            action: isFinishingMove ? this.data.actions.FINISHING_MOVE : this.data.actions.DOUBLE_STANDARD_FINISH,
             timestamp: timestamp,
             targetID: this.realTarget,
         })
