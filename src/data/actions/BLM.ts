@@ -107,4 +107,19 @@ export const BLM_ACTIONS = preserve<Action>()({
         id: 25797,
         generatesEsprit: true,
     },
+    HIGH_THUNDER: {
+        name: 'High Thunder',
+        id: 36986,
+        generatesEsprit: true,
+    },
+    HIGH_THUNDER_II: {
+        name: 'High Thunder II',
+        id: 36987,
+        generatesEsprit: true,
+    },
+    FLARE_STAR: {
+        name: 'Flare Star',
+        id: 36989,
+        generatesEsprit: true,
+    },
 })

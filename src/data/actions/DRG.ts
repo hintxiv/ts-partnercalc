@@ -92,4 +92,22 @@ export const DRG_ACTIONS = preserve<Action>()({
         onGCD: true,
         generatesEsprit: true,
     },
+    DRAKESBANE: {
+        name: 'Drakesbane',
+        id: 36952,
+        onGCD: true,
+        generatesEsprit: true,
+    },
+    LANCE_BARRAGE: {
+        name: 'Lance Barrage',
+        id: 36954,
+        onGCD: true,
+        generatesEsprit: true,
+    },
+    SPIRAL_BLOW: {
+        name: 'Spiral Blow',
+        id: 36955,
+        onGCD: true,
+        generatesEsprit: true,
+    },
 })

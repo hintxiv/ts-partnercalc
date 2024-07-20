@@ -92,4 +92,24 @@ export const MCH_ACTIONS = preserve<Action>()({
         onGCD: true,
         generatesEsprit: true,
     },
+    BLAZING_SHOT: {
+        name: 'Blazing Shot',
+        id: 36978,
+        onGCD: true,
+        generatesEsprit: true,
+    },
+    EXCAVATOR: {
+        name: 'Excavator',
+        id: 36981,
+        onGCD: true,
+        generatesEsprit: true,
+    },
+    FULL_METAL_FIELD: {
+        name: 'Full Metal Field',
+        id: 36982,
+        onGCD: true,
+        generatesEsprit: true,
+        autoCrit: true,
+        autoDH: true,
+    },
 })

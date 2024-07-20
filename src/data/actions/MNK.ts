@@ -89,4 +89,35 @@ export const MNK_ACTIONS = preserve<Action>()({
         id: 25882,
         generatesEsprit: true,
     },
+    LEAPING_OPO: {
+        name: 'Leaping Opo',
+        id: 36945,
+        generatesEsprit: true,
+        autoCrit: true,
+    },
+    RISING_RAPTOR: {
+        name: 'Rising Raptor',
+        id: 36946,
+        generatesEsprit: true,
+    },
+    POUNCING_COEURL: {
+        name: 'Pouncing Coeurl',
+        id: 36947,
+        generatesEsprit: true,
+    },
+    ELIXIR_BURST: {
+        name: 'Elixir Burst',
+        id: 36948,
+        generatesEsprit: true,
+    },
+    WINDS_REPLY: {
+        name: 'Wind\'s Reply',
+        id: 36949,
+        generatesEsprit: true,
+    },
+    FIRES_REPLY: {
+        name: 'Fire\'s Reply',
+        id: 36950,
+        generatesEsprit: true,
+    },
 })

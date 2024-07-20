@@ -82,4 +82,14 @@ export const PLD_ACTIONS = preserve<Action>()({
         id: 25750,
         generatesEsprit: true,
     },
+    SUPPLICATION: {
+        name: 'Supplication',
+        id: 36918,
+        generatesEsprit: true,
+    },
+    SEPULCHRE: {
+        name: 'Sepulchre',
+        id: 36919,
+        generatesEsprit: true,
+    },
 })

@@ -104,4 +104,12 @@ export const WAR_ACTIONS = preserve<Action>()({
         onGCD: true,
         generatesEsprit: true,
     },
+    PRIMAL_RUINATION: {
+        name: 'Primal Ruination',
+        id: 36925,
+        onGCD: true,
+        generatesEsprit: true,
+        autoCrit: true,
+        autoDH: true,
+    },
 })
