@@ -54,6 +54,10 @@ const routes = [
         element: <Home />,
     },
     {
+        path: '/:passKey',
+        element: <Home />,
+    },
+    {
         path: '*',
         element: <NotFoundPage />,
     },

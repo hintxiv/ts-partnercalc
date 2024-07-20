@@ -2,10 +2,11 @@ import { Grid, TextField, Box, Typography } from '@material-ui/core'
 import { fetchLastFightID } from 'api/fflogs/api'
 import { useTitle } from 'components/Title'
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import styles from './Home.module.css'
 
 export function Home() {
+    const { passKey } = useParams()
     const [hasError, setError] = useState<boolean>(false)
     const navigate = useNavigate()
     const { setTitle } = useTitle()
@@ -52,19 +53,21 @@ export function Home() {
         }
     }
 
-    // Placeholder until partnercalc is updated for 7.x
-    return <div className={styles.home}>
-        <Box p={2}>
-            <Box mb={1}>
-                <Typography variant="h3" color="textPrimary" style={{ textAlign: 'center' }}>
-                    Thanks for using partnercalc!
-                </Typography>
-                <Typography variant="h6" color="textPrimary" style={{ textAlign: 'center' }}>
-                    I'm working on updating the site for Dawntrail, so please check back later.
-                </Typography>
+    if (passKey !== 'TillanasInTijuana') {
+        // Placeholder until partnercalc is updated for 7.x
+        return <div className={styles.home}>
+            <Box p={2}>
+                <Box mb={1}>
+                    <Typography variant="h3" color="textPrimary" style={{ textAlign: 'center' }}>
+                        Thanks for using partnercalc!
+                    </Typography>
+                    <Typography variant="h6" color="textPrimary" style={{ textAlign: 'center' }}>
+                        I'm working on updating the site for Dawntrail, so please check back later.
+                    </Typography>
+                </Box>
             </Box>
-        </Box>
-    </div>
+        </div>
+    }
 
     return <div className={styles.home}>
         <Box p={2}>
