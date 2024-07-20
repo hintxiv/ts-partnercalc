@@ -1,10 +1,10 @@
 import { SnapshotEvent, TickEvent } from 'api/fflogs/event'
-import { Effect } from 'types'
+import { Effect, Snapshot } from 'types'
 
 const BASE_CRIT_RATE = 50
-const BASE_CRIT_STAT = 400
+const BASE_CRIT_STAT = 420
 const CRIT_INCREMENT = 256
-const LEVEL_MOD = 1900
+const LEVEL_MOD_DIV = 2780
 
 export class CritEstimator {
     private critRates: number[] = []
@@ -28,10 +28,10 @@ export class CritEstimator {
         }
     }
 
-    public onSnapshot(event: SnapshotEvent, effects: Effect[]) {
-        const critBuffUp = effects.some(effect => effect.critRate != null)
+    public onSnapshot(event: SnapshotEvent, snapshot: Snapshot) {
+        const critBuffUp = snapshot.effects.some(effect => effect.critRate != null)
 
-        if (!critBuffUp) {
+        if (!critBuffUp && snapshot.options.critType !== 'auto') {
             this.snapshotEvents.push(event)
         }
     }
@@ -44,6 +44,7 @@ export class CritEstimator {
             if (events.length === 0) { return undefined }
 
             const critCount = events.filter(event => event.isCrit).length
+
             return critCount / events.length
         }
 
@@ -65,10 +66,10 @@ export class CritEstimator {
         }
 
         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-        const critStat = (((critRate * 1000) - 50) * LEVEL_MOD / 200) + BASE_CRIT_STAT
+        const critStat = (((critRate * 1000) - 50) * LEVEL_MOD_DIV / 200) + BASE_CRIT_STAT
 
         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-        const critMultiplier = Math.floor((200 * (critStat - BASE_CRIT_STAT) / LEVEL_MOD) + 1400) / 1000
+        const critMultiplier = Math.floor((200 * (critStat - BASE_CRIT_STAT) / LEVEL_MOD_DIV) + 1400) / 1000
 
         return {
             critRate: critRate,

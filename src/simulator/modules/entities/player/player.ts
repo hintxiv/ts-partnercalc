@@ -117,8 +117,8 @@ export class Player extends Entity {
 
         this.registerSnapshot(snapshot)
 
-        this.critEstimator.onSnapshot(event, snapshot.effects)
-        this.DHEstimator.onSnapshot(event, snapshot.effects)
+        this.critEstimator.onSnapshot(event, snapshot)
+        this.DHEstimator.onSnapshot(event, snapshot)
     }
 
     protected onDebuff(event: ApplyDebuffEvent) {
