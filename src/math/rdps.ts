@@ -136,6 +136,11 @@ function devilmentRdps(
     const critProbability = Cr - CDHProbability
     const DHProbability = Dr - CDHProbability
 
+    // We love Wildfire, even if SE doesn't
+    if (options.DHType === 'none' && options.critType === 'none') {
+        return 0
+    }
+
     if (options.DHType === 'normal' && options.critType === 'normal') {
         // The normal case, assign crit/DH damage to devilment according to % rates
         const CDHRdps = base * (Cm * Dm - 1) * (devilment.DHRate / Dr) * (devilment.critRate / Cr)

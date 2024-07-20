@@ -9,6 +9,7 @@ import { CritEstimator } from '../../estimators/crit'
 import { DHEstimator } from '../../estimators/dh'
 import { SnapshotKey } from '../../module'
 import { Entity } from '../entity'
+import {MCH_STATUSES} from "../../../../data/statuses/MCH";
 
 const AUTO_CRIT_STATUSES: StatusKey[] = [
     'REASSEMBLED',
@@ -129,6 +130,11 @@ export class Player extends Entity {
         const options: DamageOptions = {
             critType: 'normal',
             DHType: 'normal',
+        }
+
+        if (event.statusID === MCH_STATUSES.WILDFIRE.id) {
+            options.DHType = 'none'
+            options.critType = 'none'
         }
 
         const snapshot = new Snapshot({
