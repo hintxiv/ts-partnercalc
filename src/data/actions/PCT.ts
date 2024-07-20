@@ -6,16 +6,22 @@ export const PCT_ACTIONS = preserve<Action>()({
         name: 'Hammer Stamp',
         id: 34678,
         generatesEsprit: true,
+        autoCrit: true,
+        autoDH: true,
     },
     HAMMER_BRUSH: {
         name: 'Hammer Brush',
         id: 34679,
         generatesEsprit: true,
+        autoCrit: true,
+        autoDH: true,
     },
     POLISHING_HAMMER: {
         name: 'Polishing Hammer',
         id: 34680,
         generatesEsprit: true,
+        autoCrit: true,
+        autoDH: true,
     },
     STAR_PRISM: {
         name: 'Star Prism',
