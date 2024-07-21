@@ -9,12 +9,12 @@ import {
     DamageTotals,
     OverallDamage,
 } from 'types'
-import { Snapshot } from '../types/snapshot'
 import { BuffWindow } from './buffWindow'
 import { EnemyHandler } from './handlers/enemies'
 import { PlayerHandler } from './handlers/players'
 import { SnapshotHook } from './hooks'
 import { Dancer } from './modules/entities/dancer'
+import { Snapshot } from '../types/snapshot'
 
 export class Simulator {
     private parser: FFLogsParser

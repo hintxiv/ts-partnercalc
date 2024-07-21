@@ -8,11 +8,11 @@ import { ExpandMore } from '@material-ui/icons'
 import { Friend } from 'api/fflogs/fight'
 import React, { useState } from 'react'
 import { ComputedWindow } from 'types'
-import { NameChip, TimestampChip } from '../Chip'
 import { DamageGraph } from './DamageGraph/DamageGraph'
 import { DamageTable } from './DamageTable/DamageTable'
 import { DanceLog } from './DanceLog/DanceLog'
 import styles from './StandardWindow.module.css'
+import { NameChip, TimestampChip } from '../Chip'
 
 interface StandardWindowProps {
     window: ComputedWindow

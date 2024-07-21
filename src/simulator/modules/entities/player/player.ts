@@ -4,6 +4,7 @@ import { DataProvider, StatusKey } from 'data/provider'
 import { Effect, Job, Status } from 'types'
 import { DamageInstance, DamageOptions, Snapshot } from 'types/snapshot'
 import { Stats } from 'types/stats'
+import {MCH_STATUSES} from '../../../../data/statuses/MCH'
 import { SnapshotHook } from '../../../hooks'
 import { CritEstimator } from '../../estimators/crit'
 import { DHEstimator } from '../../estimators/dh'
@@ -129,6 +130,11 @@ export class Player extends Entity {
         const options: DamageOptions = {
             critType: 'normal',
             DHType: 'normal',
+        }
+
+        if (event.statusID === MCH_STATUSES.WILDFIRE.id) {
+            options.DHType = 'none'
+            options.critType = 'none'
         }
 
         const snapshot = new Snapshot({

@@ -9,4 +9,7 @@ export const MCH_STATUSES = preserve<Status>()({
     REASSEMBLED: {
         id: 851,
     },
+    WILDFIRE: {
+        id: 861,
+    },
 })
