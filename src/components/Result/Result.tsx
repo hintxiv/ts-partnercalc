@@ -40,7 +40,13 @@ export function Result() {
             setDancer(dancer)
 
             const simulator = new Simulator(parser, dancer)
-            setWindows(await simulator.calculatePartnerDamage())
+            const windows = await simulator.calculatePartnerDamage()
+
+            if (windows.length <= 0) {
+                asyncThrow(new Error('Are you sure the Dancer had a partner?'))
+            }
+
+            setWindows(windows)
             setOverall(simulator.calculateOverallDamage())
             setReady(true)
         }
