@@ -12,6 +12,7 @@ import { DamageGraph } from './DamageGraph/DamageGraph'
 import { DamageTable } from './DamageTable/DamageTable'
 import { DanceLog } from './DanceLog/DanceLog'
 import styles from './StandardWindow.module.css'
+import {formatDamage} from '../../../util/format'
 import { NameChip, TimestampChip } from '../Chip'
 
 interface StandardWindowProps {
@@ -32,6 +33,12 @@ export function StandardWindow(props: StandardWindowProps) {
     const openTimestampLink = () => {
         const timestampURL = props.generateTimestampLink(props.window.start, props.window.end)
         window.open(timestampURL, '_blank', 'noopener,noreferrer')
+    }
+
+    const formatDPS = (damage: number) => {
+        const duration = props.window.end - props.window.start
+        const dps = damage / (duration / 1000)
+        return formatDamage(dps)
     }
 
     const handleChange = (panel: string) => (
@@ -78,7 +85,7 @@ export function StandardWindow(props: StandardWindowProps) {
                     Damage Table
                 </AccordionSummary>
                 <AccordionDetails className={styles.accordionContent}>
-                    <DamageTable players={props.window.players} />
+                    <DamageTable players={props.window.players} formatDPS={formatDPS} />
                 </AccordionDetails>
             </Accordion>
             <Accordion

@@ -58,7 +58,7 @@ export function OverallDisplay(props: OverallDisplayProps) {
                     Damage Table
                 </AccordionSummary>
                 <AccordionDetails className={styles.accordionContent}>
-                    <DamageTable players={props.damage.players} />
+                    <DamageTable players={props.damage.players} formatDPS={props.formatDPS} />
                 </AccordionDetails>
             </Accordion>
         </div>
