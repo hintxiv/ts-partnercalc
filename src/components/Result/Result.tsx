@@ -5,7 +5,7 @@ import { useAsyncError } from 'components/ErrorBoundary/throwError'
 import { useTitle } from 'components/Title'
 import { JOBS } from 'data/jobs'
 import React, { useEffect, useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { Simulator } from 'simulator/simulator'
 import { ComputedWindow, OverallDamage } from 'types'
 import { formatDamage } from 'util/format'
@@ -15,6 +15,7 @@ import { StandardWindow } from './StandardWindow/StandardWindow'
 
 export function Result() {
     const { reportID, fightID } = useParams()
+    const [searchParams] = useSearchParams()
     const { setTitle } = useTitle()
     const [ready, setReady] = useState<boolean>(false)
     const [windows, setWindows] = useState<ComputedWindow[]>([])
@@ -39,7 +40,14 @@ export function Result() {
 
             setDancer(dancer)
 
-            const simulator = new Simulator(parser, dancer)
+            const statOverrides: { [friendID: number]: { crit: number, dh: number } } = {}
+
+            for (const [friendID, value] of searchParams) {
+                const [crit, dh] = value.split(',').map(parseFloat)
+                statOverrides[parseInt(friendID)] = { crit, dh }
+            }
+
+            const simulator = new Simulator(parser, dancer, statOverrides)
             const windows = await simulator.calculatePartnerDamage()
 
             if (windows.length <= 0) {

@@ -2,6 +2,7 @@ import { FFLogsEvent } from 'api/fflogs/event'
 import { Friend } from 'api/fflogs/fight'
 import { FFLogsParser } from 'api/fflogs/parser'
 import { DataProvider } from 'data/provider'
+import { computeCritMultiplier, computeCritRate, computeDHRate } from 'math/functions'
 import {
     ComputedEvent,
     ComputedPlayer,
@@ -9,12 +10,19 @@ import {
     DamageTotals,
     OverallDamage,
 } from 'types'
+import { Snapshot } from '../types/snapshot'
 import { BuffWindow } from './buffWindow'
 import { EnemyHandler } from './handlers/enemies'
 import { PlayerHandler } from './handlers/players'
 import { SnapshotHook } from './hooks'
 import { Dancer } from './modules/entities/dancer'
-import { Snapshot } from '../types/snapshot'
+
+export interface StatOverrides {
+    [friendID: number]: {
+        crit: number
+        dh: number
+    }
+}
 
 export class Simulator {
     private parser: FFLogsParser
@@ -22,14 +30,16 @@ export class Simulator {
     private dancer: Dancer
     private enemies: EnemyHandler
     private players: PlayerHandler
+    private statOverrides?: StatOverrides
     private buffWindows: BuffWindow[] = []
     private results: ComputedWindow[] = []
 
-    constructor(parser: FFLogsParser, dancer: Friend) {
+    constructor(parser: FFLogsParser, dancer: Friend, statOverrides?: StatOverrides) {
         this.parser = parser
         this.data = new DataProvider()
         this.dancer = new Dancer(dancer.id, parser.fight.start, this.registerNewBuffWindow, this.data)
         this.enemies = new EnemyHandler(parser.fight.friends, this.data)
+        this.statOverrides = statOverrides
 
         // The Dancer can't partner themselves
         const potentialPartners = parser.fight.friends.filter(player => player.id !== dancer.id)
@@ -103,9 +113,22 @@ export class Simulator {
         }
 
         for (const player of players) {
-            // TODO override these stats if we have better ones
+            const playerStats = player.getEstimatedStats()
+
+            if (this.statOverrides && player.id in this.statOverrides) {
+                const overrides = this.statOverrides[player.id]
+                if (overrides.crit > 0) {
+                    playerStats.critRate = computeCritRate(overrides.crit)
+                    playerStats.critMultiplier = computeCritMultiplier(overrides.crit)
+                }
+
+                if (overrides.dh > 0) {
+                    playerStats.DHRate = computeDHRate(overrides.dh)
+                }
+            }
+
             const computedDamage = window.getPlayerContribution({
-                stats: player.getEstimatedStats(),
+                stats: playerStats,
                 player: player,
                 potencyRatio: this.dancer.potencyRatio,
             })
