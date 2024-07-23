@@ -8,6 +8,7 @@ import { Head } from './Head'
 import { Home } from './Home/Home'
 import { NotFoundPage } from './NotFound/NotFound'
 import { Result } from './Result/Result'
+import { StatSelect } from './StatSelect/StatSelect'
 import { TitleProvider } from './Title'
 
 const theme = createTheme({
@@ -64,6 +65,10 @@ const routes = [
     {
         path: '/:reportID/:fightID',
         element: <Result />,
+    },
+    {
+        path: '/stats/:reportID/:fightID',
+        element: <StatSelect />,
     },
 ]
 

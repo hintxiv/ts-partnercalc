@@ -1,4 +1,4 @@
-import { Grid, TextField, Box, Typography } from '@material-ui/core'
+import { Grid, TextField, Box, Typography, Checkbox, FormControlLabel } from '@material-ui/core'
 import { fetchLastFightID } from 'api/fflogs/api'
 import { useTitle } from 'components/Title'
 import React, { useEffect, useState } from 'react'
@@ -8,6 +8,7 @@ import styles from './Home.module.css'
 export function Home() {
     const { passKey } = useParams()
     const [hasError, setError] = useState<boolean>(false)
+    const [useExactStats, setUseExactStats] = useState<boolean>(false)
     const navigate = useNavigate()
     const { setTitle } = useTitle()
 
@@ -45,6 +46,11 @@ export function Home() {
             const parsedFightID = (fightID === 'last')
                 ? await fetchLastFightID(reportID)
                 : parseInt(fightID)
+
+            if (useExactStats) {
+                navigate(`/stats/${reportID}/${parsedFightID}`)
+                return
+            }
 
             navigate(`/${reportID}/${parsedFightID}`)
 
@@ -84,6 +90,15 @@ export function Home() {
                         placeholder="https://www.fflogs.com/reports/..."
                         fullWidth
                         onChange={onFFlogsChange}
+                    />
+                    <FormControlLabel
+                        label="Use exact stats"
+                        control={
+                            <Checkbox
+                                checked={useExactStats}
+                                onChange={() => setUseExactStats(!useExactStats)}
+                            />
+                        }
                     />
                 </Grid>
             </Grid>
