@@ -130,6 +130,9 @@ export const StatSelect = () => {
                 ))}
             </FriendContainer>
             <Typography variant="h6">
+                Enter each player's crit / DH stats as they were in the log (including food).
+            </Typography>
+            <Typography variant="h6">
                 Leave inputs blank to estimate stats from the log!
             </Typography>
             <Button onClick={navigateToResults} variant="outlined">
