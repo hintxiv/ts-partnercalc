@@ -129,15 +129,14 @@ function devilmentRdps(
     const Cm = partneredStats.critMultiplier
     const Dr = partneredStats.DHRate
     const Cr = partneredStats.critRate
-    const Du = unbuffedStats.DHRate
     const Cu = unbuffedStats.critRate
 
     const CDHProbability = Dr * Cr
     const critProbability = Cr - CDHProbability
     const DHProbability = Dr - CDHProbability
 
-    // We love Wildfire, even if SE doesn't
     if (options.DHType === 'none' && options.critType === 'none') {
+        // We love Wildfire, even if SE doesn't
         return 0
     }
 
@@ -165,18 +164,18 @@ function devilmentRdps(
         const amountWithoutDevilment = stripped * (1 + (Cr - Cu - devilment.critRate) * (Cm - 1))
         const amountWithDevilment = stripped * (1 + (Cr - Cu) * (Cm - 1))
 
-        const critRdps = amountWithDevilment - amountWithoutDevilment
-        const DHRdps = (base + critRdps) * (Dm - 1) * devilment.DHRate
+        const normalizedWithoutDM = amountWithoutDevilment * (1 + (Dr - devilment.DHRate) * (Dm - 1))
+        const normalizedWithDM = amountWithDevilment * (1 + Dr * (Dm - 1))
 
-        return DHRdps + critRdps
+        return normalizedWithDM - normalizedWithoutDM
     }
 
     // The auto-CDH case, treat devilment as a flat multiplier
-    const autoDHMultiplierDM = (1 + (Dr - Du) * (Dm - 1))
+    const autoDHMultiplierDM = (1 + Dr * (Dm - 1))
     const autoCritMultiplierDM = (1 + (Cr - Cu) * (Cm - 1))
 
-    const autoDHMultiplier = (1 + (Dr - Du - devilment.DHRate) * (Dm - 1))
-    const autoCritMultiplier = (1 + (Cr - Du - devilment.critRate) * (Cm - 1))
+    const autoDHMultiplier = (1 + (Dr - devilment.DHRate) * (Dm - 1))
+    const autoCritMultiplier = (1 + (Cr - Cu - devilment.critRate) * (Cm - 1))
 
     const stripped = isDevilmentUp
         ? base / (autoDHMultiplierDM * autoCritMultiplierDM)
@@ -184,11 +183,11 @@ function devilmentRdps(
 
     const amountWithoutDevilment = stripped
         * (1 + (Cr - Cu - devilment.critRate) * (Cm - 1))
-        * (1 + (Dr - Du - devilment.DHRate) * (Dm - 1))
+        * (1 + (Dr - devilment.DHRate) * (Dm - 1))
 
     const amountWithDevilment = stripped
         * (1 + (Cr - Cu) * (Cm - 1))
-        * (1 + (Dr - Du) * (Dm - 1))
+        * (1 + Dr * (Dm - 1))
 
     return amountWithDevilment - amountWithoutDevilment
 }
