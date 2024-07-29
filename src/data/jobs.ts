@@ -91,14 +91,14 @@ export const JOBS = preserve<Job>()({
     Monk: {
         name: 'Monk',
         color: '#d69c00',
-        espritRate: 0.1685,
+        espritRate: 0.1737,
         constructor: Player,
         Icon: ICONS.MonkIcon,
     },
     Ninja: {
         name: 'Ninja',
         color: '#af1964',
-        espritRate: 0.2,
+        espritRate: 0.1747,
         constructor: Ninja,
         Icon: ICONS.NinjaIcon,
     },
@@ -151,7 +151,7 @@ export const JOBS = preserve<Job>()({
     BlackMage: {
         name: 'Black Mage',
         color: '#a579d6',
-        espritRate: 0.2481,
+        espritRate: 0.2137,
         constructor: Player,
         Icon: ICONS.BlackMageIcon,
     },
