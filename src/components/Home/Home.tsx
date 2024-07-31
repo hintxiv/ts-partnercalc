@@ -2,11 +2,10 @@ import { Grid, TextField, Box, Typography, Checkbox, FormControlLabel } from '@m
 import { fetchLastFightID } from 'api/fflogs/api'
 import { useTitle } from 'components/Title'
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import styles from './Home.module.css'
 
 export function Home() {
-    const { passKey } = useParams()
     const [hasError, setError] = useState<boolean>(false)
     const [useExactStats, setUseExactStats] = useState<boolean>(false)
     const navigate = useNavigate()
@@ -57,22 +56,6 @@ export function Home() {
         } catch (e) {
             setError(true)
         }
-    }
-
-    if (passKey !== 'TillanasInTijuana') {
-        // Placeholder until partnercalc is updated for 7.x
-        return <div className={styles.home}>
-            <Box p={2}>
-                <Box mb={1}>
-                    <Typography variant="h3" color="textPrimary" style={{ textAlign: 'center' }}>
-                        Thanks for using partnercalc!
-                    </Typography>
-                    <Typography variant="h6" color="textPrimary" style={{ textAlign: 'center' }}>
-                        I'm working on updating the site for Dawntrail, so please check back later.
-                    </Typography>
-                </Box>
-            </Box>
-        </div>
     }
 
     return <div className={styles.home}>
