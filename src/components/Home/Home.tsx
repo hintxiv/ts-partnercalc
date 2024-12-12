@@ -17,9 +17,14 @@ export function Home() {
         const report = url.pathname.replace('/reports/', '')
         const hashParam = url.hash.replace('#', '')
 
-        const fight = hashParam.split('&')
-            .map((param) => param.split('='))
-            .find(([key, _]) => key === 'fight')[1]
+        let fight: string
+        if (hashParam) {
+            fight = hashParam.split('&')
+                .map((param) => param.split('='))
+                .find(([key, _]) => key === 'fight')[1]
+        } else {
+            fight = url.searchParams.get('fight')
+        }
 
         if (!report || !fight) {
             throw new Error('Invalid FFLogs URL')
