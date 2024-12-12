@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useReducer } from 'react'
+import { HelmetProvider } from 'react-helmet-async'
 
 const DEFAULT_TITLE = 'partnercalc'
 
@@ -18,7 +19,11 @@ export const TitleProvider = (props: { children: React.ReactNode }) => {
         return `${title} · ${DEFAULT_TITLE}`
     }, DEFAULT_TITLE)
 
-    return <TitleContext.Provider value={{ title, setTitle }}>
-        {props.children}
-    </TitleContext.Provider>
+    return (
+        <HelmetProvider context={{}}>
+            <TitleContext.Provider value={{ title, setTitle }}>
+                {props.children}
+            </TitleContext.Provider>
+        </HelmetProvider>
+    )
 }
