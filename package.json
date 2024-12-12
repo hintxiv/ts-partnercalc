@@ -10,7 +10,8 @@
         "lint": "eslint src"
     },
     "resolutions": {
-        "react-spring": "9.0.1"
+        "react-spring": "9.0.1",
+        "@types/react": "18.0.28"
     },
     "dependencies": {
         "@material-ui/core": "^4.11.3",
