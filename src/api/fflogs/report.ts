@@ -12,6 +12,7 @@ export interface ReportFight {
     start_time: number
     end_time: number
     name: string
+    kill?: boolean
 }
 
 export interface ReportFriend {

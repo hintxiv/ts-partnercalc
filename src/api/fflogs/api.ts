@@ -108,7 +108,13 @@ export async function fetchFight(reportID: string, fightID: number): Promise<Fig
 
 export async function fetchLastFightID(reportID: string): Promise<number> {
     const report: Report = await fflogs.get(`fights/${reportID}/`).json()
+    const killFights = report.fights.filter((fight: ReportFight) => fight.kill)
 
+    if (killFights.length > 0) {
+        return killFights.slice(-1)[0].id
+    }
+
+    // If there are no kills, return the last fight ID
     return report.fights.slice(-1)[0].id
 }
 
