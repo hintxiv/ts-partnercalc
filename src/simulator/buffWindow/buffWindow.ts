@@ -4,6 +4,8 @@ import { SnapshotHandler } from 'simulator/handlers/snapshots'
 import { Player } from 'simulator/modules/entities/player'
 import { Action, ComputedDamage, Snapshot, Stats } from 'types'
 
+const ESPRIT_GENERATION_LOCKOUT_MS = 200
+
 export interface WindowInfo {
     stats: Stats
     player: Player
@@ -48,6 +50,8 @@ export class BuffWindow {
 
         if (!snapshots) { return [] }
 
+        let lastEspritTimestamp = 0
+
         return snapshots.map(snapshot => {
             const computedDamage = {
                 timestamp: snapshot.timestamp,
@@ -63,8 +67,13 @@ export class BuffWindow {
 
                 const buffDamage = buff.calculateDamageFromSnapshot(snapshot, windowInfo)
                 computedDamage.standard += buffDamage.standard
-                computedDamage.esprit += buffDamage.esprit
                 computedDamage.devilment += buffDamage.devilment
+
+                // Don't count multiple esprit events within a short time frame (e.g. AoE actions, Barrage)
+                if (buffDamage.esprit > 0 && snapshot.timestamp - lastEspritTimestamp > ESPRIT_GENERATION_LOCKOUT_MS) {
+                    computedDamage.esprit += buffDamage.esprit
+                    lastEspritTimestamp = snapshot.timestamp
+                }
             })
 
             return computedDamage
