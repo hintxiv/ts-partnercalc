@@ -19,7 +19,7 @@
         "ky": "^0.26.0",
         "material-ui-react": "^0.0.1",
         "react": "18.2.0",
-        "react-dom": "^17.0.1",
+        "react-dom": "18",
         "react-helmet-async": "^2.0.5",
         "react-router-dom": "^6.3.0",
         "react-transition-group": "^4.4.2",
@@ -64,5 +64,6 @@
         "webpack-cli": "^4.5.0",
         "webpack-defaults": "^4.0.0",
         "webpack-dev-server": "^3.11.2"
-    }
+    },
+    "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
