@@ -1,7 +1,7 @@
 import { DataProvider } from 'data/provider'
 import { Job, Snapshot } from 'types'
 
-const POTENCY_PER_ESPRIT = 3.68  // from ringabel's calculations
+const POTENCY_PER_ESPRIT = 3.56  // from ringabel's calculations
 const ESPRIT_PER_WEAPONSKILL = 10
 const DEFAULT_ESPRIT_RATE = 0.2
 
